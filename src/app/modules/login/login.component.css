@@ -1,0 +1,46 @@
+.global-container{
+  padding-top: 50px;
+  margin: 0 auto;
+  width: 900px;
+  height: 900px;
+}
+
+.container-left{
+  width: 200px;
+  padding-top: 230px;
+  display: inline-block;
+}
+
+.container-right{
+  float: right;
+  padding-top: 150px;
+  display: inline-block
+}
+
+.container-right-card{
+  width: 425px;
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  text-align: center;
+  border-radius: 20px;
+}
+
+.line{
+  border-bottom: 1px solid darkgray;
+  margin: 20px 15px
+}
+
+.button-login{
+  margin-left: 20px;
+}
+
+.form-field-username{
+  padding-top: 15px;
+}
+
+.center {
+  text-align: center;
+}
+
+.button-color{
+  color: blueviolet;
+}

@@ -10,24 +10,24 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
   styleUrls: ['./register.component.css'],
   animations: [
     trigger('flyInOut', [
-      state('in', style({ transform: 'translateY(0)' })),
+      state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
-        style({ transform: 'translateY(30%)' }),
-        animate(1500)
+        style({ transform: 'translateX(30%)' }),
+        animate(1200)
       ]),
       transition('* => void', [
-        animate(1500, style({ transform: 'translateY(-30%)' }))
+        animate(1200, style({ transform: 'translateX(-30%)' }))
       ]),
     ]),
 
     trigger('slideInOut', [
       state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
-        style({ transform: 'translateX(30%)' }),
-        animate(1500)
+        style({ transform: 'translateX(-30%)' }),
+        animate(1200)
       ]),
       transition('* => void', [
-        animate(1500, style({ transform: 'translateX(-30%)' }))
+        animate(1200, style({ transform: 'translateX(30%)' }))
       ])
     ])
   ]

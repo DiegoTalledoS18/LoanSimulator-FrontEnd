@@ -9,7 +9,7 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   animations: [
-    trigger('flyInOut', [
+    trigger('flyInOutLogin', [
       state('in', style({ transform: 'translateY(0)' })),
       transition('void => *', [
         style({ transform: 'translateY(30%)' }),
@@ -20,7 +20,7 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
       ]),
     ]),
 
-    trigger('slideInOut', [
+    trigger('slideInOutLogin', [
       state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
         style({ transform: 'translateX(30%)' }),

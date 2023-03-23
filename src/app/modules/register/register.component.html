@@ -33,9 +33,9 @@
           </mat-form-field>
 
         </form>
-        <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="register()">Register</button>
+        <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" [routerLink]="'/login'" (click)="register()">Register</button>
         <div class="line"></div>
-        <p>Thank you for registering <button mat-button color="primary" [routerLink]="'/login'">Go to Login</button></p>
+        <p class="text-margin">Thank you for registering in our app !! <button mat-button color="primary"></button></p>
       </mat-card>
     </div>
   </div>

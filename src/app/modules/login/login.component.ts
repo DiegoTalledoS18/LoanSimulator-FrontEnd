@@ -2,15 +2,33 @@ import {AfterViewInit, Component, ElementRef} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {UserService} from "../../services/user.services";
-import {trigger} from "@angular/animations";
+import {state, style, animate, transition, trigger} from "@angular/animations";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   animations: [
-    trigger('fade',[
+    trigger('flyInOut', [
+      state('in', style({ transform: 'translateY(0)' })),
+      transition('void => *', [
+        style({ transform: 'translateY(30%)' }),
+        animate(2000)
+      ]),
+      transition('* => void', [
+        animate(2000, style({ transform: 'translateY(-30%)' }))
+      ]),
+    ]),
 
+    trigger('slideInOut', [
+      state('in', style({ transform: 'translateX(0)' })),
+      transition('void => *', [
+        style({ transform: 'translateX(30%)' }),
+        animate(2000)
+      ]),
+      transition('* => void', [
+        animate(2000, style({ transform: 'translateX(-30%)' }))
+      ])
     ])
   ]
 })

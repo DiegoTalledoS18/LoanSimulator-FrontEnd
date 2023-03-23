@@ -3,7 +3,7 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {catchError, Observable, retry, throwError} from "rxjs";
 import {User} from "../models/user";
 import {UserPost} from "../models/userPost";
-import {FormControl, ɵFormGroupRawValue, ɵGetProperty, ɵTypedOrUntyped} from "@angular/forms";
+import {FormControl, ɵFormGroupRawValue, ɵFormGroupValue, ɵGetProperty, ɵTypedOrUntyped} from "@angular/forms";
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,7 @@ export class UserService {
         catchError(this.handleError));
   }
 
-  create(user: UserPost): Observable<UserPost> {
+  create(user: ɵTypedOrUntyped<{ password: FormControl<string | null>; username: FormControl<string | null> }, ɵFormGroupValue<{ password: FormControl<string | null>; username: FormControl<string | null> }>, any>): Observable<UserPost> {
     return this.http.post<UserPost>(`${this.basePath}/create`, JSON.stringify(user), this.httpOptions)
       .pipe(
         retry(2),

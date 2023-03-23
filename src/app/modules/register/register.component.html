@@ -3,21 +3,28 @@
   <div class="global-container">
     <div class="container-left">
       <div>
-        <h1 class="center" @slideInOut @bounce>Financial Leasing App</h1>
-        <h4 class="center" @slideInOut @bounce>Financial leasing calculator using ordinary French method.</h4>
+        <h1 class="center" @slideInOut>Financial Leasing App</h1>
+        <h4 class="center" @slideInOut>Financial leasing calculator using ordinary French method.</h4>
       </div>
     </div>
     <div class="container-right">
       <mat-card class="container-right-card" @flyInOut>
         <form [formGroup]="userFormGroup">
-          <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
+          <mat-form-field class= "form-field" appearance="fill" style="width: 90%; margin-top: 10px;">
+            <mat-label>Name</mat-label>
+            <input matInput autocomplete="off" formControlName="name">
+            <mat-error *ngIf="userFormGroup.get('name')?.hasError('required')">
+              Name is <strong>required</strong>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class= "form-field" appearance="fill" style="width: 90%;">
             <mat-label>Username</mat-label>
             <input matInput autocomplete="off" formControlName="username">
             <mat-error *ngIf="userFormGroup.get('username')?.hasError('required')">
               Username is <strong>required</strong>
             </mat-error>
           </mat-form-field>
-          <mat-form-field appearance="fill" style="width: 90%;">
+          <mat-form-field class= "form-field" appearance="fill" style="width: 90%;">
             <mat-label>Password</mat-label>
             <input matInput autocomplete="off" type="password" formControlName="password">
             <mat-error *ngIf="userFormGroup.get('password')?.hasError('required')">
@@ -26,9 +33,9 @@
           </mat-form-field>
 
         </form>
-        <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="register()">Login</button>
+        <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="register()">Register</button>
         <div class="line"></div>
-        <p>Don't have an account? <button mat-button color="primary" [routerLink]="'/register'">Sign up</button></p>
+        <p>Thank you for registering <button mat-button color="primary" [routerLink]="'/login'">Go to Login</button></p>
       </mat-card>
     </div>
   </div>

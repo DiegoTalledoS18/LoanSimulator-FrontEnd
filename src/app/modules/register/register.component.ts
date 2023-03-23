@@ -13,10 +13,10 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
       state('in', style({ transform: 'translateY(0)' })),
       transition('void => *', [
         style({ transform: 'translateY(30%)' }),
-        animate(2000)
+        animate(1500)
       ]),
       transition('* => void', [
-        animate(2000, style({ transform: 'translateY(-30%)' }))
+        animate(1500, style({ transform: 'translateY(-30%)' }))
       ]),
     ]),
 
@@ -24,10 +24,10 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
       state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
         style({ transform: 'translateX(30%)' }),
-        animate(2000)
+        animate(1500)
       ]),
       transition('* => void', [
-        animate(2000, style({ transform: 'translateX(-30%)' }))
+        animate(1500, style({ transform: 'translateX(-30%)' }))
       ])
     ])
   ]
@@ -36,6 +36,7 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
 export class RegisterComponent implements AfterViewInit {
   isLoading: boolean = false;
   userFormGroup = new FormGroup({
+    name: new FormControl('',[Validators.required]),
     username: new FormControl('',[Validators.required]),
     password: new FormControl('',[Validators.required])
   });
@@ -45,6 +46,19 @@ export class RegisterComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#e0ecf4';
+  }
+
+  register(){
+    if(this.userFormGroup.valid) {
+      this.isLoading = true;
+      this.userService.create(this.userFormGroup.value).subscribe(
+        (response) => {
+          this.route.navigate(['/login']);
+          this.isLoading=false;
+        }
+      );
+    }
+
   }
 
 }

@@ -13,10 +13,10 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
       state('in', style({ transform: 'translateY(0)' })),
       transition('void => *', [
         style({ transform: 'translateY(30%)' }),
-        animate(2000)
+        animate(1500)
       ]),
       transition('* => void', [
-        animate(2000, style({ transform: 'translateY(-30%)' }))
+        animate(1500, style({ transform: 'translateY(-30%)' }))
       ]),
     ]),
 
@@ -24,10 +24,10 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
       state('in', style({ transform: 'translateX(0)' })),
       transition('void => *', [
         style({ transform: 'translateX(30%)' }),
-        animate(2000)
+        animate(1500)
       ]),
       transition('* => void', [
-        animate(2000, style({ transform: 'translateX(-30%)' }))
+        animate(1500, style({ transform: 'translateX(-30%)' }))
       ])
     ])
   ]
@@ -54,7 +54,7 @@ export class LoginComponent implements AfterViewInit {
         (response) => {
           // local storage
           localStorage.setItem('id', String(response.id));
-          this.route.navigate(['/home_calculator']);
+          this.route.navigate(['/calculator']);
           this.isLoading=false;
         },
         (error) => {

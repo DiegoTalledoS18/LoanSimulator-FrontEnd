@@ -54,7 +54,7 @@ export class LoginComponent implements AfterViewInit {
         (response) => {
           // local storage
           localStorage.setItem('id', String(response.id));
-          this.route.navigate(['/calculator']);
+          this.route.navigate(['/register']);
           this.isLoading=false;
         },
         (error) => {

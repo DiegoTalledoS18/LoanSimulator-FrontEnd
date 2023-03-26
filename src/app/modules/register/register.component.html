@@ -10,25 +10,46 @@
     <div class="container-right">
       <mat-card class="container-right-card" @flyInOut>
         <form [formGroup]="userFormGroup">
+
+          <!-- ################# NAME FORM FIELD #################-->
           <mat-form-field class= "form-field" appearance="fill" style="width: 90%; margin-top: 10px;">
             <mat-label>Name</mat-label>
             <input matInput autocomplete="off" formControlName="name">
             <mat-error *ngIf="userFormGroup.get('name')?.hasError('required')">
               Name is <strong>required</strong>
             </mat-error>
+            <mat-error *ngIf="userFormGroup.get('name')?.hasError('maxLength')">
+              Name cannot be more than <strong>20</strong> characters
+            </mat-error>
           </mat-form-field>
+
+          <!-- ################# USERNAME FORM FIELD #################-->
           <mat-form-field class= "form-field" appearance="fill" style="width: 90%;">
             <mat-label>Username</mat-label>
             <input matInput autocomplete="off" formControlName="username">
             <mat-error *ngIf="userFormGroup.get('username')?.hasError('required')">
               Username is <strong>required</strong>
             </mat-error>
+            <mat-error *ngIf="userFormGroup.get('username')?.hasError('minLength')">
+              Username cannot be less than <strong>5</strong> characters
+            </mat-error>
+            <mat-error *ngIf="userFormGroup.get('username')?.hasError('maxLength')">
+              Username cannot be more than <strong>15</strong> characters
+            </mat-error>
           </mat-form-field>
+
+          <!-- ################# PASWORD FORM FIELD #################-->
           <mat-form-field class= "form-field" appearance="fill" style="width: 90%;">
             <mat-label>Password</mat-label>
             <input matInput autocomplete="off" type="password" formControlName="password">
             <mat-error *ngIf="userFormGroup.get('password')?.hasError('required')">
               Password is <strong>required</strong>
+            </mat-error>
+            <mat-error *ngIf="userFormGroup.get('password')?.hasError('minLength')">
+              Password cannot be less than <strong>4</strong> characters
+            </mat-error>
+            <mat-error *ngIf="userFormGroup.get('password')?.hasError('maxLength')">
+              Password cannot be more than <strong>8</strong> characters
             </mat-error>
           </mat-form-field>
 

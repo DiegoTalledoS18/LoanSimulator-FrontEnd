@@ -36,9 +36,19 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
 export class RegisterComponent implements AfterViewInit {
   isLoading: boolean = false;
   userFormGroup = new FormGroup({
-    name: new FormControl('',[Validators.required]),
-    username: new FormControl('',[Validators.required]),
-    password: new FormControl('',[Validators.required])
+    name: new FormControl('',[
+      Validators.required,
+      Validators.maxLength(20)
+    ]),
+    username: new FormControl('',[
+      Validators.required,
+      Validators.minLength(5),
+      Validators.maxLength(15)
+    ]),
+    password: new FormControl('',[
+      Validators.required, Validators.minLength(4),
+      Validators.maxLength(8)
+    ])
   });
   constructor(private route: Router, private elementRef: ElementRef, private userService: UserService) {
   }

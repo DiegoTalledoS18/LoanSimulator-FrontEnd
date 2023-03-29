@@ -55,7 +55,7 @@ export class RegisterComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.elementRef.nativeElement.ownerDocument
-      .body.style.backgroundColor = '#e0ecf4';
+      .body.style.backgroundColor = '#e4efff';
   }
 
   register(){

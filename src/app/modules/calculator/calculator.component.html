@@ -1,0 +1,52 @@
+<div class="container">
+  <h1 class="title">Financial Simulator</h1>
+  <h4 class="subtitle">Complete the following information to simulate your loan</h4>
+  <div class="global-container">
+      <div class="card">
+        <mat-card class="container-card">
+
+          <form [formGroup]="userFormGroup">
+
+            <mat-form-field class= "form-field-username padding-top" appearance="fill" style="width: 90%; margin-top: 10px;">
+              <mat-label>Capital</mat-label>
+              <input matInput autocomplete="off" formControlName="capital">
+              <mat-error *ngIf="userFormGroup.get('capital')?.hasError('required')">
+                Monto/Capital es <strong>requerido</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
+              <mat-label>Tasa de Interes Anual (%)</mat-label>
+              <input matInput autocomplete="off" formControlName="tasa">
+              <mat-error *ngIf="userFormGroup.get('tasa')?.hasError('required')">
+                Tasa de Interes es <strong>requerido</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
+              <mat-label>Tiempo (Meses)</mat-label>
+              <input matInput autocomplete="off" formControlName="tiempo">
+              <mat-error *ngIf="userFormGroup.get('tiempo')?.hasError('required')">
+                Tiempo es <strong>requerido</strong>
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
+              <mat-label>Tipo de Moneda</mat-label>
+              <mat-select>
+                <mat-option value="one">Soles</mat-option>
+                <mat-option value="two">Dolares</mat-option>
+              </mat-select>
+              <mat-error *ngIf="userFormGroup.get('moneda')?.hasError('required')">
+                Moneda es <strong>requerido</strong>
+              </mat-error>
+            </mat-form-field>
+
+
+          </form>
+
+        </mat-card>
+
+      </div>
+    </div>
+  </div>

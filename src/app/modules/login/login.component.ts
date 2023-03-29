@@ -44,7 +44,7 @@ export class LoginComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.elementRef.nativeElement.ownerDocument
-      .body.style.backgroundColor = '#e0ecf4';
+      .body.style.backgroundColor = '#e4efff';
   }
 
   login(){

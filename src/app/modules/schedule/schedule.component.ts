@@ -1,15 +1,8 @@
 import {Component, ElementRef} from '@angular/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
+import {Schedule} from '../../models/schedule';
 
-export interface static_data {
-  anio: number;
-  cuota: number;
-  capital_am: number;
-  interes: number;
-  amortizacion_ac: number;
-  capital_pen: number;
-}
-
-const ELEMENT_DATA: static_data[] = [
+const ELEMENT_DATA: Schedule[] = [
   {anio: 1, cuota: 1000, capital_am: 1000, interes: 1000, amortizacion_ac: 1000, capital_pen: 1000},
   {anio: 2, cuota: 1000, capital_am: 1000, interes: 1000, amortizacion_ac: 1000, capital_pen: 1000},
   {anio: 3, cuota: 1000, capital_am: 1000, interes: 1000, amortizacion_ac: 1000, capital_pen: 1000},
@@ -20,13 +13,24 @@ const ELEMENT_DATA: static_data[] = [
   {anio: 8, cuota: 1000, capital_am: 1000, interes: 1000, amortizacion_ac: 1000, capital_pen: 1000},
   {anio: 9, cuota: 1000, capital_am: 1000, interes: 1000, amortizacion_ac: 1000, capital_pen: 1000},
   {anio: 10, cuota: 1000, capital_am: 1000, interes: 1000, amortizacion_ac: 1000, capital_pen: 1000},
-
 ];
 
 @Component({
   selector: 'app-schedule',
   templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.css']
+  styleUrls: ['./schedule.component.css'],
+  animations: [
+    trigger('slideInOut', [
+      state('in', style({ transform: 'translateX(0)' })),
+      transition('void => *', [
+        style({ transform: 'translateX(-5%)' }),
+        animate(1900)
+      ]),
+      transition('* => void', [
+        animate(1900, style({ transform: 'translateX(5%)' }))
+      ])
+    ])
+  ]
 })
 export class ScheduleComponent {
   displayedColumns: string[] = ['anio', 'cuota', 'capital_am', 'interes', 'amortizacion_ac', 'capital_pen'];

@@ -1,7 +1,5 @@
-
-
 <div class="example-container">
-  <h1 class="title">Prestamo MiVivienda</h1>
+  <h1 class="title">Prestamo Libre Disponibilidad</h1>
   <h3 class="subtitle-imp">Importe solicitado: </h3>
   <h2 class="title-money">$ 10,000 </h2>
   <h3 class="subtitle-li-float">10,100 </h3> <!-- CAPITAL -->
@@ -13,8 +11,8 @@
 </div>
 
 <div class="global-container">
-
-  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <h2 class="schedule-title"><u>Cronograma de Pagos:</u></h2>
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8" @slideInOut>
 
     <ng-container matColumnDef="anio">
       <mat-header-cell *matHeaderCellDef> Año </mat-header-cell>

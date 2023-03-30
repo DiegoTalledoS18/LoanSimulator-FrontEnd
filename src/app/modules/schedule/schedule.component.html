@@ -1,0 +1,60 @@
+
+
+<div class="example-container">
+  <h1 class="title">Prestamo MiVivienda</h1>
+  <h3 class="subtitle-imp">Importe solicitado: </h3>
+  <h2 class="title-money">$ 10,000 </h2>
+  <h3 class="subtitle-li-float">10,100 </h3> <!-- CAPITAL -->
+  <h3 class="subtitle-li">Capital: </h3>
+  <h3 class="subtitle-li-float">3% </h3> <!-- INTERES -->
+  <h3 class="subtitle-li">Interes Anual (%): </h3>
+  <h3 class="subtitle-li-float">36 meses </h3> <!-- TIEMPO -->
+  <h3 class="subtitle-li">Duración total: </h3>
+</div>
+
+<div class="global-container">
+
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="anio">
+      <mat-header-cell *matHeaderCellDef> Año </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.anio}} </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="cuota">
+      <mat-header-cell *matHeaderCellDef> Cuota </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.cuota}} </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="capital_am">
+      <mat-header-cell *matHeaderCellDef> Capital Amortizado </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.capital_am}} </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="interes">
+      <mat-header-cell *matHeaderCellDef> Interes </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.interes}} </mat-cell>
+    </ng-container>
+
+
+    <ng-container matColumnDef="amortizacion_ac">
+      <mat-header-cell *matHeaderCellDef> Amortizacion Acumulada </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.amortizacion_ac}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="capital_pen">
+      <mat-header-cell *matHeaderCellDef> Capital Pendiente </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.capital_pen}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <button mat-raised-button color="primary" class="button-return" [routerLink]="'/calculator'">Return</button>
+  <button mat-raised-button color="primary" class="button-save">Save</button>
+
+</div>

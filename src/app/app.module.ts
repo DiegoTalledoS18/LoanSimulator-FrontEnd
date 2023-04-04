@@ -7,7 +7,6 @@ import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
     HttpClientModule,
     MatRadioModule,
     MatSlideToggleModule,
-    MatDatepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

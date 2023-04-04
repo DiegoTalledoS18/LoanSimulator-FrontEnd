@@ -1,5 +1,5 @@
 .container {
-  background-color: #e4efff;
+  background-color: #ffffff;
 }
 
 .global-container{
@@ -34,6 +34,9 @@
   margin-right: 35px;
   margin-top: 40px;
 }
+.padding-general{
+  padding: 30px 50px;
+}
 
 .mat-mdc-radio-button ~ .mat-mdc-radio-button {
   margin-left: 16px;
@@ -64,4 +67,10 @@ mat-slide-toggle{
 }
 mat-button-toggle-group {
   margin-left: 12px;
+}
+.mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}
+mat-form-field {
+  margin-right: 12px;
 }

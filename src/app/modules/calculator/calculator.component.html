@@ -38,24 +38,23 @@
 
               </div>
               <div style="display: flex; justify-content: center">
-                <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
-                  <mat-label>Tipo de Moneda</mat-label>
-                  <mat-select>
-                    <mat-option (click)="setCurrency('soles')" >Soles</mat-option>
-                    <mat-option (click)="setCurrency('dolares')">Dolares</mat-option>
+                <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%;margin-top: 10px;">
+                  <mat-label>Tipo de moneda</mat-label>
+                  <mat-select formControlName="moneda" name="moneda">
+                    <mat-option *ngFor="let currency of currencys" [value]="currency.viewValue">
+                      {{currency.viewValue}}
+                    </mat-option>
                   </mat-select>
                   <mat-error *ngIf="userFormGroup.get('moneda')?.hasError('required')">
-                    Moneda es <strong>requerido</strong>
+                    Tipo de moneda <strong>requerida</strong>
                   </mat-error>
                 </mat-form-field>
               </div>
-
           </form>
             <div style="display: flex; justify-content: center" class="padding-vertical">
               <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="next()">Continuar</button>
 
             </div>
-
           </mat-card>
           <mat-card class="container-card" *ngIf="stepper==false">
             <div class="margin-horizontal">
@@ -63,25 +62,34 @@
               <p>Paso 2 de 2</p>
               <p>Completa la siguiente información para simular tu préstamo</p>
             </div>
-            <div style="margin: 30px">
-              <div>
-                <p>Fechas de pago</p>
-                <div style="display: flex;justify-content: space-between">
-                  <mat-form-field color="primary" appearance="fill" style="width: 47%; margin-top: 10px;">
-                    <mat-label>Fecha de solicitud*</mat-label>
-                    <input matInput [matDatepicker]="picker2">
-                    <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2 color="primary"></mat-datepicker>
-                  </mat-form-field>
 
-                  <mat-form-field appearance="fill"  style="width: 47%; margin-top: 10px;">
-                    <mat-label>Dia de pago</mat-label>
-                    <input matInput type="number">
-                    <mat-error *ngIf="false">
-                      Monto/Capital es <strong>requerido</strong>
+
+
+            <form [formGroup]="PayFormGroup" style="margin: 30px">
+              <p>Fechas de pago</p>
+              <div  style="display: flex;justify-content: space-between" >
+                <div style="width: 47%; margin-top: 10px">
+                  <mat-form-field color="primary" appearance="fill" style="width: 100%;" >
+                    <mat-label>Fecha de solicitud</mat-label>
+                    <input matInput [matDatepicker]="dp_" formControlName="fechaSolicitud">
+                    <mat-datepicker-toggle matIconSuffix [for]="dp_"></mat-datepicker-toggle>
+                    <mat-datepicker #dp_></mat-datepicker>
+                    <mat-error *ngIf="PayFormGroup.get('fechaSolicitud')?.hasError('required')">
+                      Fecha de pago es <strong>requerido</strong>
                     </mat-error>
                   </mat-form-field>
                 </div>
+                <div style="width: 47%; margin-top: 10px">
+                  <mat-form-field appearance="fill"  style="width: 100%">
+                    <mat-label>Dia de pago</mat-label>
+                    <input matInput type="number" formControlName="diaDePago">
+                    <mat-error *ngIf="PayFormGroup.get('diaDePago')?.hasError('required')">
+                      El dia de pago es <strong>requerido</strong>
+                    </mat-error>
+                  </mat-form-field>
+                  <!--p *ngIf="validatorField" style="color: red">Ingrese un dia de pago</p-->
+                </div>
+
               </div>
               <div style="display: flex;padding-bottom: 20px">
                 <p style="padding-top: 20px">Periodo de gracia </p>
@@ -90,49 +98,148 @@
                   <mat-button-toggle (click)="setGracePeriod('parcial')">Parcial</mat-button-toggle>
                 </mat-button-toggle-group>
               </div>
-              <div *ngIf="this.gracePeriod!=''" style="display: flex;width: 90%; justify-content: space-between">
+              <form [formGroup]="gracePeriodFormGroup" *ngIf="this.gracePeriod!=''" style="display: flex;width: 90%; justify-content: space-between">
                 <mat-form-field appearance="fill"  style="width: 52%; margin-top: 10px;">
-                  <mat-label>Periodo de gracias (meses)*</mat-label>
-                  <input matInput>
-                  <mat-error *ngIf="false">
-                    Monto/Capital es <strong>requerido</strong>
+                  <mat-label>Periodo de gracias (meses)</mat-label>
+                  <input matInput type="number" formControlName="meses">
+                  <mat-error *ngIf="gracePeriodFormGroup.get('meses')?.hasError('required')">
+                    Meses <strong>requeridos</strong>
                   </mat-error>
                 </mat-form-field>
                 <div style="align-items: center;display: flex;height: 100px;justify-content: center;width: 200px;">
                   <p style="padding-top: 8px">Periodo de gracia con capitalización de intereses</p>
-                  <mat-slide-toggle [(ngModel)]="gracePeriodWithCapitalization" color="primary"></mat-slide-toggle>
+                  <mat-slide-toggle formControlName="capitalizacion" color="primary"></mat-slide-toggle>
                 </div>
-              </div>
+              </form>
               <div>
                 <mat-form-field appearance="fill" style="width: 47%">
-                  <mat-label>Seguro de Desgravamen(*)</mat-label>
-                  <mat-select [(ngModel)]="selectedValue" name="Seguro">
+                  <mat-label>Seguro de Desgravamen</mat-label>
+                  <mat-select formControlName="seguro" name="Seguro">
                     <mat-option *ngFor="let desgravamen of desgravamens" [value]="desgravamen.viewValue">
                       {{desgravamen.viewValue}}
                     </mat-option>
                   </mat-select>
+                  <mat-error *ngIf="PayFormGroup.get('seguro')?.hasError('required')">
+                    Seguro <strong>requerido</strong>
+                  </mat-error>
                 </mat-form-field>
               </div>
-              <div *ngIf="this.selectedValue!='' && this.selectedValue!='Sin seguro'" style="display: flex;justify-content: space-between">
-                <mat-form-field *ngIf="this.selectedValue!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
+              <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between">
+                <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento primer titular</mat-label>
-                  <input matInput [matDatepicker]="picker2">
+                  <input matInput [matDatepicker]="picker2" formControlName="primerTitular">
                   <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                  <mat-error *ngIf=" bornDatesFormGroup.get('primerTitular')?.hasError('required') ">
+                    Fecha <strong>requerida</strong>
+                  </mat-error>
                 </mat-form-field>
-                <mat-form-field *ngIf="this.selectedValue=='Convencional mancomunado'||this.selectedValue=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
+                <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado'||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento segundo titular</mat-label>
-                  <input matInput [matDatepicker]="picker2">
-                  <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                  <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                  <input matInput [matDatepicker]="picker3" formControlName="segundoTitular">
+                  <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                  <mat-datepicker #picker3 color="primary"></mat-datepicker>
+                  <mat-error *ngIf="bornDatesFormGroup.get('segundoTitular')?.hasError('required')">
+                    Fecha <strong>requerida</strong>
+                  </mat-error>
                 </mat-form-field>
-              </div>
+              </form>
               <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="simulate()">Simular</button>
-            </div>
+
+            </form>
+
+
           </mat-card>
         </div>
     </div>
-    <div *ngIf="this.calculateSend">
+    <div  *ngIf="this.calculateSend"  style=" background-color: white">
+      <div style="background-color: #6d42ba; color: white; display: block;text-align: center;justify-content: center;padding-top: 80px;padding-bottom: 50px">
+        <h1 style="font-weight: normal; font-size: 40px">Préstamo Auto Seminuevo</h1>
+        <p style="font-weight: lighter">Importe a solicitar</p>
+        <h2 style="font-weight: normal; font-size: 40px">S/ 100,000.00</h2>
+        <div style="justify-content: center;font-weight: normal; font-size: 18px; font-weight: lighter">
+          <div style="display: flex; justify-content: center">
+            <div style="display: flex;justify-content: space-between;width: 25%">
+              <p>Cuota:</p>
+              <p>S/ 20,523.63</p>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: center">
+            <div style="display: flex;justify-content: space-between;width: 25%">
+              <p>Duración total:</p>
+              <p>5 meses</p>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: center">
+            <div style="display: flex;justify-content: space-between;width: 25%">
+              <p>TCEA Referencial de Operación:</p>
+              <p>10.937184%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex;justify-content: center">
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false" style="width: 40%;box-shadow: none;">
+          <mat-expansion-panel-header>
+            <mat-panel-description >
+              Detalle del préstamo
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>Detalles</p>
+        </mat-expansion-panel>
+      </div>
+      <div style="display: flex;justify-content: center">
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false" style="width: 40%;box-shadow: none;">
+          <mat-expansion-panel-header>
+            <mat-panel-description >
+              Cronograma de pagos
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <table mat-table [dataSource]="ELEMENT_DATA" class="mat-elevation-z8" style="box-shadow: none;">
 
+            <!--- Note that these columns can be defined in any order.
+                  The actual rendered columns are set as a property on the row definition" -->
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="mes">
+              <th mat-header-cell *matHeaderCellDef> Mes </th>
+              <td mat-cell *matCellDef="let element"> {{element.mes}} </td>
+            </ng-container>
+            <ng-container matColumnDef="vencimiento">
+              <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
+              <td mat-cell *matCellDef="let element"> {{element.vencimiento}} </td>
+            </ng-container>
+            <ng-container matColumnDef="amortizacion">
+              <th mat-header-cell *matHeaderCellDef> Amortizacion </th>
+              <td mat-cell *matCellDef="let element"> {{element.amortizacion}} </td>
+            </ng-container>
+            <ng-container matColumnDef="interes">
+              <th mat-header-cell *matHeaderCellDef> interes </th>
+              <td mat-cell *matCellDef="let element"> {{element.interes}} </td>
+            </ng-container>
+            <ng-container matColumnDef="comisiones">
+              <th mat-header-cell *matHeaderCellDef> comisiones </th>
+              <td mat-cell *matCellDef="let element"> {{element.comisiones}} </td>
+            </ng-container>
+            <ng-container matColumnDef="subvencion">
+              <th mat-header-cell *matHeaderCellDef> subvencion </th>
+              <td mat-cell *matCellDef="let element"> {{element.subvencion}} </td>
+            </ng-container>
+            <ng-container matColumnDef="cuota">
+              <th mat-header-cell *matHeaderCellDef> cuota </th>
+              <td mat-cell *matCellDef="let element"> {{element.cuota}} </td>
+            </ng-container>
+            <ng-container matColumnDef="saldo">
+              <th mat-header-cell *matHeaderCellDef> saldo </th>
+              <td mat-cell *matCellDef="let element"> {{element.saldo}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-expansion-panel>
+      </div>
     </div>
   </div>

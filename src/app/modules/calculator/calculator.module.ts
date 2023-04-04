@@ -13,7 +13,9 @@ import {MatSelectModule} from "@angular/material/select";
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import {MatMomentDateModule} from "@angular/material-moment-adapter";
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatTableModule} from '@angular/material/table';
 
 
 
@@ -45,10 +47,11 @@ const calculatorRoutes: Route[] = [
     MatSlideToggleModule,
     MatButtonToggleModule,
     MatDatepickerModule,
-    MatDatepickerModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatNativeDateModule,
+    MatMomentDateModule,
+    MatExpansionModule,
+    MatTableModule
   ]
 })
 

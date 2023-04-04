@@ -10,11 +10,11 @@
 }
 
 .container-card{
-  width: 425px;
+  width: 100vh;
   box-shadow: 0 4px 8px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
-  text-align: center;
-  border-radius: 20px;
+  border-radius: 5px;
   margin: 20px;
+  padding: 20px;
 }
 
 .button-login{
@@ -23,4 +23,45 @@
 
 .padding-top{
   padding-top: 20px;
+}
+
+.padding-vertical{
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.margin-horizontal{
+  margin-left: 35px;
+  margin-right: 35px;
+  margin-top: 40px;
+}
+
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
+  margin-left: 16px;
+}
+.line{
+  border-bottom: 1px solid darkgray;
+  margin: 20px 15px
+}
+
+.button-login{
+  margin-left: 20px;
+}
+
+.form-field-username{
+  padding-top: 15px;
+}
+
+.center {
+  text-align: center;
+}
+
+.button-color{
+  color: blueviolet;
+}
+mat-slide-toggle{
+  margin-left: 1rem;
+  margin-top: 0.3rem;
+}
+mat-button-toggle-group {
+  margin-left: 12px;
 }

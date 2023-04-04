@@ -10,6 +10,13 @@ import {CalculatorComponent} from "./calculator.component";
 import {MatLegacyRadioModule} from "@angular/material/legacy-radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSelectModule} from "@angular/material/select";
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+
+
+
 
 
 const calculatorRoutes: Route[] = [
@@ -35,6 +42,13 @@ const calculatorRoutes: Route[] = [
     FormsModule,
     MatCheckboxModule,
     MatSelectModule,
+    MatSlideToggleModule,
+    MatButtonToggleModule,
+    MatDatepickerModule,
+    MatDatepickerModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
   ]
 })
 

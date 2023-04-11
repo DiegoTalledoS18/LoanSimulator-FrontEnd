@@ -2,6 +2,9 @@
     <div class="global-container" *ngIf="!this.calculateSend">
         <div class="card">
           <mat-card class="container-card" *ngIf="stepper==true">
+            <div style="display: flex">
+              <button (click)="navigateBack()" style="margin-left: 35px;margin-bottom: 0; color: #6d42ba;font-weight: bolder; text-decoration: none;" mat-button>< Regresar</button>
+            </div>
             <div class="margin-horizontal" >
               <h1 style="font-weight: inherit; font-size: 32px">Simulador de Préstamos</h1>
               <p>Paso 1 de 2</p>
@@ -11,31 +14,54 @@
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username " appearance="fill" style="width: 90%; margin-top: 10px;">
                   <mat-label>Capital</mat-label>
-                  <input matInput autocomplete="off" formControlName="capital">
+                  <input matInput autocomplete="off" formControlName="capital" type="number">
                   <mat-error *ngIf="userFormGroup.get('capital')?.hasError('required')">
                     Monto/Capital es <strong>requerido</strong>
                   </mat-error>
+                  <mat-error *ngIf="userFormGroup.get('capital')?.hasError('min') || userFormGroup.get('capital')?.hasError('max')	">
+                    Ingrese el rango de capital <strong>permitido</strong>
+                  </mat-error>
                 </mat-form-field>
+                <div style="display: flex; justify-content: center;  align-items: center">
+                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                    <span class="tooltiptext">El monto mínimo es de S/ 11000 y el máximo de S/ 99999999999.99.</span>
+                  </div>
+                </div>
               </div>
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
                   <mat-label>Tasa de Interes Anual (%)</mat-label>
-                  <input matInput autocomplete="off" formControlName="tasa">
+                  <input matInput autocomplete="off" formControlName="tasa" type="number">
                   <mat-error *ngIf="userFormGroup.get('tasa')?.hasError('required')">
                     Tasa de Interes es <strong>requerido</strong>
                   </mat-error>
-                </mat-form-field>
+                  <mat-error *ngIf="userFormGroup.get('tasa')?.hasError('min') || userFormGroup.get('tasa')?.hasError('max')	">
+                    Ingrese el rango de tasa <strong>permitido</strong>
+                  </mat-error>
 
+                </mat-form-field>
+                <div style="display: flex; justify-content: center;  align-items: center">
+                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                    <span class="tooltiptext">La tasa mínima es de 10% y la máxima de 24.99%.</span>
+                  </div>
+                </div>
               </div>
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
                   <mat-label>Tiempo (Meses)</mat-label>
-                  <input matInput autocomplete="off" formControlName="tiempo">
+                  <input matInput autocomplete="off" formControlName="tiempo" type="number">
                   <mat-error *ngIf="userFormGroup.get('tiempo')?.hasError('required')">
                     Tiempo es <strong>requerido</strong>
                   </mat-error>
+                  <mat-error *ngIf="userFormGroup.get('tiempo')?.hasError('min') || userFormGroup.get('tiempo')?.hasError('max')	">
+                    Ingrese el rango de meses <strong>permitido</strong>
+                  </mat-error>
                 </mat-form-field>
-
+                <div style="display: flex; justify-content: center;  align-items: center">
+                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                    <span class="tooltiptext">El plazo debe estar entre 1 y 60 meses.</span>
+                  </div>
+                </div>
               </div>
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%;margin-top: 10px;">
@@ -49,25 +75,29 @@
                     Tipo de moneda <strong>requerida</strong>
                   </mat-error>
                 </mat-form-field>
+                <div style="display: flex; justify-content: center;  align-items: center">
+                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                    <span class="tooltiptext">Eliga su tipo de moneda.</span>
+                  </div>
+                </div>
               </div>
           </form>
             <div style="display: flex; justify-content: center" class="padding-vertical">
               <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="next()">Continuar</button>
-
             </div>
           </mat-card>
           <mat-card class="container-card" *ngIf="stepper==false">
+            <div style="display: flex">
+              <button (click)="this.stepper=true" style="margin-left: 35px;margin-bottom: 0; color: #6d42ba;font-weight: bolder; text-decoration: none;" mat-button>< Regresar</button>
+            </div>
             <div class="margin-horizontal">
               <h1 style="font-weight: inherit; font-size: 32px">Simulador de Préstamos</h1>
               <p>Paso 2 de 2</p>
               <p>Completa la siguiente información para simular tu préstamo</p>
             </div>
-
-
-
             <form [formGroup]="PayFormGroup" style="margin: 30px">
               <p>Fechas de pago</p>
-              <div  style="display: flex;justify-content: space-between" >
+              <div  style="display: flex;justify-content: space-between; padding-bottom: 0" >
                 <div style="width: 47%; margin-top: 10px">
                   <mat-form-field color="primary" appearance="fill" style="width: 100%;" >
                     <mat-label>Fecha de solicitud</mat-label>
@@ -82,33 +112,42 @@
                 <div style="width: 47%; margin-top: 10px">
                   <mat-form-field appearance="fill"  style="width: 100%">
                     <mat-label>Dia de pago</mat-label>
-                    <input matInput type="number" formControlName="diaDePago">
+                    <input matInput type="number" formControlName="diaDePago" type="number">
                     <mat-error *ngIf="PayFormGroup.get('diaDePago')?.hasError('required')">
                       El dia de pago es <strong>requerido</strong>
                     </mat-error>
+                    <mat-error *ngIf="PayFormGroup.get('diaDePago')?.hasError('min') || PayFormGroup.get('diaDePago')?.hasError('max')	">
+                      Ingrese un dia <strong>valido</strong>
+                    </mat-error>
                   </mat-form-field>
-                  <!--p *ngIf="validatorField" style="color: red">Ingrese un dia de pago</p-->
                 </div>
-
               </div>
               <div style="display: flex;padding-bottom: 20px">
                 <p style="padding-top: 20px">Periodo de gracia </p>
                 <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-                  <mat-button-toggle (click)="setGracePeriod('total')" >Total</mat-button-toggle>
+                  <mat-button-toggle (click)="setGracePeriod('Cero')" checked >Cero</mat-button-toggle>
                   <mat-button-toggle (click)="setGracePeriod('parcial')">Parcial</mat-button-toggle>
+                  <mat-button-toggle (click)="setGracePeriod('Total')" >Total</mat-button-toggle>
                 </mat-button-toggle-group>
               </div>
-              <form [formGroup]="gracePeriodFormGroup" *ngIf="this.gracePeriod!=''" style="display: flex;width: 90%; justify-content: space-between">
-                <mat-form-field appearance="fill"  style="width: 52%; margin-top: 10px;">
-                  <mat-label>Periodo de gracias (meses)</mat-label>
-                  <input matInput type="number" formControlName="meses">
-                  <mat-error *ngIf="gracePeriodFormGroup.get('meses')?.hasError('required')">
-                    Meses <strong>requeridos</strong>
-                  </mat-error>
-                </mat-form-field>
-                <div style="align-items: center;display: flex;height: 100px;justify-content: center;width: 200px;">
-                  <p style="padding-top: 8px">Periodo de gracia con capitalización de intereses</p>
-                  <mat-slide-toggle formControlName="capitalizacion" color="primary"></mat-slide-toggle>
+              <form [formGroup]="gracePeriodFormGroup" *ngIf="this.gracePeriod!='Cero'" >
+                <div style="display: flex;width: 90%; justify-content: space-between">
+                  <mat-form-field appearance="fill"  style="width: 52%; margin-top: 10px;">
+                    <mat-label>Periodo de gracias (meses)</mat-label>
+                    <input matInput type="number" formControlName="meses" >
+                    <mat-error *ngIf="gracePeriodFormGroup.get('meses')?.hasError('required')">
+                      Meses <strong>requeridos</strong>
+                    </mat-error>
+                  </mat-form-field>
+                  <div style="align-items: center;display: flex;height: 100px;justify-content: center;width: 200px;">
+                    <p style="padding-top: 8px">Periodo de gracia con capitalización de intereses</p>
+                    <mat-slide-toggle formControlName="capitalizacion" color="primary"></mat-slide-toggle>
+                    <div style="display: flex; justify-content: center;  align-items: center">
+                      <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                        <span class="tooltiptext">Los intereses se capitalizan para generar cuota constante.</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </form>
               <div>
@@ -147,8 +186,6 @@
               <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="simulate()">Simular</button>
 
             </form>
-
-
           </mat-card>
         </div>
     </div>

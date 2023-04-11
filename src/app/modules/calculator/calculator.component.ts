@@ -14,6 +14,9 @@ interface Desgravamen {
 interface Currency {
   viewValue: string;
 }
+interface GracePeriod {
+  viewValue: string;
+}
 export interface Cronograma {
   vencimiento: string;
   mes: number;
@@ -42,28 +45,28 @@ export interface Cronograma {
 export class CalculatorComponent implements AfterViewInit {
 
   userFormGroup = new FormGroup({
-    capital: new FormControl('',[Validators.required]),
-    tasa: new FormControl('',[Validators.required]),
-    tiempo: new FormControl('',[Validators.required]),
+    capital: new FormControl('',[Validators.required,Validators.min(11000),Validators.max(99999999999.99)]),
+    tasa: new FormControl('',[Validators.required,Validators.min(10),Validators.max(24.99)]),
+    tiempo: new FormControl('',[Validators.required,Validators.min(1),Validators.max(60)]),
     moneda: new FormControl('',[Validators.required]),
   });
   PayFormGroup=new FormGroup({
-    diaDePago: new FormControl('',[Validators.required]),
+    diaDePago: new FormControl('',[Validators.required,Validators.min(1),Validators.max(31)]),
     fechaSolicitud: new FormControl('',[Validators.required]),
     seguro: new FormControl('',[Validators.required]),
   })
   gracePeriodFormGroup=new FormGroup({
     meses: new FormControl('',[Validators.required]),
-    capitalizacion: new FormControl('',[Validators.required])
+    capitalizacion: new FormControl(false,[Validators.required]),
   })
   bornDatesFormGroup=new FormGroup({
     primerTitular: new FormControl('',[Validators.required]),
     segundoTitular: new FormControl('',[Validators.required])
   })
   stepper=true;
-  gracePeriod="";
   gracePeriodWithCapitalization=false;
   calculateSend=false;
+  gracePeriod="Cero";
   panelOpenState = false;
   desgravamens: Desgravamen[] = [
     { viewValue: 'Sin seguro'},
@@ -75,6 +78,10 @@ export class CalculatorComponent implements AfterViewInit {
   currencys: Currency[] = [
     { viewValue: 'Soles'},
     { viewValue: 'Dolares'},
+  ];
+  GracePeriods: GracePeriod[] = [
+    { viewValue: 'Total'},
+    { viewValue: 'Parcial'},
   ];
   ELEMENT_DATA: Cronograma[]=[]
   displayedColumns: string[] = ['mes','vencimiento','amortizacion','interes','comisiones','subvencion','cuota','saldo'];
@@ -88,21 +95,32 @@ export class CalculatorComponent implements AfterViewInit {
     this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#e4efff';
   }
-  ngOnInit(){
+  next(){
+    if(this.userFormGroup.valid) {
+
+    }
+    this.stepper=false;
+    console.log(typeof(this.userFormGroup.get('capital')?.value))
   }
   setGracePeriod(gracePeriod: string){
     this.gracePeriod=gracePeriod;
   }
-  next(){
-    if(this.userFormGroup.valid) {
-    }
-    this.stepper=false;
-  }
   simulate(){
     this.calculateSend=true;
+    console.log(this.gracePeriod)
   }
   calculateTableData(){
     this.ELEMENT_DATA?.push({mes: 1,vencimiento: 'fecha',amortizacion:0,interes:0,comisiones:0,subvencion:0,cuota:0,saldo:0})
+  }
+  navigateBack(){
+    this.route.navigate(['/login']);
+  }
+  validateNumber(numberString: string,minString: string,maxString: string){
+    let number=parseInt(numberString)
+    let min=parseInt(minString)
+    let max=parseInt(maxString)
+    return number < min || number > max;
+
   }
 
 

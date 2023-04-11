@@ -56,7 +56,7 @@ export class CalculatorComponent implements AfterViewInit {
     seguro: new FormControl('',[Validators.required]),
   })
   gracePeriodFormGroup=new FormGroup({
-    meses: new FormControl('',[Validators.required]),
+    meses: new FormControl('',[Validators.required,Validators.min(1)]),
     capitalizacion: new FormControl(false,[Validators.required]),
   })
   bornDatesFormGroup=new FormGroup({
@@ -100,14 +100,12 @@ export class CalculatorComponent implements AfterViewInit {
 
     }
     this.stepper=false;
-    console.log(typeof(this.userFormGroup.get('capital')?.value))
   }
   setGracePeriod(gracePeriod: string){
     this.gracePeriod=gracePeriod;
   }
   simulate(){
     this.calculateSend=true;
-    console.log(this.gracePeriod)
   }
   calculateTableData(){
     this.ELEMENT_DATA?.push({mes: 1,vencimiento: 'fecha',amortizacion:0,interes:0,comisiones:0,subvencion:0,cuota:0,saldo:0})
@@ -122,6 +120,8 @@ export class CalculatorComponent implements AfterViewInit {
     return number < min || number > max;
 
   }
-
+  showDate(){
+    console.log(this.PayFormGroup.get('fechaSolicitud')?.value)
+  }
 
 }

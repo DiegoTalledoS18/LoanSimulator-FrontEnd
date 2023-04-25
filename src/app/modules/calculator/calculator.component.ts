@@ -8,6 +8,7 @@ import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import {MatDatepicker} from "@angular/material/datepicker";
 interface Desgravamen {
   viewValue: string;
 }
@@ -52,7 +53,7 @@ export class CalculatorComponent implements AfterViewInit {
   });
   PayFormGroup=new FormGroup({
     diaDePago: new FormControl('',[Validators.required,Validators.min(1),Validators.max(31)]),
-    fechaSolicitud: new FormControl('',[Validators.required]),
+    fechaSolicitud: new FormControl(Date,[Validators.required]),
     seguro: new FormControl('',[Validators.required]),
   })
   gracePeriodFormGroup=new FormGroup({
@@ -60,8 +61,8 @@ export class CalculatorComponent implements AfterViewInit {
     capitalizacion: new FormControl(false,[Validators.required]),
   })
   bornDatesFormGroup=new FormGroup({
-    primerTitular: new FormControl('',[Validators.required]),
-    segundoTitular: new FormControl('',[Validators.required])
+    primerTitular: new FormControl(Date,[Validators.required]),
+    segundoTitular: new FormControl(Date,[Validators.required])
   })
   stepper=true;
   gracePeriodWithCapitalization=false;
@@ -97,15 +98,53 @@ export class CalculatorComponent implements AfterViewInit {
   }
   next(){
     if(this.userFormGroup.valid) {
-
+      this.stepper=false;
     }
-    this.stepper=false;
+
   }
   setGracePeriod(gracePeriod: string){
     this.gracePeriod=gracePeriod;
   }
   simulate(){
-    this.calculateSend=true;
+    if(this.PayFormGroup.valid){
+      if(this.gracePeriod=='Cero'){
+        if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
+          if(this.PayFormGroup.get('seguro')?.value=='Convencional individual' ||this.PayFormGroup.get('seguro')?.value=='Con devolución individual'){
+            if(this.bornDatesFormGroup.get('primerTitular')?.valid){
+              this.route.navigate(['/schedule']);
+            }
+          }
+          if(this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado' ||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado'){
+            if(this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid){
+              this.route.navigate(['/schedule']);
+            }
+          }
+        }
+        else {
+          this.route.navigate(['/schedule']);
+        }
+      }
+      else {
+        if(this.gracePeriodFormGroup.get('meses')?.valid){
+          if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
+            if(this.PayFormGroup.get('seguro')?.value=='Convencional individual' ||this.PayFormGroup.get('seguro')?.value=='Con devolución individual'){
+              if(this.bornDatesFormGroup.get('primerTitular')?.valid){
+                this.route.navigate(['/schedule']);
+              }
+            }
+            if(this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado' ||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado'){
+              if(this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid){
+                this.route.navigate(['/schedule']);
+              }
+            }
+          }
+          else {
+            this.route.navigate(['/schedule']);
+          }
+        }
+      }
+
+    }
   }
   calculateTableData(){
     this.ELEMENT_DATA?.push({mes: 1,vencimiento: 'fecha',amortizacion:0,interes:0,comisiones:0,subvencion:0,cuota:0,saldo:0})
@@ -120,8 +159,9 @@ export class CalculatorComponent implements AfterViewInit {
     return number < min || number > max;
 
   }
-  showDate(){
-    console.log(this.PayFormGroup.get('fechaSolicitud')?.value)
+
+  showDate(dp_: MatDatepicker<any>){
+    console.log(dp_.datepickerInput.getStartValue().format('DD-MM-YYYY'))
   }
 
 }

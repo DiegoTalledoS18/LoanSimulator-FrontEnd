@@ -103,7 +103,7 @@
                     <mat-label>Fecha de solicitud</mat-label>
 
 
-                    <input matInput [matDatepicker]="dp_" formControlName="fechaSolicitud" (dateChange)="showDate()">
+                    <input matInput [matDatepicker]="dp_" formControlName="fechaSolicitud" (dateChange)="showDate(dp_)">
                     <mat-datepicker-toggle matIconSuffix [for]="dp_"></mat-datepicker-toggle>
                     <mat-datepicker #dp_></mat-datepicker>
 
@@ -173,7 +173,7 @@
               <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between">
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento primer titular</mat-label>
-                  <input matInput [matDatepicker]="picker2" formControlName="primerTitular">
+                  <input matInput [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
                   <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2 color="primary"></mat-datepicker>
                   <mat-error *ngIf=" bornDatesFormGroup.get('primerTitular')?.hasError('required') ">
@@ -182,7 +182,7 @@
                 </mat-form-field>
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado'||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento segundo titular</mat-label>
-                  <input matInput [matDatepicker]="picker3" formControlName="segundoTitular">
+                  <input matInput [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
                   <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
                   <mat-datepicker #picker3 color="primary"></mat-datepicker>
                   <mat-error *ngIf="bornDatesFormGroup.get('segundoTitular')?.hasError('required')">

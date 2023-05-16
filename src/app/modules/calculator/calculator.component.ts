@@ -123,20 +123,23 @@ export class CalculatorComponent implements AfterViewInit {
         if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
           if(this.PayFormGroup.get('seguro')?.value=='Convencional individual' ||this.PayFormGroup.get('seguro')?.value=='Con devolución individual'){
             if(this.bornDatesFormGroup.get('primerTitular')?.valid){
-              this.calculate()
+              //this.calculate()
+              this.calculateSend=true;
               //this.route.navigate(['/schedule']);
             }
           }
           if(this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado' ||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado'){
             if(this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid){
-              this.calculate()
+              //this.calculate()
               //this.route.navigate(['/schedule']);
+              this.calculateSend=true;
             }
           }
         }
         else {
-          this.calculate()
+          //this.calculate()
           //this.route.navigate(['/schedule']);
+          this.calculateSend=true;
         }
       }
       else {
@@ -144,20 +147,23 @@ export class CalculatorComponent implements AfterViewInit {
           if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
             if(this.PayFormGroup.get('seguro')?.value=='Convencional individual' ||this.PayFormGroup.get('seguro')?.value=='Con devolución individual'){
               if(this.bornDatesFormGroup.get('primerTitular')?.valid){
-                this.calculate()
+                //this.calculate()
                 //this.route.navigate(['/schedule']);
+                this.calculateSend=true;
               }
             }
             if(this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado' ||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado'){
               if(this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid){
-                this.calculate()
+                //this.calculate()
                 //this.route.navigate(['/schedule']);
+                this.calculateSend=true;
               }
             }
           }
           else {
-            this.calculate()
+            //this.calculate()
             //this.route.navigate(['/schedule']);
+            this.calculateSend=true;
           }
         }
       }
@@ -183,10 +189,8 @@ export class CalculatorComponent implements AfterViewInit {
     console.log(dp_.datepickerInput.getStartValue().format('DD-MM-YYYY'))
   }
 
-  calculate(){
-
-
-
+ calculate(){
+   console.log("hola")
   }
 
 }

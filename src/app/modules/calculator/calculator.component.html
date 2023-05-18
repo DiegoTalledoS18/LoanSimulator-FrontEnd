@@ -24,7 +24,7 @@
                 </mat-form-field>
                 <div style="display: flex; justify-content: center;  align-items: center">
                   <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
-                    <span class="tooltiptext">El monto mínimo es de S/ 11000 y el máximo de S/ 99999999999.99.</span>
+                    <span class="tooltiptext">Capital dentro del rango de S/ 65,200 y S/ 464,200</span>
                   </div>
                 </div>
               </div>
@@ -59,14 +59,14 @@
                 </mat-form-field>
                 <div style="display: flex; justify-content: center;  align-items: center">
                   <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
-                    <span class="tooltiptext">El plazo debe estar entre 1 y 60 meses.</span>
+                    <span class="tooltiptext">El plazo debe estar entre 60 y 300 meses.</span>
                   </div>
                 </div>
               </div>
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%;margin-top: 10px;">
                   <mat-label>Tipo de moneda</mat-label>
-                  <mat-select formControlName="moneda" name="moneda">
+                  <mat-select formControlName="moneda">
                     <mat-option *ngFor="let currency of currencys" [value]="currency.viewValue">
                       {{currency.viewValue}}
                     </mat-option>
@@ -102,11 +102,9 @@
                   <mat-form-field color="primary" appearance="fill" style="width: 100%;" >
                     <mat-label>Fecha de solicitud</mat-label>
 
-
-                    <input matInput [matDatepicker]="dp_" formControlName="fechaSolicitud" (dateChange)="showDate(dp_)">
+                    <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="dp_" formControlName="fechaSolicitud" (dateChange)="showDate(dp_)">
                     <mat-datepicker-toggle matIconSuffix [for]="dp_"></mat-datepicker-toggle>
                     <mat-datepicker #dp_></mat-datepicker>
-
 
                     <mat-error *ngIf="PayFormGroup.get('fechaSolicitud')?.hasError('required')">
                       Fecha de pago es <strong>requerido</strong>
@@ -116,7 +114,7 @@
                 <div style="width: 47%; margin-top: 10px">
                   <mat-form-field appearance="fill"  style="width: 100%">
                     <mat-label>Dia de pago</mat-label>
-                    <input matInput type="number" formControlName="diaDePago" type="number">
+                    <input matInput type="number" formControlName="diaDePago">
                     <mat-error *ngIf="PayFormGroup.get('diaDePago')?.hasError('required')">
                       El dia de pago es <strong>requerido</strong>
                     </mat-error>
@@ -160,7 +158,7 @@
               <div>
                 <mat-form-field appearance="fill" style="width: 47%">
                   <mat-label>Seguro de Desgravamen</mat-label>
-                  <mat-select formControlName="seguro" name="Seguro">
+                  <mat-select formControlName="seguro">
                     <mat-option *ngFor="let desgravamen of desgravamens" [value]="desgravamen.viewValue">
                       {{desgravamen.viewValue}}
                     </mat-option>
@@ -195,11 +193,11 @@
           </mat-card>
         </div>
     </div>
-    <div  *ngIf="this.calculateSend"  style=" background-color: white">
-      <div style="background-color: #6d42ba; color: white; display: block;text-align: center;justify-content: center;padding-top: 80px;padding-bottom: 50px">
-        <h1 style="font-weight: normal; font-size: 40px">Préstamo Hipotecario</h1>
-        <p style="font-weight: lighter">Importe a solicitar</p>
-        <h2 style="font-weight: normal; font-size: 40px">S/ 100,000.00</h2>
+    <div *ngIf="this.calculateSend"  style=" background-color: white; font-family: 'Poppins', sans-serif;">
+      <div style="background-color: #6d42ba; color: white; display: block; text-align: center; justify-content: center;padding-top: 80px;padding-bottom: 50px">
+        <h1 style="font-size: 40px;">Crédito Mi Vivienda</h1>
+        <p>Importe solicitado</p>
+        <h2 style="font-size: 40px">S/ 100,000.00</h2>
         <div style="justify-content: center; font-weight: normal; font-size: 18px;">
           <div style="display: flex; justify-content: center">
             <div style="display: flex;justify-content: space-between;width: 25%">
@@ -221,7 +219,7 @@
           </div>
         </div>
       </div>
-      <div style="display: flex;justify-content: center">
+      <div style="display: flex; justify-content: center; font-family: 'Poppins', sans-serif;">
         <mat-expansion-panel (opened)="panelOpenState = true"
                              (closed)="panelOpenState = false" style="width: 40%;box-shadow: none;">
           <mat-expansion-panel-header>
@@ -229,10 +227,34 @@
               Detalle del préstamo
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <div style="display: flex;justify-content: space-between;width: 25%">
-            <p>Capital:</p>
-            <p>{{userFormGroup.get('capital')!.value}}</p>
-          </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Importe solicitado:</p>
+              <p class="p-detail">{{userFormGroup.get('capital')!.value}}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Tasa de Interes Anual:</p>
+              <p>{{userFormGroup.get('tasa')!.value}}%</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Cuota:</p>
+              <p>{{userFormGroup.get('capital')!.value}}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Duración total:</p>
+              <p>{{userFormGroup.get('tiempo')!.value}}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Fecha de Solicitud:</p>
+              <p>{{PayFormGroup.get('fechaSolicitud')!.value | customDate}}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Días de pago:</p>
+              <p>{{PayFormGroup.get('diaDePago')!.value}}</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Tipo de seguro:</p>
+              <p>{{PayFormGroup.get('seguro')!.value}}</p>
+            </div>
         </mat-expansion-panel>
       </div>
       <div style="display: flex;justify-content: center">

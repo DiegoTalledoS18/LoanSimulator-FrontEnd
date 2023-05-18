@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 @Pipe({
   name: 'customDate'
 })
+
 export class CustomDatePipe extends DatePipe implements PipeTransform {
   override transform(value: any, args?: any): any {
     return super.transform(value, "dd/MM/YY");
@@ -61,17 +62,17 @@ export interface Cronograma {
 })
 
 export class CalculatorComponent implements AfterViewInit {
-
   userFormGroup = new FormGroup({
-    capital: new FormControl('',[Validators.required,Validators.min(11000),Validators.max(99999999999.99)]),
-    tasa: new FormControl('',[Validators.required,Validators.min(10),Validators.max(24.99)]),
-    tiempo: new FormControl('',[Validators.required,Validators.min(1),Validators.max(60)]),
+    capital: new FormControl('',[Validators.required,Validators.min(65200),Validators.max(464200)]),
+    tasa: new FormControl('',[Validators.required,Validators.min(4),Validators.max(49.99)]), //Sujeta a entidad financiera --> CONSULTAR CON EL PROFESOR
+    tiempo: new FormControl('',[Validators.required,Validators.min(60),Validators.max(300)]),
     moneda: new FormControl('',[Validators.required]),
   });
 
   PayFormGroup=new FormGroup({
-    diaDePago: new FormControl('',[Validators.required,Validators.min(1),Validators.max(31)]),
+    diaDePago: new FormControl('',[Validators.required,Validators.min(1),Validators.max(30)]),
     fechaSolicitud: new FormControl(Date,[Validators.required]),
+    //desgravamen: new FormControl('',[Validators.required]),
     seguro: new FormControl('',[Validators.required]),
   })
 
@@ -85,12 +86,15 @@ export class CalculatorComponent implements AfterViewInit {
     segundoTitular: new FormControl(Date,[Validators.required])
   })
 
-  stepper=true;
+  stepper =true;
   gracePeriodWithCapitalization=false;
   calculateSend=false;
   gracePeriod="Cero";
   panelOpenState = false;
   fecha = "";
+  minDate = new Date();
+  maxDate = new Date();
+
 
   desgravamens: Desgravamen[] = [
     { viewValue: 'Sin seguro'},
@@ -115,7 +119,14 @@ export class CalculatorComponent implements AfterViewInit {
 
 
   constructor(private route: Router, private elementRef: ElementRef,private _adapter: DateAdapter<any>,
-              @Inject(MAT_DATE_LOCALE) private _locale: string) {}
+              @Inject(MAT_DATE_LOCALE) private _locale: string) {
+
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+
+    this.minDate = new Date(currentYear, currentMonth, 1);
+    this.maxDate = new Date(currentYear + 5, 1, 15);
+  }
 
   ngAfterViewInit(): void {
     this.elementRef.nativeElement.ownerDocument

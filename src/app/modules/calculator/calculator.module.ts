@@ -17,6 +17,7 @@ import {MatMomentDateModule} from "@angular/material-moment-adapter";
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
+import {MatGridListModule} from "@angular/material/grid-list";
 
 
 const calculatorRoutes: Route[] = [
@@ -29,30 +30,31 @@ const calculatorRoutes: Route[] = [
 @NgModule({
   declarations: [
     CalculatorComponent,
-    CustomDatePipe
+    CustomDatePipe,
   ],
-  imports: [
-    RouterModule.forChild(calculatorRoutes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    CommonModule,
-    ReactiveFormsModule,
-    MatLegacyRadioModule,
-    FormsModule,
-    MatCheckboxModule,
-    MatSelectModule,
-    MatSlideToggleModule,
-    MatButtonToggleModule,
-    MatDatepickerModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatMomentDateModule,
-    MatExpansionModule,
-    MatTableModule,
-    MatIconModule
-  ]
+    imports: [
+        RouterModule.forChild(calculatorRoutes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatButtonModule,
+        CommonModule,
+        ReactiveFormsModule,
+        MatLegacyRadioModule,
+        FormsModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatSlideToggleModule,
+        MatButtonToggleModule,
+        MatDatepickerModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        MatMomentDateModule,
+        MatExpansionModule,
+        MatTableModule,
+        MatIconModule,
+        MatGridListModule,
+    ]
 })
 
 export class CalculatorModule

@@ -192,9 +192,13 @@ export class CalculatorComponent implements AfterViewInit {
     console.log("DATE", date)
 
 
-    for(let i = 0; i < mes; i++){
+    for(let i = 0; i < mes; i++) {
 
-     //date = new Date(date.setDate(date.getDate() + 30));
+      this.ELEMENT_DATA?.push(
+        {mes: i+1, vencimiento: date, amortizacion: 0, interes: 0, comisiones: 0, subvencion: 0, cuota: 0, saldo: 0}
+      )
+
+      //date = new Date(date.setDate(date.getDate() + 30));
 
       console.log("Fecha Antes", date)
 
@@ -202,9 +206,6 @@ export class CalculatorComponent implements AfterViewInit {
 
       console.log("Fecha Despues", date)
 
-      this.ELEMENT_DATA?.push(
-        {mes: i+1, vencimiento: date, amortizacion: 0, interes: 0, comisiones: 0, subvencion: 0, cuota: 0, saldo: 0}
-      )
     }
   }
   navigateBack(){

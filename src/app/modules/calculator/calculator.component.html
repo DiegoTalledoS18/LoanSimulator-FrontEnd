@@ -200,23 +200,23 @@
         <h1 style="font-weight: normal; font-size: 40px">Préstamo Hipotecario</h1>
         <p style="font-weight: lighter">Importe a solicitar</p>
         <h2 style="font-weight: normal; font-size: 40px">S/ 100,000.00</h2>
-        <div style="justify-content: center;font-weight: normal; font-size: 18px; font-weight: lighter">
+        <div style="justify-content: center; font-weight: normal; font-size: 18px;">
           <div style="display: flex; justify-content: center">
             <div style="display: flex;justify-content: space-between;width: 25%">
               <p>Cuota:</p>
-              <p>S/ 20,523.63</p>
+              <p>Valor Cuota</p>
             </div>
           </div>
           <div style="display: flex; justify-content: center">
             <div style="display: flex;justify-content: space-between;width: 25%">
               <p>Duración total:</p>
-              <p>{{userFormGroup.get('tiempo').value}}</p>
+              <p>{{userFormGroup.get('tiempo')!.value}}</p>
             </div>
           </div>
           <div style="display: flex; justify-content: center">
             <div style="display: flex;justify-content: space-between;width: 25%">
               <p>TCEA Referencial de Operación:</p>
-              <p>10.937184%</p>
+              <p>Valor TCEA</p>
             </div>
           </div>
         </div>
@@ -229,7 +229,10 @@
               Detalle del préstamo
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <p>Detalles</p>
+          <div style="display: flex;justify-content: space-between;width: 25%">
+            <p>Capital:</p>
+            <p>{{userFormGroup.get('capital')!.value}}</p>
+          </div>
         </mat-expansion-panel>
       </div>
       <div style="display: flex;justify-content: center">
@@ -252,7 +255,7 @@
             </ng-container>
             <ng-container matColumnDef="vencimiento">
               <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
-              <td mat-cell *matCellDef="let element"> {{element.vencimiento}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.vencimiento | customDate}} </td>
             </ng-container>
             <ng-container matColumnDef="amortizacion">
               <th mat-header-cell *matHeaderCellDef> Amortizacion </th>

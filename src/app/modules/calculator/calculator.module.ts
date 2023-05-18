@@ -6,7 +6,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {CalculatorComponent} from "./calculator.component";
+import {CalculatorComponent, CustomDatePipe} from "./calculator.component";
 import {MatLegacyRadioModule} from "@angular/material/legacy-radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSelectModule} from "@angular/material/select";
@@ -19,9 +19,6 @@ import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 
 
-
-
-
 const calculatorRoutes: Route[] = [
   {
     path: '',
@@ -32,6 +29,7 @@ const calculatorRoutes: Route[] = [
 @NgModule({
   declarations: [
     CalculatorComponent,
+    CustomDatePipe
   ],
   imports: [
     RouterModule.forChild(calculatorRoutes),

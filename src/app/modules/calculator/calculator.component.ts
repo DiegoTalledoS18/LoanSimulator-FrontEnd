@@ -10,6 +10,18 @@ import {
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import {MatDatepicker} from "@angular/material/datepicker";
 
+import { Pipe, PipeTransform } from '@angular/core';
+import { DatePipe } from '@angular/common';
+
+@Pipe({
+  name: 'customDate'
+})
+export class CustomDatePipe extends DatePipe implements PipeTransform {
+  override transform(value: any, args?: any): any {
+    return super.transform(value, "dd/MM/YY");
+  }
+}
+
 interface Desgravamen {
   viewValue: string;
 }
@@ -23,7 +35,7 @@ interface GracePeriod {
 }
 
 export interface Cronograma {
-  vencimiento: string;
+  vencimiento: Date;
   mes: number;
   amortizacion: number;
   interes: number;
@@ -78,6 +90,7 @@ export class CalculatorComponent implements AfterViewInit {
   calculateSend=false;
   gracePeriod="Cero";
   panelOpenState = false;
+  fecha = "";
 
   desgravamens: Desgravamen[] = [
     { viewValue: 'Sin seguro'},
@@ -118,6 +131,7 @@ export class CalculatorComponent implements AfterViewInit {
     this.gracePeriod=gracePeriod;
   }
   simulate(){
+    this.calculateTableData();
     if(this.PayFormGroup.valid){
       if(this.gracePeriod=='Cero'){
         if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
@@ -171,7 +185,27 @@ export class CalculatorComponent implements AfterViewInit {
     }
   }
   calculateTableData(){
-    this.ELEMENT_DATA?.push({mes: 1,vencimiento: 'fecha',amortizacion:0,interes:0,comisiones:0,subvencion:0,cuota:0,saldo:0})
+    let mes = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
+    let date = new Date(this.fecha);
+
+    console.log("Fecha Formateada", this.fecha)
+    console.log("DATE", date)
+
+
+    for(let i = 0; i < mes; i++){
+
+     //date = new Date(date.setDate(date.getDate() + 30));
+
+      console.log("Fecha Antes", date)
+
+      date = new Date(date.setMonth(date.getMonth() + 1));
+
+      console.log("Fecha Despues", date)
+
+      this.ELEMENT_DATA?.push(
+        {mes: i+1, vencimiento: date, amortizacion: 0, interes: 0, comisiones: 0, subvencion: 0, cuota: 0, saldo: 0}
+      )
+    }
   }
   navigateBack(){
     this.route.navigate(['/login']);
@@ -186,10 +220,10 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   showDate(dp_: MatDatepicker<any>){
-    console.log(dp_.datepickerInput.getStartValue().format('DD-MM-YYYY'))
+    this.fecha = dp_.datepickerInput.getStartValue().format('MM/DD/YY')
   }
 
- calculate(){
+  calculate(){
    console.log("hola")
   }
 

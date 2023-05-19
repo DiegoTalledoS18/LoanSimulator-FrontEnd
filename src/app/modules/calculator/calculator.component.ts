@@ -195,30 +195,54 @@ export class CalculatorComponent implements AfterViewInit {
 
     }
   }
+
   calculateTableData(){
     let mes = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let date = new Date(this.fecha);
 
-    console.log("Fecha Formateada", this.fecha)
-    console.log("DATE", date)
+    let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
+    let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
 
+    //console.log("Fecha Formateada", this.fecha)
+    //console.log("DATE", date)
+
+    let tasa_bruto = tasa / 100
+
+    let division = 1 + ((1 / (1 + tasa_bruto)) ** 60)
+
+    let cuota: number = capital * (tasa_bruto / division)
+
+    let interes_k = 0.0
+
+    let saldo = capital
+
+    let amortizacion : number = 0
+
+    //console.log("Division --> ", division)
 
     for(let i = 0; i < mes; i++) {
 
-      this.ELEMENT_DATA?.push(
-        {mes: i+1, vencimiento: date, amortizacion: 0, interes: 0, comisiones: 0, subvencion: 0, cuota: 0, saldo: 0}
-      )
-
       //date = new Date(date.setDate(date.getDate() + 30));
 
-      console.log("Fecha Antes", date)
+      //console.log("Fecha Antes", date)11
+
+      interes_k = saldo * tasa_bruto
+
+      amortizacion = cuota - interes_k
+
+      saldo = saldo - amortizacion
+
+      this.ELEMENT_DATA?.push(
+        {mes: i+1, vencimiento: date, amortizacion: amortizacion, interes: interes_k, comisiones: 0.00, subvencion: 0.00, cuota: parseFloat(cuota.toFixed(2)), saldo: saldo}
+      )
 
       date = new Date(date.setMonth(date.getMonth() + 1));
 
-      console.log("Fecha Despues", date)
+      //console.log("Fecha Despues", date)
 
     }
   }
+
   navigateBack(){
     this.route.navigate(['/login']);
   }

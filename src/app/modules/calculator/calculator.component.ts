@@ -63,33 +63,32 @@ export interface Cronograma {
 
 export class CalculatorComponent implements AfterViewInit {
   userFormGroup = new FormGroup({
-    capital: new FormControl('',[Validators.required,Validators.min(65200),Validators.max(464200)]),
-    tasa: new FormControl('',[Validators.required,Validators.min(4),Validators.max(49.99)]), //Sujeta a entidad financiera --> CONSULTAR CON EL PROFESOR
-    tiempo: new FormControl('',[Validators.required,Validators.min(60),Validators.max(300)]),
-    moneda: new FormControl('',[Validators.required]),
+    capital: new FormControl('', [Validators.required, Validators.min(65200), Validators.max(464200)]),
+    tasa: new FormControl('', [Validators.required, Validators.min(4), Validators.max(49.99)]), //Sujeta a entidad financiera --> CONSULTAR CON EL PROFESOR
+    tiempo: new FormControl('', [Validators.required, Validators.min(60), Validators.max(300)]),
+    moneda: new FormControl('', [Validators.required]),
   });
 
-  PayFormGroup=new FormGroup({
-    diaDePago: new FormControl('',[Validators.required,Validators.min(1),Validators.max(30)]),
-    fechaSolicitud: new FormControl(Date,[Validators.required]),
-    //desgravamen: new FormControl('',[Validators.required]),
-    seguro: new FormControl('',[Validators.required]),
+  PayFormGroup = new FormGroup({
+    diaDePago: new FormControl('', [Validators.required, Validators.min(1), Validators.max(30)]),
+    fechaSolicitud: new FormControl(Date, [Validators.required]),
+    seguro: new FormControl('', [Validators.required]),
   })
 
-  gracePeriodFormGroup=new FormGroup({
-    meses: new FormControl('',[Validators.required,Validators.min(1)]),
-    capitalizacion: new FormControl(false,[Validators.required]),
+  gracePeriodFormGroup = new FormGroup({
+    meses: new FormControl('', [Validators.required, Validators.min(1)]),
+    capitalizacion: new FormControl(false, [Validators.required]),
   })
 
-  bornDatesFormGroup=new FormGroup({
-    primerTitular: new FormControl(Date,[Validators.required]),
-    segundoTitular: new FormControl(Date,[Validators.required])
+  bornDatesFormGroup = new FormGroup({
+    primerTitular: new FormControl(Date, [Validators.required]),
+    segundoTitular: new FormControl(Date, [Validators.required])
   })
 
-  stepper =true;
-  gracePeriodWithCapitalization=false;
-  calculateSend=false;
-  gracePeriod="Cero";
+  stepper = true;
+  gracePeriodWithCapitalization = false;
+  calculateSend = false;
+  gracePeriod = "Cero";
   panelOpenState = false;
   fecha = "";
   minDate = new Date();
@@ -97,28 +96,28 @@ export class CalculatorComponent implements AfterViewInit {
 
 
   desgravamens: Desgravamen[] = [
-    { viewValue: 'Sin seguro'},
-    { viewValue: 'Convencional individual'},
-    { viewValue: 'Convencional mancomunado'},
-    { viewValue: 'Con devolución individual'},
-    { viewValue: 'Con devolución mancomunado'},
+    {viewValue: 'Sin seguro'},
+    {viewValue: 'Convencional individual'},
+    {viewValue: 'Convencional mancomunado'},
+    {viewValue: 'Con devolución individual'},
+    {viewValue: 'Con devolución mancomunado'},
   ];
 
   currencys: Currency[] = [
-    { viewValue: 'Soles'},
-    { viewValue: 'Dolares'},
+    {viewValue: 'Soles'},
+    {viewValue: 'Dolares'},
   ];
 
   GracePeriods: GracePeriod[] = [
-    { viewValue: 'Total'},
-    { viewValue: 'Parcial'},
+    {viewValue: 'Total'},
+    {viewValue: 'Parcial'},
   ];
 
-  ELEMENT_DATA: Cronograma[]=[]
-  displayedColumns: string[] = ['mes','vencimiento','amortizacion','interes','comisiones','subvencion','cuota','saldo'];
+  ELEMENT_DATA: Cronograma[] = []
+  displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'subvencion'];
 
 
-  constructor(private route: Router, private elementRef: ElementRef,private _adapter: DateAdapter<any>,
+  constructor(private route: Router, private elementRef: ElementRef, private _adapter: DateAdapter<any>,
               @Inject(MAT_DATE_LOCALE) private _locale: string) {
 
     const currentYear = new Date().getFullYear();
@@ -132,63 +131,63 @@ export class CalculatorComponent implements AfterViewInit {
     this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#e4efff';
   }
-  next(){
-    if(this.userFormGroup.valid) {
-      this.stepper=false;
+
+  next() {
+    if (this.userFormGroup.valid) {
+      this.stepper = false;
     }
 
   }
-  setGracePeriod(gracePeriod: string){
-    this.gracePeriod=gracePeriod;
+
+  setGracePeriod(gracePeriod: string) {
+    this.gracePeriod = gracePeriod;
   }
-  simulate(){
+
+  simulate() {
     this.calculateTableData();
-    if(this.PayFormGroup.valid){
-      if(this.gracePeriod=='Cero'){
-        if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
-          if(this.PayFormGroup.get('seguro')?.value=='Convencional individual' ||this.PayFormGroup.get('seguro')?.value=='Con devolución individual'){
-            if(this.bornDatesFormGroup.get('primerTitular')?.valid){
+    if (this.PayFormGroup.valid) {
+      if (this.gracePeriod == 'Cero') {
+        if (this.PayFormGroup.get('seguro')?.value != 'Sin seguro') {
+          if (this.PayFormGroup.get('seguro')?.value == 'Convencional individual' || this.PayFormGroup.get('seguro')?.value == 'Con devolución individual') {
+            if (this.bornDatesFormGroup.get('primerTitular')?.valid) {
               //this.calculate()
-              this.calculateSend=true;
+              this.calculateSend = true;
               //this.route.navigate(['/schedule']);
             }
           }
-          if(this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado' ||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado'){
-            if(this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid){
+          if (this.PayFormGroup.get('seguro')?.value == 'Convencional mancomunado' || this.PayFormGroup.get('seguro')?.value == 'Con devolución mancomunado') {
+            if (this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid) {
               //this.calculate()
               //this.route.navigate(['/schedule']);
-              this.calculateSend=true;
+              this.calculateSend = true;
             }
           }
-        }
-        else {
+        } else {
           //this.calculate()
           //this.route.navigate(['/schedule']);
-          this.calculateSend=true;
+          this.calculateSend = true;
         }
-      }
-      else {
-        if(this.gracePeriodFormGroup.get('meses')?.valid){
-          if(this.PayFormGroup.get('seguro')?.value!='Sin seguro'){
-            if(this.PayFormGroup.get('seguro')?.value=='Convencional individual' ||this.PayFormGroup.get('seguro')?.value=='Con devolución individual'){
-              if(this.bornDatesFormGroup.get('primerTitular')?.valid){
+      } else {
+        if (this.gracePeriodFormGroup.get('meses')?.valid) {
+          if (this.PayFormGroup.get('seguro')?.value != 'Sin seguro') {
+            if (this.PayFormGroup.get('seguro')?.value == 'Convencional individual' || this.PayFormGroup.get('seguro')?.value == 'Con devolución individual') {
+              if (this.bornDatesFormGroup.get('primerTitular')?.valid) {
                 //this.calculate()
                 //this.route.navigate(['/schedule']);
-                this.calculateSend=true;
+                this.calculateSend = true;
               }
             }
-            if(this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado' ||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado'){
-              if(this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid){
+            if (this.PayFormGroup.get('seguro')?.value == 'Convencional mancomunado' || this.PayFormGroup.get('seguro')?.value == 'Con devolución mancomunado') {
+              if (this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid) {
                 //this.calculate()
                 //this.route.navigate(['/schedule']);
-                this.calculateSend=true;
+                this.calculateSend = true;
               }
             }
-          }
-          else {
+          } else {
             //this.calculate()
             //this.route.navigate(['/schedule']);
-            this.calculateSend=true;
+            this.calculateSend = true;
           }
         }
       }
@@ -196,71 +195,78 @@ export class CalculatorComponent implements AfterViewInit {
     }
   }
 
-  calculateTableData(){
-    let mes = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
-    let date = new Date(this.fecha);
-
+  calculateTableData() {
+    let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
 
-    //console.log("Fecha Formateada", this.fecha)
-    //console.log("DATE", date)
+    let date = new Date(this.fecha);
 
-    let tasa_bruto = tasa / 100
+    let tasa_mensual : number = (1 + (tasa / 100)) ** (30/ 360) - 1
 
-    let division = 1 + ((1 / (1 + tasa_bruto)) ** 60)
+    console.log("TEM  --> ", tasa_mensual)
 
-    let cuota: number = capital * (tasa_bruto / division)
+    let division_d =  ((1 + tasa_mensual) ** mes) - 1
 
-    let interes_k = 0.0
+    console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
 
-    let saldo = capital
+    let division_u = tasa_mensual * ((1 + tasa_mensual) ** mes)
 
-    let amortizacion : number = 0
+    console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
 
-    //console.log("Division --> ", division)
+    let cuota: number = capital * (division_u / division_d)
 
-    for(let i = 0; i < mes; i++) {
+    console.log("Cuota --> ", capital * (division_u / division_d))
 
-      //date = new Date(date.setDate(date.getDate() + 30));
+    let interes_k: number = 0.0
 
-      //console.log("Fecha Antes", date)11
+    let saldo:number = capital
 
-      interes_k = saldo * tasa_bruto
+    let amortizacion:number = 0
+
+    for (let i = 0; i < mes; i++) {
+
+      interes_k = saldo * tasa_mensual
 
       amortizacion = cuota - interes_k
 
-      saldo = saldo - amortizacion
+      saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
       this.ELEMENT_DATA?.push(
-        {mes: i+1, vencimiento: date, amortizacion: amortizacion, interes: interes_k, comisiones: 0.00, subvencion: 0.00, cuota: parseFloat(cuota.toFixed(2)), saldo: saldo}
+        {
+          mes: i + 1,
+          vencimiento: date,
+          amortizacion:  parseFloat(amortizacion.toFixed(2)),
+          interes: parseFloat(interes_k.toFixed(2)),
+          cuota: parseFloat(cuota.toFixed(2)),
+          saldo: saldo,
+          comisiones: 0.00,
+          subvencion: 0.00,
+        }
       )
 
       date = new Date(date.setMonth(date.getMonth() + 1));
 
-      //console.log("Fecha Despues", date)
-
     }
   }
 
-  navigateBack(){
+  navigateBack() {
     this.route.navigate(['/login']);
   }
 
-  validateNumber(numberString: string,minString: string,maxString: string){
-    let number=parseInt(numberString)
-    let min=parseInt(minString)
-    let max=parseInt(maxString)
+  validateNumber(numberString: string, minString: string, maxString: string) {
+    let number = parseInt(numberString)
+    let min = parseInt(minString)
+    let max = parseInt(maxString)
     return number < min || number > max;
-
   }
 
-  showDate(dp_: MatDatepicker<any>){
+  showDate(dp_: MatDatepicker<any>) {
     this.fecha = dp_.datepickerInput.getStartValue().format('MM/DD/YY')
   }
 
-  calculate(){
-   console.log("hola")
+  calculate() {
+    console.log("hola")
   }
 
 }

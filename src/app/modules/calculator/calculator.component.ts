@@ -204,19 +204,19 @@ export class CalculatorComponent implements AfterViewInit {
 
     let tasa_mensual : number = (1 + (tasa / 100)) ** (30/ 360) - 1
 
-    console.log("TEM  --> ", tasa_mensual)
+    //console.log("TEM  --> ", tasa_mensual)
 
     let division_d =  ((1 + tasa_mensual) ** mes) - 1
 
-    console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
+    //console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
 
     let division_u = tasa_mensual * ((1 + tasa_mensual) ** mes)
 
-    console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
+    //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
 
     let cuota: number = capital * (division_u / division_d)
 
-    console.log("Cuota --> ", capital * (division_u / division_d))
+    //console.log("Cuota --> ", capital * (division_u / division_d))
 
     let interes_k: number = 0.0
 

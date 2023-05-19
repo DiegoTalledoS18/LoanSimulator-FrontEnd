@@ -200,6 +200,9 @@ export class CalculatorComponent implements AfterViewInit {
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
 
+    let seguro_valor : string = <string>this.PayFormGroup.get('seguro')?.value;
+    let seguro: number
+
     let date = new Date(this.fecha);
 
     let tasa_mensual : number = (1 + (tasa / 100)) ** (30/ 360) - 1
@@ -220,15 +223,23 @@ export class CalculatorComponent implements AfterViewInit {
 
     let interes_k: number = 0.0
 
-    let saldo:number = capital
+    let saldo: number = capital
 
-    let amortizacion:number = 0
+    let amortizacion: number = 0
+
+    if (seguro_valor == 'Sin seguro') {
+      seguro = 0
+    } else {
+      seguro = 0.004396 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+    }
+
+    //FALTA ACTUALIZAR LA CUOTA -- PREGUNTAR AL PROFESOR
 
     for (let i = 0; i < mes; i++) {
 
       interes_k = saldo * tasa_mensual
 
-      amortizacion = cuota - interes_k
+      amortizacion = cuota - interes_k - seguro
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 

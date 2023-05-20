@@ -31,6 +31,10 @@ interface Currency {
   viewValue: string;
 }
 
+interface TipeTasa {
+  viewValue: string;
+}
+
 interface GracePeriod {
   viewValue: string;
 }
@@ -64,6 +68,7 @@ export interface Cronograma {
 export class CalculatorComponent implements AfterViewInit {
   userFormGroup = new FormGroup({
     capital: new FormControl('', [Validators.required, Validators.min(65200), Validators.max(464200)]),
+    tipotasa: new FormControl('', [Validators.required]),
     tasa: new FormControl('', [Validators.required, Validators.min(4), Validators.max(49.99)]), //Sujeta a entidad financiera --> CONSULTAR CON EL PROFESOR
     tiempo: new FormControl('', [Validators.required, Validators.min(60), Validators.max(300)]),
     moneda: new FormControl('', [Validators.required]),
@@ -93,6 +98,7 @@ export class CalculatorComponent implements AfterViewInit {
   fecha = "";
   minDate = new Date();
   maxDate = new Date();
+  TEA= 0;
 
 
   desgravamens: Desgravamen[] = [
@@ -106,6 +112,11 @@ export class CalculatorComponent implements AfterViewInit {
   currencys: Currency[] = [
     {viewValue: 'Soles'},
     {viewValue: 'Dolares'},
+  ];
+
+  tipetasa: TipeTasa[] = [
+    {viewValue: 'Tasa Nominal Anual'},
+    {viewValue: 'Tasa Efectiva Anual'},
   ];
 
   GracePeriods: GracePeriod[] = [
@@ -199,13 +210,19 @@ export class CalculatorComponent implements AfterViewInit {
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
-
+    let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
     let seguro_valor : string = <string>this.PayFormGroup.get('seguro')?.value;
     let seguro: number
 
     let date = new Date(this.fecha);
+    if(tipotasa == 'Tasa Nominal Anual'){
+      tasa = tasa/100
+      tasa = (1+tasa/360)**(360)-1
+    }
 
     let tasa_mensual : number = (1 + (tasa / 100)) ** (30/ 360) - 1
+    this.TEA=tasa*100
+    this.TEA = parseFloat(this.TEA.toFixed(7))
 
     //console.log("TEM  --> ", tasa_mensual)
 

@@ -29,6 +29,24 @@
                 </div>
               </div>
               <div style="display: flex; justify-content: center">
+                <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%;margin-top: 10px;">
+                  <mat-label>Tipo de Tasa</mat-label>
+                  <mat-select formControlName="tipotasa">
+                    <mat-option *ngFor="let tipetasa of tipetasa" [value]="tipetasa.viewValue">
+                      {{tipetasa.viewValue}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="userFormGroup.get('tipotasa')?.hasError('required')">
+                    Tipo de tasa <strong>requerida</strong>
+                  </mat-error>
+                </mat-form-field>
+                <div style="display: flex; justify-content: center;  align-items: center">
+                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                    <span class="tooltiptext">Eliga su tipo de tasa.</span>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
                   <mat-label>Tasa de Interes Anual (%)</mat-label>
                   <input matInput autocomplete="off" formControlName="tasa" type="number">
@@ -233,7 +251,7 @@
             </div>
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Tasa de Interes Anual:</p>
-              <p>{{userFormGroup.get('tasa')!.value}}%</p>
+              <p>{{this.TEA}}%</p>
             </div>
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Cuota:</p>

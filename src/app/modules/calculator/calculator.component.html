@@ -146,28 +146,32 @@
                 <p style="padding-top: 20px">Periodo de gracia </p>
                 <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
                   <mat-button-toggle (click)="setGracePeriod('Cero')" checked >Cero</mat-button-toggle>
-                  <mat-button-toggle (click)="setGracePeriod('parcial')">Parcial</mat-button-toggle>
+                  <mat-button-toggle (click)="setGracePeriod('Parcial')">Parcial</mat-button-toggle>
                   <mat-button-toggle (click)="setGracePeriod('Total')" >Total</mat-button-toggle>
                 </mat-button-toggle-group>
               </div>
+
               <form [formGroup]="gracePeriodFormGroup" *ngIf="this.gracePeriod!='Cero'" >
-                <div style="display: flex;width: 90%; justify-content: space-between">
+
+                <div style="display: flex; width: 90%; justify-content: space-between">
                   <mat-form-field appearance="fill"  style="width: 52%; margin-top: 10px;">
                     <mat-label>Periodo de gracias (meses)</mat-label>
-                    <input matInput type="number" formControlName="meses" >
+                    <input matInput type="number" formControlName="meses">
+
                     <mat-error *ngIf="gracePeriodFormGroup.get('meses')?.hasError('required')">
-                      Meses <strong>requeridos</strong>
+                      Numero de meses es <strong>requerido</strong>
                     </mat-error>
                     <mat-error *ngIf="gracePeriodFormGroup.get('meses')?.hasError('min')">
                       Mes <strong>invalido</strong>
                     </mat-error>
+
                   </mat-form-field>
                   <div style="align-items: center;display: flex;height: 100px;justify-content: center;width: 200px;">
                     <p style="padding-top: 8px">Periodo de gracia con capitalización de intereses</p>
                     <mat-slide-toggle formControlName="capitalizacion" color="primary"></mat-slide-toggle>
                     <div style="display: flex; justify-content: center;  align-items: center">
                       <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
-                        <span class="tooltiptext">Los intereses se capitalizan para generar cuota constante.</span>
+                        <span class="tooltiptext">Los intereses se capitalizan durante el periodo de gracia.</span>
                       </div>
                     </div>
                   </div>
@@ -251,8 +255,14 @@
             </div>
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Tasa de Interes Anual:</p>
-              <p>{{this.TEA}}%</p>
+              <p>{{this.tea}}%</p>
             </div>
+
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Tasa de Interes Mensual:</p>
+              <p>{{this.tasa_mensual.toFixed(7)}}%</p>
+            </div>
+
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Cuota:</p>
               <p>{{userFormGroup.get('capital')!.value}}</p>

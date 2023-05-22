@@ -41,7 +41,7 @@
                   </mat-error>
                 </mat-form-field>
                 <div style="display: flex; justify-content: center;  align-items: center">
-                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                  <div class="tooltip"><mat-icon matSuffix>help</mat-icon>
                     <span class="tooltiptext">Eliga su tipo de tasa.</span>
                   </div>
                 </div>
@@ -265,11 +265,11 @@
 
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Cuota:</p>
-              <p>{{userFormGroup.get('capital')!.value}}</p>
+              <p>{{this.cuota}}</p>
             </div>
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Duración total:</p>
-              <p>{{userFormGroup.get('tiempo')!.value}}</p>
+              <p>{{userFormGroup.get('tiempo')!.value}} meses</p>
             </div>
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Fecha de Solicitud:</p>

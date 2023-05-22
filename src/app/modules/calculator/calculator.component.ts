@@ -101,6 +101,7 @@ export class CalculatorComponent implements AfterViewInit {
   maxDate = new Date();
   tea = 0;
   tasa_mensual = 0.0;
+  cuota = 0;
 
 
   desgravamens: Desgravamen[] = [
@@ -235,7 +236,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     let division_u = this.tasa_mensual * ((1 + this.tasa_mensual) ** mes)
 
-    let cuota: number = capital * (division_u / division_d)
+    this.cuota = capital * (division_u / division_d)
 
     let interes_k: number = 0.0
     let saldo: number = capital
@@ -286,14 +287,16 @@ export class CalculatorComponent implements AfterViewInit {
 
     }
 
-    for (let i = 0; i < (mes - meses_gracia); i++) {
+    for (let i = 0; i < mes; i++) {
+
+      console.log('FOR')
 
       if (capitalizacion) {
-        cuota = saldo * (division_u / division_d)
+        this.cuota = saldo * (division_u / division_d)
       }
 
       interes_k = saldo * this.tasa_mensual
-      amortizacion = cuota - interes_k - seguro
+      amortizacion = this.cuota - interes_k - seguro
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
       this.ELEMENT_DATA?.push(
@@ -302,7 +305,7 @@ export class CalculatorComponent implements AfterViewInit {
           vencimiento: date,
           amortizacion:  parseFloat(amortizacion.toFixed(2)),
           interes: parseFloat(interes_k.toFixed(2)),
-          cuota: parseFloat(cuota.toFixed(2)),
+          cuota: parseFloat(this.cuota.toFixed(2)),
           saldo: saldo,
           comisiones: 0.00,
           subvencion: 0.00,

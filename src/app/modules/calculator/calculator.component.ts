@@ -152,6 +152,37 @@ export class CalculatorComponent implements AfterViewInit {
     }
 
   }
+  calcularVANYTIR(flujosDeCaja: number[], tasaDescuento: number): [number, number] {
+    let VAN = 0;
+    let TIR = 0;
+
+    // Cálculo del VAN
+    for (let i = 0; i < flujosDeCaja.length; i++) {
+      VAN += flujosDeCaja[i] / Math.pow(1 + tasaDescuento, i);
+    }
+
+    // Cálculo del TIR utilizando el método de aproximaciones sucesivas
+    let tasaInicial = 0.1; // Valor inicial para el cálculo del TIR
+    let iteracionesMaximas = 100;
+    let precision = 0.0001;
+
+    for (let i = 0; i < iteracionesMaximas; i++) {
+      let VAN_TIR = 0;
+
+      for (let j = 0; j < flujosDeCaja.length; j++) {
+        VAN_TIR += flujosDeCaja[j] / Math.pow(1 + TIR, j);
+      }
+
+      if (Math.abs(VAN_TIR) < precision) {
+        break;
+      }
+
+      TIR += (1 + TIR) * (VAN / VAN_TIR - 1);
+    }
+
+    return [VAN, TIR];
+  }
+
 
   setGracePeriod(gracePeriod: string) {
     this.gracePeriod = gracePeriod;
@@ -208,7 +239,6 @@ export class CalculatorComponent implements AfterViewInit {
 
     }
   }
-
   calculateTableData() {
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
@@ -227,6 +257,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     this.tea = tasa
     this.tea = parseFloat(this.tea.toFixed(7))
+
 
     this.tasa_mensual = (1 + (tasa / 100)) ** (30/ 360) - 1
 
@@ -315,6 +346,28 @@ export class CalculatorComponent implements AfterViewInit {
       date = new Date(date.setMonth(date.getMonth() + 1));
 
     }
+
+    /////VAN Y TIR///////
+
+    const inversionInicial = capital*-1; // Inversión inicial (monto del préstamo)
+    const cuotaMensual = parseFloat(this.cuota.toFixed(2)); // Cuota mensual constante
+
+    // Construir el arreglo de flujos de caja
+    const flujosDeCaja = [inversionInicial]; // Primer elemento es la inversión inicial
+
+    // Generar los flujos de caja mensuales
+    for (let i = 1; i <= mes; i++) {
+      flujosDeCaja.push(cuotaMensual);
+    }
+    console.log("cuota mensual: "+cuotaMensual)
+    console.log("flujosDeCaja: "+flujosDeCaja[0]+" vs "+flujosDeCaja[mes-1]+" tamaño: "+flujosDeCaja.length)
+    console.log("TEA: "+this.tea)
+    const [VAN, TIR] = this.calcularVANYTIR(flujosDeCaja,this.tea);
+
+    console.log('VAN:', VAN);
+    console.log('TIR:', TIR);
+
+    /////////////////////////
   }
 
   navigateBack() {

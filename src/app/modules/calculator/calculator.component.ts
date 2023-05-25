@@ -258,7 +258,6 @@ export class CalculatorComponent implements AfterViewInit {
     this.tea = tasa
     this.tea = parseFloat(this.tea.toFixed(7))
 
-
     this.tasa_mensual = (1 + (tasa / 100)) ** (30/ 360) - 1
 
     console.log("Tasa mensual: ", this.tasa_mensual)
@@ -273,6 +272,7 @@ export class CalculatorComponent implements AfterViewInit {
     let saldo: number = capital
     let amortizacion: number = 0
 
+    //SEGURO IF
     if (seguro_valor == 'Sin seguro') {
       seguro = 0
     } else {
@@ -281,17 +281,21 @@ export class CalculatorComponent implements AfterViewInit {
 
     //FALTA ACTUALIZAR LA CUOTA -- PREGUNTAR AL PROFESOR
 
+
+    //SI EL PERIODO SELECIONADO ES PARCIAL
     if (this.gracePeriod == 'Parcial') {
       console.log("Parcial")
 
-
+      //SI EL PERIODO SELECIONADO ES TOTAL
     } else if (this.gracePeriod  == 'Total') {
       console.log("Total")
 
+      //RECORREMOS DURANT ELOS MESES DEL PERIODO DE GRACIA
       for (let i = 0; i < meses_gracia; i++) {
 
         //console.log('Capitalizacion: ', capitalizacion)
 
+        //VALIDAMOS LA CAPITALIZACION (ESTO YA NO VA PORQUE SERA AUTOMATICO)
         if (capitalizacion) {
           console.log('Capitalizacion: ', capitalizacion)
           interes_k = saldo * this.tasa_mensual
@@ -318,6 +322,8 @@ export class CalculatorComponent implements AfterViewInit {
 
     }
 
+
+    //RECORREMOS LOS MESES RESTANTES DEL PRESTAMO
     for (let i = 0; i < mes; i++) {
 
       console.log('FOR')

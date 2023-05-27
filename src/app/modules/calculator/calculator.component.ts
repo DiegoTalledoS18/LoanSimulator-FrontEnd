@@ -280,7 +280,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     
 
-    if(this.gracePeriod == 'parcial'){
+    if(this.gracePeriod == 'Total'){
       for (let i = 0; i < meses_gracia; i++) {
 
         interes_k = saldo * this.tasa_mensual
@@ -309,7 +309,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
     }
 
-    if(this.gracePeriod == 'Total'){
+    if(this.gracePeriod == 'Parcial'){
       for (let i = 0; i < meses_gracia; i++) {
 
         interes_k = saldo * this.tasa_mensual
@@ -361,7 +361,7 @@ export class CalculatorComponent implements AfterViewInit {
 
 
       interes_k = saldo * this.tasa_mensual
-      amortizacion = this.cuota - interes_k - seguro
+      //amortizacion = this.cuota - interes_k - seguro
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
       this.ELEMENT_DATA?.push(
@@ -370,7 +370,7 @@ export class CalculatorComponent implements AfterViewInit {
           vencimiento: date,
           amortizacion:  parseFloat(amortizacion.toFixed(2)),
           interes: parseFloat(interes_k.toFixed(2)),
-          cuota: parseFloat(this.cuota.toFixed(2)),
+          cuota: parseFloat(cuota.toFixed(2)),
           saldo: saldo,
           comisiones: 0.00,
           subvencion: 0.00,

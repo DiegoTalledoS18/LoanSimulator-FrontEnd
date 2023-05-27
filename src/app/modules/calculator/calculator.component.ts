@@ -356,11 +356,11 @@ export class CalculatorComponent implements AfterViewInit {
 
       console.log('FOR')
 
+      interes_k = saldo * this.tasa_mensual
+
       //amortizacion = cuota - interes_k - seguro
       amortizacion = cuota - interes_k
 
-
-      interes_k = saldo * this.tasa_mensual
       //amortizacion = this.cuota - interes_k - seguro
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 

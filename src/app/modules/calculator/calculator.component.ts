@@ -248,11 +248,10 @@ export class CalculatorComponent implements AfterViewInit {
     let cuota : number;
 
     let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
-    let capitalizacion: boolean = <boolean><unknown>this.gracePeriodFormGroup.get('capitalizacion')?.value;
     let date = new Date(this.fecha);
     let seguro: number
 
-
+    //Conversion de Tasa Nomina a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
       tasa = tasa/100
       tasa = (1+tasa/360)**(360)-1
@@ -261,36 +260,36 @@ export class CalculatorComponent implements AfterViewInit {
     this.tea = tasa
     this.tea = parseFloat(this.tea.toFixed(7))
 
+    //Calculo de la Tasa Mensual
     this.tasa_mensual = (1 + (tasa / 100)) ** (30/ 360) - 1
-
 
     let interes_k: number = 0.0
     let saldo: number = capital
     let amortizacion: number = 0
 
-    //SEGURO IF
+    //Calculo del Seguro de desgravamen
     if (seguro_valor == 'Sin seguro') {
       seguro = 0
     } else {
       seguro = 0.004396 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
     }
+
+    //Calculo del periodo de gracia
     if(this.gracePeriod == 'Cero'){
       meses_gracia = 0
     }
-
-    
 
     if(this.gracePeriod == 'Total'){
       for (let i = 0; i < meses_gracia; i++) {
 
         interes_k = saldo * this.tasa_mensual
         cuota = 0
-  
+
         //amortizacion = cuota - interes_k - seguro
         amortizacion = 0
-  
+
         saldo = parseFloat((saldo + interes_k).toFixed(2))
-  
+
         this.ELEMENT_DATA?.push(
           {
             mes: i + 1,
@@ -303,9 +302,9 @@ export class CalculatorComponent implements AfterViewInit {
             subvencion: 0.00,
           }
         )
-  
+
         date = new Date(date.setMonth(date.getMonth() + 1));
-  
+
       }
     }
 
@@ -313,14 +312,14 @@ export class CalculatorComponent implements AfterViewInit {
       for (let i = 0; i < meses_gracia; i++) {
 
         interes_k = saldo * this.tasa_mensual
-        
+
         cuota=interes_k
-  
+
         //amortizacion = cuota - interes_k - seguro
         amortizacion = interes_k-cuota
-  
+
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
-  
+
         this.ELEMENT_DATA?.push(
           {
             mes: i + 1,
@@ -333,9 +332,7 @@ export class CalculatorComponent implements AfterViewInit {
             subvencion: 0.00,
           }
         )
-  
         date = new Date(date.setMonth(date.getMonth() + 1));
-  
       }
     }
 
@@ -349,12 +346,9 @@ export class CalculatorComponent implements AfterViewInit {
 
     cuota = saldo * (division_u / division_d)
 
-    //FALTA ACTUALIZAR LA CUOTA -- PREGUNTAR AL PROFESOR
-
-
     for (let i = 0; i < mes-meses_gracia; i++) {
 
-      console.log('FOR')
+      //console.log('FOR')
 
       interes_k = saldo * this.tasa_mensual
 
@@ -376,12 +370,10 @@ export class CalculatorComponent implements AfterViewInit {
           subvencion: 0.00,
         }
       )
-
       date = new Date(date.setMonth(date.getMonth() + 1));
-
     }
 
-    /////VAN Y TIR///////
+    //Calculo de VAN y TIR
 
     const inversionInicial = capital*-1; // Inversión inicial (monto del préstamo)
     const cuotaMensual = parseFloat(this.cuota.toFixed(2)); // Cuota mensual constante
@@ -393,15 +385,14 @@ export class CalculatorComponent implements AfterViewInit {
     for (let i = 1; i <= mes; i++) {
       flujosDeCaja.push(cuotaMensual);
     }
-    console.log("cuota mensual: "+cuotaMensual)
-    console.log("flujosDeCaja: "+flujosDeCaja[0]+" vs "+flujosDeCaja[mes-1]+" tamaño: "+flujosDeCaja.length)
+
+    console.log("Cuota Mensual: "+cuotaMensual)
+    console.log("Flujos de Caja: "+flujosDeCaja[0]+" vs "+flujosDeCaja[mes-1]+" Tamaño: "+flujosDeCaja.length)
     console.log("TEA: "+this.tea)
     const [VAN, TIR] = this.calcularVANYTIR(flujosDeCaja,this.tea);
 
     console.log('VAN:', VAN);
     console.log('TIR:', TIR);
-
-    /////////////////////////
   }
 
   navigateBack() {

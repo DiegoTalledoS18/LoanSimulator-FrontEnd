@@ -81,7 +81,7 @@ export class CalculatorComponent implements AfterViewInit {
   })
 
   gracePeriodFormGroup = new FormGroup({
-    meses: new FormControl('', [Validators.required, Validators.min(1)]),
+    meses: new FormControl('', [Validators.required,Validators.min(1), Validators.max(parseInt(<string>this.userFormGroup.get('tiempo')?.value))]),
     capitalizacion: new FormControl(false, [Validators.required]),
   })
 
@@ -212,7 +212,10 @@ export class CalculatorComponent implements AfterViewInit {
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
     let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
     let seguro_valor : string = <string>this.PayFormGroup.get('seguro')?.value;
-    let seguro: number
+    let seguro: number;
+    let meses : number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
+    let cuota : number;
+
 
     let date = new Date(this.fecha);
     if(tipotasa == 'Tasa Nominal Anual'){
@@ -226,15 +229,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     //console.log("TEM  --> ", tasa_mensual)
 
-    let division_d =  ((1 + tasa_mensual) ** mes) - 1
-
-    //console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
-
-    let division_u = tasa_mensual * ((1 + tasa_mensual) ** mes)
-
-    //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
-
-    let cuota: number = capital * (division_u / division_d)
+    
 
     //console.log("Cuota --> ", capital * (division_u / division_d))
 
@@ -249,20 +244,95 @@ export class CalculatorComponent implements AfterViewInit {
     } else {
       seguro = 0.004396 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
     }
+    if(this.gracePeriod == 'Cero'){
+      meses = 0
+    }
+
+    
+
+    if(this.gracePeriod == 'parcial'){
+      for (let i = 0; i < meses; i++) {
+
+        interes_k = saldo * tasa_mensual
+        cuota = 0
+  
+        //amortizacion = cuota - interes_k - seguro
+        amortizacion = 0
+  
+        saldo = parseFloat((saldo + interes_k).toFixed(2))
+  
+        this.ELEMENT_DATA?.push(
+          {
+            mes: i + 1,
+            vencimiento: date,
+            amortizacion:  parseFloat(amortizacion.toFixed(2)),
+            interes: parseFloat(interes_k.toFixed(2)),
+            cuota: parseFloat(cuota.toFixed(2)),
+            saldo: saldo,
+            comisiones: 0.00,
+            subvencion: 0.00,
+          }
+        )
+  
+        date = new Date(date.setMonth(date.getMonth() + 1));
+  
+      }
+    }
+
+    if(this.gracePeriod == 'Total'){
+      for (let i = 0; i < meses; i++) {
+
+        interes_k = saldo * tasa_mensual
+        
+        cuota=interes_k
+  
+        //amortizacion = cuota - interes_k - seguro
+        amortizacion = interes_k-cuota
+  
+        saldo = parseFloat((saldo + amortizacion).toFixed(2))
+  
+        this.ELEMENT_DATA?.push(
+          {
+            mes: i + 1,
+            vencimiento: date,
+            amortizacion:  parseFloat(amortizacion.toFixed(2)),
+            interes: parseFloat(interes_k.toFixed(2)),
+            cuota: parseFloat(cuota.toFixed(2)),
+            saldo: saldo,
+            comisiones: 0.00,
+            subvencion: 0.00,
+          }
+        )
+  
+        date = new Date(date.setMonth(date.getMonth() + 1));
+  
+      }
+    }
+
+    let division_d =  ((1 + tasa_mensual) ** (mes-meses)) - 1
+
+    //console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
+
+    let division_u = tasa_mensual * ((1 + tasa_mensual) ** (mes-meses))
+
+    //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
+
+    cuota = saldo * (division_u / division_d)
 
     //FALTA ACTUALIZAR LA CUOTA -- PREGUNTAR AL PROFESOR
 
-    for (let i = 0; i < mes; i++) {
+    for (let i = 0; i < mes-meses; i++) {
 
       interes_k = saldo * tasa_mensual
 
-      amortizacion = cuota - interes_k - seguro
+      //amortizacion = cuota - interes_k - seguro
+      amortizacion = cuota - interes_k
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
       this.ELEMENT_DATA?.push(
         {
-          mes: i + 1,
+          mes: meses + i + 1,
           vencimiento: date,
           amortizacion:  parseFloat(amortizacion.toFixed(2)),
           interes: parseFloat(interes_k.toFixed(2)),

@@ -102,6 +102,8 @@ export class CalculatorComponent implements AfterViewInit {
   tea = 0;
   tasa_mensual = 0.0;
   cuota = 0;
+  VAN="";
+  TIR="";
 
 
   desgravamens: Desgravamen[] = [
@@ -152,36 +154,49 @@ export class CalculatorComponent implements AfterViewInit {
     }
 
   }
-  calcularVANYTIR(flujosDeCaja: number[], tasaDescuento: number): [number, number] {
+  calcularVAN(flujosDeCaja: number[], tasaDescuento: number){
     let VAN = 0;
-    let TIR = 0;
 
-    // Cálculo del VAN
     for (let i = 0; i < flujosDeCaja.length; i++) {
-      VAN += flujosDeCaja[i] / Math.pow(1 + tasaDescuento, i);
+      VAN += flujosDeCaja[i] / Math.pow((1 + tasaDescuento), i);
+      //console.log(flujosDeCaja[i]+"/(1+"+tasaDescuento+")^"+i+"= "+flujosDeCaja[i] / Math.pow(1 + tasaDescuento, i))
+      //console.log("van= "+VAN)
     }
 
-    // Cálculo del TIR utilizando el método de aproximaciones sucesivas
-    let tasaInicial = 0.1; // Valor inicial para el cálculo del TIR
-    let iteracionesMaximas = 100;
-    let precision = 0.0001;
-
-    for (let i = 0; i < iteracionesMaximas; i++) {
-      let VAN_TIR = 0;
-
-      for (let j = 0; j < flujosDeCaja.length; j++) {
-        VAN_TIR += flujosDeCaja[j] / Math.pow(1 + TIR, j);
-      }
-
-      if (Math.abs(VAN_TIR) < precision) {
-        break;
-      }
-
-      TIR += (1 + TIR) * (VAN / VAN_TIR - 1);
-    }
-
-    return [VAN, TIR];
+    return VAN;
   }
+
+  calcularTIRIncrementalMejorado(flujosDeCaja: number[]) {
+    const maxIteraciones = 10000; // Número máximo de iteraciones
+    const precision = 0.00001; // Precisión para la aproximación de la TIR
+
+    let TIR = 0;
+    let TIRPrevio = 0;
+
+    for (let iteracion = 0; iteracion < maxIteraciones; iteracion++) {
+      let VAN = 0;
+      let derivadaVAN = 0;
+
+      for (let i = 0; i < flujosDeCaja.length; i++) {
+        VAN += flujosDeCaja[i] / Math.pow(1 + TIR, i);
+        derivadaVAN -= i * flujosDeCaja[i] / Math.pow(1 + TIR, i + 1);
+      }
+
+      if (Math.abs(VAN) < precision) {
+        // Se encontró una aproximación suficientemente cercana
+        return TIR;
+      }
+
+      // Ajustar la tasa de descuento para la próxima iteración
+      const ajuste = VAN / derivadaVAN;
+      TIRPrevio = TIR;
+      TIR -= ajuste;
+    }
+
+    // No se encontró una solución dentro del número máximo de iteraciones
+    return 0;
+  }
+
 
 
   setGracePeriod(gracePeriod: string) {
@@ -376,7 +391,7 @@ export class CalculatorComponent implements AfterViewInit {
     //Calculo de VAN y TIR
 
     const inversionInicial = capital*-1; // Inversión inicial (monto del préstamo)
-    const cuotaMensual = parseFloat(this.cuota.toFixed(2)); // Cuota mensual constante
+    const cuotaMensual = parseFloat(cuota.toFixed(2)); // Cuota mensual constante
 
     // Construir el arreglo de flujos de caja
     const flujosDeCaja = [inversionInicial]; // Primer elemento es la inversión inicial
@@ -387,12 +402,15 @@ export class CalculatorComponent implements AfterViewInit {
     }
 
     console.log("Cuota Mensual: "+cuotaMensual)
-    console.log("Flujos de Caja: "+flujosDeCaja[0]+" vs "+flujosDeCaja[mes-1]+" Tamaño: "+flujosDeCaja.length)
-    console.log("TEA: "+this.tea)
-    const [VAN, TIR] = this.calcularVANYTIR(flujosDeCaja,this.tea);
+    console.log("TEA: "+(this.tea/100))
+    const VAN_ = this.calcularVAN(flujosDeCaja,this.tea/100);
+    const TIR_ = this.calcularTIRIncrementalMejorado(flujosDeCaja)
+    this.TIR = (TIR_ * 100).toFixed(2) + "%";
+    this.VAN= VAN_.toFixed(2);
 
-    console.log('VAN:', VAN);
-    console.log('TIR:', TIR);
+
+    console.log('VAN:', VAN_);
+    console.log('TIR:', TIR_);
   }
 
   navigateBack() {

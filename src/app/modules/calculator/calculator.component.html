@@ -28,6 +28,25 @@
                   </div>
                 </div>
               </div>
+
+              <div style="display: flex; justify-content: center">
+                <mat-form-field class= "form-field-username " appearance="fill" style="width: 90%; margin-top: 10px;">
+                  <mat-label>Capital</mat-label>
+                  <input matInput autocomplete="off" formControlName="capital" type="number">
+                  <mat-error *ngIf="userFormGroup.get('cuotaInicial')?.hasError('required')">
+                    Cuota Inicial es <strong>requerida</strong>
+                  </mat-error>
+                  <mat-error *ngIf="userFormGroup.get('cuotaInicial')?.hasError('min') || userFormGroup.get('cuotaInicial')?.hasError('max')	">
+                    Ingrese el rango de cuota inicial <strong>permitido</strong>
+                  </mat-error>
+                </mat-form-field>
+                <div style="display: flex; justify-content: center;  align-items: center">
+                  <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
+                    <span class="tooltiptext">Minimo el 7.5% del capital</span>
+                  </div>
+                </div>
+              </div>
+
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%;margin-top: 10px;">
                   <mat-label>Tipo de Tasa</mat-label>

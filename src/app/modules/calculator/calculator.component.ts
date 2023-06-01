@@ -12,6 +12,7 @@ import {MatDatepicker} from "@angular/material/datepicker";
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Pipe({
   name: 'customDate'
@@ -235,7 +236,12 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   simulate() {
+
+    this.elementRef.nativeElement.ownerDocument
+      .body.style.backgroundColor = '#ffffff';
+
     this.calculateTableData();
+
     if (this.PayFormGroup.valid) {
       if (this.gracePeriod == 'Cero') {
         if (this.PayFormGroup.get('seguro')?.value != 'Sin seguro') {
@@ -387,6 +393,8 @@ export class CalculatorComponent implements AfterViewInit {
     //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
 
     cuota = saldo * (division_u / division_d)
+
+    this.cuota = cuota
 
     for (let i = 0; i < mes-meses_gracia; i++) {
 

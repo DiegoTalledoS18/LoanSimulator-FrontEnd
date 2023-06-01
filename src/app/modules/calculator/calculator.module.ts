@@ -19,7 +19,6 @@ import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
 
-
 const calculatorRoutes: Route[] = [
   {
     path: '',

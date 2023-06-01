@@ -69,7 +69,7 @@ export class CalculatorComponent implements AfterViewInit {
 
   userFormGroup = new FormGroup({
     capital: new FormControl('', [Validators.required, Validators.min(65200), Validators.max(464200)]),
-    //cuotaInicial: new FormControl('', [Validators.required, Validators.min(0), Validators.max(20)]),
+    cuotaInicial: new FormControl('', [Validators.required, this.cuotaInicialValidator]),
     tipotasa: new FormControl('', [Validators.required]),
     tasa: new FormControl('', [Validators.required, Validators.min(4), Validators.max(49.99)]),
     tiempo: new FormControl('', [Validators.required, Validators.min(60), Validators.max(300)]),
@@ -105,6 +105,7 @@ export class CalculatorComponent implements AfterViewInit {
   cuota = 0;
   VAN="";
   TIR="";
+  flag = false;
 
 
   desgravamens: Desgravamen[] = [
@@ -142,6 +143,35 @@ export class CalculatorComponent implements AfterViewInit {
 
     this.minDate = new Date(currentYear, currentMonth, 1);
     this.maxDate = new Date(currentYear + 5, 1, 15);
+
+    const mesesControl = this.gracePeriodFormGroup.get('meses');
+
+    // Agregar validador personalizado a mesesControl
+    // @ts-ignore
+    mesesControl?.setValidators(this.periodoGraciaValidator.bind(this));
+  }
+
+  cuotaInicialValidator(control: AbstractControl): { [key: string]: any } | null {
+    const capital = +control.parent?.get('capital')?.value;
+    const cuotaInicial = +control.value;
+
+    if (cuotaInicial <= capital * 0.075) {
+      return { 'cuotaInicialInvalida': true };
+    }
+
+    return null;
+  }
+
+  periodoGraciaValidator(control: FormControl): { [key: string]: any } | null {
+    // @ts-ignore
+    const duracionPrestamo = +this.userFormGroup.get('tiempo')?.value;
+    const mesesPeriodoGracia = +control.value;
+
+    if (mesesPeriodoGracia > duracionPrestamo) {
+      return { 'periodoGraciaInvalido': true };
+    }
+
+    return null;
   }
 
   ngAfterViewInit(): void {
@@ -301,8 +331,6 @@ export class CalculatorComponent implements AfterViewInit {
 
         interes_k = saldo * this.tasa_mensual
         cuota = 0
-
-        //amortizacion = cuota - interes_k - seguro
         amortizacion = 0
 
         saldo = parseFloat((saldo + interes_k).toFixed(2))
@@ -329,10 +357,7 @@ export class CalculatorComponent implements AfterViewInit {
       for (let i = 0; i < meses_gracia; i++) {
 
         interes_k = saldo * this.tasa_mensual
-
-        cuota=interes_k
-
-        //amortizacion = cuota - interes_k - seguro
+        cuota = interes_k
         amortizacion = interes_k-cuota
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))

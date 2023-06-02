@@ -31,7 +31,7 @@
 
               <div style="display: flex; justify-content: center">
                 <mat-form-field class= "form-field-username " appearance="fill" style="width: 90%; margin-top: 10px;">
-                  <mat-label>Cuota Inicial (%)</mat-label>
+                  <mat-label>Cuota Inicial (S/)</mat-label>
                   <input matInput autocomplete="off" formControlName="cuotaInicial" type="number">
                   <mat-error *ngIf="userFormGroup.get('cuotaInicial')?.hasError('required')">
                     Cuota Inicial es <strong>requerida</strong>
@@ -44,7 +44,7 @@
                 </mat-form-field>
                 <div style="display: flex; justify-content: center;  align-items: center">
                   <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
-                    <span class="tooltiptext">Minimo el 7.5% del capital</span>
+                    <span class="tooltiptext">Monto monetario mayor al 7.5% del capital</span>
                   </div>
                 </div>
               </div>

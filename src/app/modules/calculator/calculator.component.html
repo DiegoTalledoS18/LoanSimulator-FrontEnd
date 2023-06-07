@@ -171,7 +171,6 @@
                   <mat-button-toggle (click)="setGracePeriod('Total')" >Total</mat-button-toggle>
                 </mat-button-toggle-group>
               </div>
-
               <form [formGroup]="gracePeriodFormGroup" *ngIf="this.gracePeriod!='Cero'" >
 
                 <div style="display: flex; width: 90%; justify-content: space-between">
@@ -234,7 +233,88 @@
                   </mat-error>
                 </mat-form-field>
               </form>
-              <button mat-raised-button color="primary" class="button-login" style="width: 90%; height: 50px;" (click)="simulate()">Simular</button>
+
+              <div style="margin-bottom: 0.5rem">
+                <p>Intereses y Gastos Compensatorios</p>
+                <div>
+                  <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+                    <mat-button-toggle (click)="setInputCompensatory('interes')" checked >Interes</mat-button-toggle>
+                    <mat-button-toggle (click)="setInputCompensatory('gasto')">Gasto</mat-button-toggle>
+                  </mat-button-toggle-group>
+                </div>
+                <div *ngIf="this.compensatory=='interes'">
+                  <form [formGroup]="CompensatoryInterestGroup"  >
+                    <mat-form-field appearance="fill" style="width: 55%;margin-top: 10px;" >
+                      <mat-label>Tasa de Interes (Nombre)</mat-label>
+                      <input matInput formControlName="nombre">
+                      <mat-error *ngIf="CompensatoryInterestGroup.get('nombre')?.hasError('required')">
+                        Nombre es <strong>requerido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 30%;margin-top: 10px;">
+                      <mat-label >%</mat-label>
+                      <input matInput type="number" formControlName="valor">
+                      <mat-error *ngIf="CompensatoryInterestGroup.get('valor')?.hasError('required')">
+                        Porcentaje es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatoryInterestGroup.get('valor')?.hasError('min') || CompensatoryInterestGroup.get('valor')?.hasError('max')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                  </form>
+                </div>
+                <div *ngIf="this.compensatory!='interes'">
+                  <form [formGroup]="CompensatoryExpenseGroup"  >
+                    <mat-form-field appearance="fill" style="width: 55%;margin-top: 10px;" >
+                      <mat-label>Gasto Compensatorio (Nombre)</mat-label>
+                      <input matInput formControlName="nombre">
+                      <mat-error *ngIf="CompensatoryExpenseGroup.get('nombre')?.hasError('required')">
+                        Nombre es <strong>requerido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 30%;margin-top: 10px;">
+                      <mat-label >S/.</mat-label>
+                      <input matInput formControlName="valor" type="number">
+                      <mat-error *ngIf="CompensatoryExpenseGroup.get('valor')?.hasError('required')">
+                        Monto es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatoryExpenseGroup.get('valor')?.hasError('min')	">
+                        Ingrese un monto <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                  </form>
+                </div>
+              </div>
+              <div *ngFor="let item of compensatoryInterestArray">
+                <mat-card style="margin: 1rem;">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">INTERES COMPENSATORIO</p>
+                      <p>{{ item.name }}</p>
+                      <p>{{ item.value }} %</p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteInterestArrayByName(item.name)" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div *ngFor="let item of compensatoryExpenseArray">
+                <mat-card style="margin: 1rem">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">GASTO COMPENSATORIO</p>
+                      <p>{{ item.name }}</p>
+                      <p>S/ {{ item.value }} </p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteExpenseArrayByName(item.name)" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>              </div>
+              <button mat-raised-button color="primary" class="button-login" style="width: 100%; height: 50px;" (click)="simulate()">Simular</button>
             </form>
           </mat-card>
         </div>

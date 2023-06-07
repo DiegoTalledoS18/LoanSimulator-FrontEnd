@@ -40,6 +40,19 @@ interface GracePeriod {
   viewValue: string;
 }
 
+interface Interest {
+  name: string;
+  value: number;
+}
+interface Expense {
+  name: string;
+  value: number;
+}
+
+interface GracePeriod {
+  viewValue: string;
+}
+
 export interface Cronograma {
   vencimiento: Date;
   mes: number;
@@ -83,6 +96,15 @@ export class CalculatorComponent implements AfterViewInit {
     seguro: new FormControl('', [Validators.required]),
   })
 
+  CompensatoryInterestGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(87.91)]),//segun el BCR
+  })
+  CompensatoryExpenseGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0)]),
+  })
+
   gracePeriodFormGroup = new FormGroup({
     meses: new FormControl('', [Validators.required,Validators.min(1), Validators.max(parseInt(<string>this.userFormGroup.get('tiempo')?.value))]),
     capitalizacion: new FormControl(false, [Validators.required]),
@@ -97,6 +119,7 @@ export class CalculatorComponent implements AfterViewInit {
   gracePeriodWithCapitalization = false;
   calculateSend = false;
   gracePeriod = "Cero";
+  compensatory="interes";
   panelOpenState = false;
   fecha = "";
   minDate = new Date();
@@ -107,6 +130,8 @@ export class CalculatorComponent implements AfterViewInit {
   VAN="";
   TIR="";
   flag = false;
+  compensatoryInterestArray:Interest[]=[]
+  compensatoryExpenseArray:Expense[]=[]
 
 
   desgravamens: Desgravamen[] = [
@@ -181,10 +206,52 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   next() {
-    if (this.userFormGroup.valid) {
+    /*if (this.userFormGroup.valid) {
       this.stepper = false;
-    }
+    }*/
+    this.stepper = false;
 
+  }
+  deleteInterestArrayByName(nombre: string) {
+    this.compensatoryInterestArray = this.compensatoryInterestArray.filter(item => item.name !== nombre);
+  }
+  deleteExpenseArrayByName(nombre: string) {
+    this.compensatoryExpenseArray = this.compensatoryExpenseArray.filter(item => item.name !== nombre);
+  }
+
+  addCompensatory(){
+    if(this.compensatory=="interes"){
+      if (this.CompensatoryInterestGroup.valid) {
+        let name = this.CompensatoryInterestGroup.get('nombre')?.value ?? "";
+        let valueString = this.CompensatoryInterestGroup.get('valor')?.value;
+        let value = parseInt(valueString ?? '0');
+        let newInterest: Interest = {
+          name: name as string,
+          value: value as number
+        };
+        if (!this.compensatoryInterestArray.some(item => item.name === newInterest.name)) {
+          this.compensatoryInterestArray.push(newInterest);
+        } else {
+          console.log("El nombre ya existe en el array.");
+        }
+      }
+
+    } else {
+      if (this.CompensatoryExpenseGroup.valid) {
+        let name = this.CompensatoryExpenseGroup.get('nombre')?.value ?? "";
+        let valueString = this.CompensatoryExpenseGroup.get('valor')?.value;
+        let value = parseInt(valueString ?? '0');
+        let newExpense: Expense = {
+          name: name as string,
+          value: value as number
+        };
+        if (!this.compensatoryExpenseArray.some(item => item.name === newExpense.name)) {
+          this.compensatoryExpenseArray.push(newExpense);
+        } else {
+          console.log("El nombre ya existe en el array.");
+        }
+      }
+    }
   }
   calcularVAN(flujosDeCaja: number[], tasaDescuento: number){
     let VAN = 0;
@@ -233,6 +300,10 @@ export class CalculatorComponent implements AfterViewInit {
 
   setGracePeriod(gracePeriod: string) {
     this.gracePeriod = gracePeriod;
+  }
+
+  setInputCompensatory(inputCompensatory: string) {
+    this.compensatory = inputCompensatory;
   }
 
   simulate() {

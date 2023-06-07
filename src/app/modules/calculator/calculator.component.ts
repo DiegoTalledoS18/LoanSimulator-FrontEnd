@@ -206,10 +206,9 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   next() {
-    /*if (this.userFormGroup.valid) {
+    if (this.userFormGroup.valid) {
       this.stepper = false;
-    }*/
-    this.stepper = false;
+    }
 
   }
   deleteInterestArrayByName(nombre: string) {

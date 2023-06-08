@@ -40,13 +40,13 @@ interface GracePeriod {
   viewValue: string;
 }
 
-interface Tasa {
+interface Compensatorio {
   name: string;
   value: number;
 }
-interface Expense {
-  name: string;
-  value: number;
+
+interface Gastos {
+  viewValue: string;
 }
 
 interface GracePeriod {
@@ -96,13 +96,33 @@ export class CalculatorComponent implements AfterViewInit {
     seguro: new FormControl('', [Validators.required]),
   })
 
-  CompensatoryInterestGroup = new FormGroup({
+  CompensatoryTasaGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(87.91)]),//segun el BCR
   })
-  CompensatoryExpenseGroup = new FormGroup({
+  CompensatoryComisionGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     valor: new FormControl('', [Validators.required, Validators.min(0)]),
+  })
+  CompensatorySeguroGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0)]),
+  })
+  CompensatoryAdministracionGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0)]),
+  })
+  CompensatoryFormalizacionGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0)]),
+  })
+  CompensatoryAdicionalGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0)]),
+  })
+  CompensatoryRetencionGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
   })
 
   gracePeriodFormGroup = new FormGroup({
@@ -119,7 +139,8 @@ export class CalculatorComponent implements AfterViewInit {
   gracePeriodWithCapitalization = false;
   calculateSend = false;
   gracePeriod = "Cero";
-  compensatory="tasa";
+  compensatory="Comision";
+  category="Gastos";
   panelOpenState = false;
   fecha = "";
   minDate = new Date();
@@ -130,8 +151,16 @@ export class CalculatorComponent implements AfterViewInit {
   VAN="";
   TIR="";
   flag = false;
-  compensatoryTasaArray:Tasa[]=[]
-  compensatoryExpenseArray:Expense[]=[]
+  compensatoryTasaArray:Compensatorio[]=[]
+  compensatoryComisionArray:Compensatorio[]=[]
+  compensatoryRetencionArray:Compensatorio[]=[]
+  foods: Gastos[] = [
+    {viewValue: 'Gastos administrativos'},
+    {viewValue: 'Comisiones'},
+    {viewValue: 'Seguros'},
+    {viewValue: 'Gastos de formalización'},
+    {viewValue: 'Otros costos adicionales'},
+  ];
 
 
   desgravamens: Desgravamen[] = [
@@ -208,24 +237,55 @@ export class CalculatorComponent implements AfterViewInit {
   next() {
     if (this.userFormGroup.valid) {
       this.stepper = false;
+      this.stepper = false;
+      this.addTNM()
+      this.setGastosList()
     }
-    //this.stepper = false;
+    /*this.stepper = false;
+    this.addTNM()
+    this.setGastosList()*/
+
+
+  }
+  calculateTNM(){
+    let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
+    let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
+    if (tipotasa == 'Tasa Nominal Anual') {
+      tasa = tasa/100
+      tasa = (1+tasa/360)**(360)-1
+    }
+
+    //Calculo de la Tasa Mensual
+    let tasaMensual = (1 + (tasa / 100)) ** (30/ 360) - 1
+    return tasaMensual
+  }
+  addTNM(){
+    let newTasa: Compensatorio = {
+      name: "Tasa Nominal Mensual",
+      value: this.calculateTNM()*100
+    };
+    this.compensatoryTasaArray.push(newTasa);
+  }
+  setGastosList(){
 
   }
   deleteInterestArrayByName(nombre: string) {
     this.compensatoryTasaArray = this.compensatoryTasaArray.filter(item => item.name !== nombre);
   }
-  deleteExpenseArrayByName(nombre: string) {
-    this.compensatoryExpenseArray = this.compensatoryExpenseArray.filter(item => item.name !== nombre);
+  deleteComisonArrayByName(nombre: string) {
+    this.compensatoryComisionArray = this.compensatoryComisionArray.filter(item => item.name !== nombre);
+  }
+  deleteRetencionArrayByName(nombre: string) {
+    this.compensatoryRetencionArray = this.compensatoryRetencionArray.filter(item => item.name !== nombre);
   }
 
   addCompensatory(){
-    if(this.compensatory=="tasa"){
-      if (this.CompensatoryInterestGroup.valid) {
-        let name = this.CompensatoryInterestGroup.get('nombre')?.value ?? "";
-        let valueString = this.CompensatoryInterestGroup.get('valor')?.value;
+    if(this.category=="Tasa"){
+      if (this.CompensatoryTasaGroup.valid) {
+        let name = this.CompensatoryTasaGroup.get('nombre')?.value ?? "";
+        let valueString = this.CompensatoryTasaGroup.get('valor')?.value;
         let value = parseFloat(valueString ?? '0');
-        let newTasa: Tasa = {
+        let newTasa: Compensatorio = {
           name: name as string,
           value: value as number
         };
@@ -234,26 +294,27 @@ export class CalculatorComponent implements AfterViewInit {
         } else {
           console.log("El nombre ya existe en el array.");
         }
-        this.CompensatoryInterestGroup.get('nombre')?.setValue("");
-        this.CompensatoryInterestGroup.get('valor')?.setValue("");
+        this.CompensatoryTasaGroup.get('nombre')?.setValue("");
+        this.CompensatoryTasaGroup.get('valor')?.setValue("");
       }
 
-    } else {
-      if (this.CompensatoryExpenseGroup.valid) {
-        let name = this.CompensatoryExpenseGroup.get('nombre')?.value ?? "";
-        let valueString = this.CompensatoryExpenseGroup.get('valor')?.value;
+    }
+    if(this.category=="Retencion") {
+      if (this.CompensatoryRetencionGroup.valid) {
+        let name = this.CompensatoryRetencionGroup.get('nombre')?.value ?? "";
+        let valueString = this.CompensatoryRetencionGroup.get('valor')?.value;
         let value = parseFloat(valueString ?? '0');
-        let newExpense: Expense = {
+        let newRetencion: Compensatorio = {
           name: name as string,
           value: value as number
         };
-        if (!this.compensatoryExpenseArray.some(item => item.name === newExpense.name)) {
-          this.compensatoryExpenseArray.push(newExpense);
+        if (!this.compensatoryRetencionArray.some(item => item.name === newRetencion.name)) {
+          this.compensatoryRetencionArray.push(newRetencion);
         } else {
           console.log("El nombre ya existe en el array.");
         }
-        this.CompensatoryExpenseGroup.get('nombre')?.setValue("");
-        this.CompensatoryExpenseGroup.get('valor')?.setValue("");
+        this.CompensatoryRetencionGroup.get('nombre')?.setValue("");
+        this.CompensatoryRetencionGroup.get('valor')?.setValue("");
       }
     }
   }
@@ -309,6 +370,9 @@ export class CalculatorComponent implements AfterViewInit {
   setInputCompensatory(inputCompensatory: string) {
     this.compensatory = inputCompensatory;
   }
+  setInputCategory(inputCategory: string) {
+    this.category = inputCategory;
+  }
   calculateTCEA(){
     if(this.compensatoryTasaArray.length!=0){
       this.calculateValorRecibido()
@@ -319,7 +383,7 @@ export class CalculatorComponent implements AfterViewInit {
     console.log("mes: "+mes)
     let mesToDia=mes*30
     const searchTerm = ["tnm", "nominal mensual", "tasa nominal mensual"];
-    const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.includes(tasa.name.toLowerCase()));
+    const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.some(term => tasa.name.toLowerCase().includes(term)));
     let TNM: number | undefined;
     if (foundTasa) {
       TNM = foundTasa.value/100;
@@ -335,8 +399,10 @@ export class CalculatorComponent implements AfterViewInit {
       let descuento=TasaDiariaEquivalente*98150//remplazar por capital
       console.log("descuento: "+descuento)
 
-      let valorNetoRecibido=98150-descuento//remplazar 98150 por capital
-      console.log("valorNetoRecibido: "+valorNetoRecibido)
+      let valorNetoRecibidoALFDP=98150-descuento//remplazar 98150 por capital
+      console.log("valorNetoRecibidoALFDP: "+valorNetoRecibidoALFDP)
+
+      let valorNetoRecibido=valorNetoRecibidoALFDP
 
 
 
@@ -403,7 +469,6 @@ export class CalculatorComponent implements AfterViewInit {
           }
         }
       }
-
     }
   }
   calculateTableData() {

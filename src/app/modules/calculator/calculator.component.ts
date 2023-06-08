@@ -40,7 +40,7 @@ interface GracePeriod {
   viewValue: string;
 }
 
-interface Interest {
+interface Tasa {
   name: string;
   value: number;
 }
@@ -119,7 +119,7 @@ export class CalculatorComponent implements AfterViewInit {
   gracePeriodWithCapitalization = false;
   calculateSend = false;
   gracePeriod = "Cero";
-  compensatory="interes";
+  compensatory="tasa";
   panelOpenState = false;
   fecha = "";
   minDate = new Date();
@@ -130,7 +130,7 @@ export class CalculatorComponent implements AfterViewInit {
   VAN="";
   TIR="";
   flag = false;
-  compensatoryInterestArray:Interest[]=[]
+  compensatoryTasaArray:Tasa[]=[]
   compensatoryExpenseArray:Expense[]=[]
 
 
@@ -209,37 +209,40 @@ export class CalculatorComponent implements AfterViewInit {
     if (this.userFormGroup.valid) {
       this.stepper = false;
     }
+    //this.stepper = false;
 
   }
   deleteInterestArrayByName(nombre: string) {
-    this.compensatoryInterestArray = this.compensatoryInterestArray.filter(item => item.name !== nombre);
+    this.compensatoryTasaArray = this.compensatoryTasaArray.filter(item => item.name !== nombre);
   }
   deleteExpenseArrayByName(nombre: string) {
     this.compensatoryExpenseArray = this.compensatoryExpenseArray.filter(item => item.name !== nombre);
   }
 
   addCompensatory(){
-    if(this.compensatory=="interes"){
+    if(this.compensatory=="tasa"){
       if (this.CompensatoryInterestGroup.valid) {
         let name = this.CompensatoryInterestGroup.get('nombre')?.value ?? "";
         let valueString = this.CompensatoryInterestGroup.get('valor')?.value;
-        let value = parseInt(valueString ?? '0');
-        let newInterest: Interest = {
+        let value = parseFloat(valueString ?? '0');
+        let newTasa: Tasa = {
           name: name as string,
           value: value as number
         };
-        if (!this.compensatoryInterestArray.some(item => item.name === newInterest.name)) {
-          this.compensatoryInterestArray.push(newInterest);
+        if (!this.compensatoryTasaArray.some(item => item.name === newTasa.name)) {
+          this.compensatoryTasaArray.push(newTasa);
         } else {
           console.log("El nombre ya existe en el array.");
         }
+        this.CompensatoryInterestGroup.get('nombre')?.setValue("");
+        this.CompensatoryInterestGroup.get('valor')?.setValue("");
       }
 
     } else {
       if (this.CompensatoryExpenseGroup.valid) {
         let name = this.CompensatoryExpenseGroup.get('nombre')?.value ?? "";
         let valueString = this.CompensatoryExpenseGroup.get('valor')?.value;
-        let value = parseInt(valueString ?? '0');
+        let value = parseFloat(valueString ?? '0');
         let newExpense: Expense = {
           name: name as string,
           value: value as number
@@ -249,6 +252,8 @@ export class CalculatorComponent implements AfterViewInit {
         } else {
           console.log("El nombre ya existe en el array.");
         }
+        this.CompensatoryExpenseGroup.get('nombre')?.setValue("");
+        this.CompensatoryExpenseGroup.get('valor')?.setValue("");
       }
     }
   }
@@ -304,9 +309,49 @@ export class CalculatorComponent implements AfterViewInit {
   setInputCompensatory(inputCompensatory: string) {
     this.compensatory = inputCompensatory;
   }
+  calculateTCEA(){
+    if(this.compensatoryTasaArray.length!=0){
+      this.calculateValorRecibido()
+    }
+  }
+  calculateValorRecibido(){
+    let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
+    console.log("mes: "+mes)
+    let mesToDia=mes*30
+    const searchTerm = ["tnm", "nominal mensual", "tasa nominal mensual"];
+    const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.includes(tasa.name.toLowerCase()));
+    let TNM: number | undefined;
+    if (foundTasa) {
+      TNM = foundTasa.value/100;
+      console.log("TNM: "+TNM)
+
+      let TEC= ((1 + TNM / 30) ** 120)- 1;//remplazar 120 por mesToDia
+      console.log("tec: "+TEC)
+
+      let TasaDiariaEquivalente=TEC / (1 + TEC)
+      console.log("tasa diaria Equ: "+TasaDiariaEquivalente)
+
+      let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
+      let descuento=TasaDiariaEquivalente*98150//remplazar por capital
+      console.log("descuento: "+descuento)
+
+      let valorNetoRecibido=98150-descuento//remplazar 98150 por capital
+      console.log("valorNetoRecibido: "+valorNetoRecibido)
+
+
+
+    } else {
+      console.log("Tasa Nominal Mensual no encontrada");
+    }
+
+// Hacer uso de la variable 'value' en el resto del código
+
+
+
+  }
 
   simulate() {
-
+    this.calculateTCEA()
     this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#ffffff';
 

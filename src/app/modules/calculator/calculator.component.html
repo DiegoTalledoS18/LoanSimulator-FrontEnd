@@ -238,14 +238,14 @@
                 <p>Intereses y Gastos Compensatorios</p>
                 <div>
                   <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-                    <mat-button-toggle (click)="setInputCompensatory('interes')" checked >Interes</mat-button-toggle>
+                    <mat-button-toggle (click)="setInputCompensatory('tasa')" checked >Tasa</mat-button-toggle>
                     <mat-button-toggle (click)="setInputCompensatory('gasto')">Gasto</mat-button-toggle>
                   </mat-button-toggle-group>
                 </div>
-                <div *ngIf="this.compensatory=='interes'">
+                <div *ngIf="this.compensatory=='tasa'">
                   <form [formGroup]="CompensatoryInterestGroup"  >
-                    <mat-form-field appearance="fill" style="width: 55%;margin-top: 10px;" >
-                      <mat-label>Tasa de Interes (Nombre)</mat-label>
+                    <mat-form-field appearance="fill" style="width: 54%;margin-top: 10px;" >
+                      <mat-label>Tasa Compensatoria (Nombre)</mat-label>
                       <input matInput formControlName="nombre">
                       <mat-error *ngIf="CompensatoryInterestGroup.get('nombre')?.hasError('required')">
                         Nombre es <strong>requerido</strong>
@@ -264,9 +264,9 @@
                     <button mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
                   </form>
                 </div>
-                <div *ngIf="this.compensatory!='interes'">
+                <div *ngIf="this.compensatory!='tasa'">
                   <form [formGroup]="CompensatoryExpenseGroup"  >
-                    <mat-form-field appearance="fill" style="width: 55%;margin-top: 10px;" >
+                    <mat-form-field appearance="fill" style="width: 54%;margin-top: 10px;" >
                       <mat-label>Gasto Compensatorio (Nombre)</mat-label>
                       <input matInput formControlName="nombre">
                       <mat-error *ngIf="CompensatoryExpenseGroup.get('nombre')?.hasError('required')">
@@ -287,11 +287,11 @@
                   </form>
                 </div>
               </div>
-              <div *ngFor="let item of compensatoryInterestArray">
+              <div *ngFor="let item of compensatoryTasaArray">
                 <mat-card style="margin: 1rem;">
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                      <p style="font-weight: bolder">INTERES COMPENSATORIO</p>
+                      <p style="font-weight: bolder">TASA COMPENSATORIA</p>
                       <p>{{ item.name }}</p>
                       <p>{{ item.value }} %</p>
                     </div>

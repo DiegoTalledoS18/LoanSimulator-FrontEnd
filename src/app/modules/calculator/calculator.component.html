@@ -266,12 +266,40 @@
                   </form>
                 </div>
                 <div *ngIf="this.category=='Gastos'">
-                  <form [formGroup]="CompensatoryComisionGroup"  >
+                  <form [formGroup]="CompensatoryAdministracionGroup" *ngIf="selectedGasto=='Gastos administrativos'" >
                     <mat-form-field style="width: 20%;margin-top: 20px;">
                       <mat-label>Tipo de gasto</mat-label>
-                      <mat-select>
-                        <mat-option *ngFor="let food of foods" [value]="food.viewValue">
-                          {{food.viewValue}}
+                      <mat-select (selectionChange)="onGastoSelectionChange($event)" [(value)]="selectedGasto">
+                        <mat-option *ngFor="let gasto of gastos" [value]="gasto.viewValue">
+                          {{gasto.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
+                      <mat-label>Gasto Administrativo (Nombre)</mat-label>
+                      <input matInput formControlName="nombre">
+                      <mat-error *ngIf="CompensatoryAdministracionGroup.get('nombre')?.hasError('required')">
+                        Nombre es <strong>requerido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
+                      <mat-label >S/.</mat-label>
+                      <input matInput formControlName="valor" type="number">
+                      <mat-error *ngIf="CompensatoryAdministracionGroup.get('valor')?.hasError('required')">
+                        Monto es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatoryAdministracionGroup.get('valor')?.hasError('min')	">
+                        Ingrese un monto <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                  </form>
+                  <form [formGroup]="CompensatoryComisionGroup" *ngIf="selectedGasto=='Comisiones'" >
+                    <mat-form-field style="width: 20%;margin-top: 20px;">
+                      <mat-label>Tipo de gasto</mat-label>
+                      <mat-select (selectionChange)="onGastoSelectionChange($event)" [(value)]="selectedGasto">
+                        <mat-option *ngFor="let gasto of gastos" [value]="gasto.viewValue">
+                          {{gasto.viewValue}}
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
@@ -290,6 +318,93 @@
                       </mat-error>
                       <mat-error *ngIf="CompensatoryComisionGroup.get('valor')?.hasError('min')	">
                         Ingrese un monto <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                  </form>
+                  <form [formGroup]="CompensatorySeguroGroup" *ngIf="selectedGasto=='Seguros'" >
+                    <mat-form-field style="width: 20%;margin-top: 20px;">
+                      <mat-label>Tipo de gasto</mat-label>
+                      <mat-select (selectionChange)="onGastoSelectionChange($event)" [(value)]="selectedGasto">
+                        <mat-option *ngFor="let gasto of gastos" [value]="gasto.viewValue">
+                          {{gasto.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
+                      <mat-label>Seguro (Nombre)</mat-label>
+                      <input matInput formControlName="nombre">
+                      <mat-error *ngIf="CompensatorySeguroGroup.get('nombre')?.hasError('required')">
+                        Nombre es <strong>requerido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
+                      <mat-label >%</mat-label>
+                      <input matInput formControlName="valor" type="number">
+                      <mat-error *ngIf="CompensatorySeguroGroup.get('valor')?.hasError('required')">
+                        Porcentaje es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatorySeguroGroup.get('valor')?.hasError('min')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatorySeguroGroup.get('valor')?.hasError('max')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                  </form>
+                  <form [formGroup]="CompensatoryFormalizacionGroup" *ngIf="selectedGasto=='Gastos de formalización'" >
+                    <mat-form-field style="width: 20%;margin-top: 20px;">
+                      <mat-label>Tipo de gasto</mat-label>
+                      <mat-select (selectionChange)="onGastoSelectionChange($event)" [(value)]="selectedGasto">
+                        <mat-option *ngFor="let gasto of gastos" [value]="gasto.viewValue">
+                          {{gasto.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
+                      <mat-label>Gastos de formalización (Nombre)</mat-label>
+                      <input matInput formControlName="nombre">
+                      <mat-error *ngIf="CompensatoryFormalizacionGroup.get('nombre')?.hasError('required')">
+                        Nombre es <strong>requerido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
+                      <mat-label >S/</mat-label>
+                      <input matInput formControlName="valor" type="number">
+                      <mat-error *ngIf="CompensatoryFormalizacionGroup.get('valor')?.hasError('required')">
+                        Monto es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatoryFormalizacionGroup.get('valor')?.hasError('min')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                  </form>
+                  <form [formGroup]="CompensatoryAdicionalGroup" *ngIf="selectedGasto=='Otros costos adicionales'" >
+                    <mat-form-field style="width: 20%;margin-top: 20px;">
+                      <mat-label>Tipo de gasto</mat-label>
+                      <mat-select (selectionChange)="onGastoSelectionChange($event)" [(value)]="selectedGasto">
+                        <mat-option *ngFor="let gasto of gastos" [value]="gasto.viewValue">
+                          {{gasto.viewValue}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
+                      <mat-label>Costo Adicional (Nombre)</mat-label>
+                      <input matInput formControlName="nombre">
+                      <mat-error *ngIf="CompensatoryAdicionalGroup.get('nombre')?.hasError('required')">
+                        Nombre es <strong>requerido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
+                      <mat-label >S/</mat-label>
+                      <input matInput formControlName="valor" type="number">
+                      <mat-error *ngIf="CompensatoryAdicionalGroup.get('valor')?.hasError('required')">
+                        Monto es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="CompensatoryAdicionalGroup.get('valor')?.hasError('min')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
                       </mat-error>
                     </mat-form-field>
                     <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
@@ -330,21 +445,7 @@
                       <p>{{ item.value }} %</p>
                     </div>
                     <div>
-                      <button mat-flat-button color="primary" (click)="deleteInterestArrayByName(item.name)" style="margin: auto;">Eliminar</button>
-                    </div>
-                  </mat-card-content>
-                </mat-card>
-              </div>
-              <div *ngFor="let item of compensatoryComisionArray">
-                <mat-card style="margin: 1rem">
-                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                      <p style="font-weight: bolder">COMISION</p>
-                      <p>{{ item.name }}</p>
-                      <p>S/ {{ item.value }} </p>
-                    </div>
-                    <div>
-                      <button mat-flat-button color="primary" (click)="deleteComisonArrayByName(item.name)" style="margin: auto;">Eliminar</button>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'null')" style="margin: auto;">Eliminar</button>
                     </div>
                   </mat-card-content>
                 </mat-card>
@@ -358,7 +459,77 @@
                       <p>{{ item.value }} %</p>
                     </div>
                     <div>
-                      <button mat-flat-button color="primary" (click)="deleteRetencionArrayByName(item.name)" style="margin: auto;">Eliminar</button>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'null')" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div *ngFor="let item of compensatoryAdministrativosArray">
+                <mat-card style="margin: 1rem" *ngIf="this.category=='Gastos'">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">GASTOS ADMINISTRATIVOS</p>
+                      <p>{{ item.name }}</p>
+                      <p>S/ {{ item.value }} </p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'Gastos administrativos')" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div *ngFor="let item of compensatorySegurosArray">
+                <mat-card style="margin: 1rem" *ngIf="this.category=='Gastos'">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">SEGUROS</p>
+                      <p>{{ item.name }}</p>
+                      <p>{{ item.value }} %</p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'Seguros')" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div *ngFor="let item of compensatoryFormalizacionArray">
+                <mat-card style="margin: 1rem" *ngIf="this.category=='Gastos'">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">GASTOS DE FORMALIZACION</p>
+                      <p>{{ item.name }}</p>
+                      <p>S/ {{ item.value }}</p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'Gastos de formalización')" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div *ngFor="let item of compensatoryComisionArray">
+                <mat-card style="margin: 1rem" *ngIf="this.category=='Gastos'">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">COMISION</p>
+                      <p>{{ item.name }}</p>
+                      <p>S/ {{ item.value }} </p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'Comisiones')" style="margin: auto;">Eliminar</button>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div *ngFor="let item of compensatoryOtrosArray">
+                <mat-card style="margin: 1rem" *ngIf="this.category=='Gastos'">
+                  <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                      <p style="font-weight: bolder">OTROS GASTOS</p>
+                      <p>{{ item.name }}</p>
+                      <p>S/ {{ item.value }} </p>
+                    </div>
+                    <div>
+                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'Otros costos adicionales')" style="margin: auto;">Eliminar</button>
                     </div>
                   </mat-card-content>
                 </mat-card>

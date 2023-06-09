@@ -106,7 +106,7 @@ export class CalculatorComponent implements AfterViewInit {
   })
   CompensatorySeguroGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
-    valor: new FormControl('', [Validators.required, Validators.min(0)]),
+    valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
   })
   CompensatoryAdministracionGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
@@ -153,8 +153,12 @@ export class CalculatorComponent implements AfterViewInit {
   flag = false;
   compensatoryTasaArray:Compensatorio[]=[]
   compensatoryComisionArray:Compensatorio[]=[]
+  compensatoryAdministrativosArray:Compensatorio[]=[]
+  compensatorySegurosArray:Compensatorio[]=[]
+  compensatoryOtrosArray:Compensatorio[]=[]
+  compensatoryFormalizacionArray:Compensatorio[]=[]
   compensatoryRetencionArray:Compensatorio[]=[]
-  foods: Gastos[] = [
+  gastos: Gastos[] = [
     {viewValue: 'Gastos administrativos'},
     {viewValue: 'Comisiones'},
     {viewValue: 'Seguros'},
@@ -185,6 +189,8 @@ export class CalculatorComponent implements AfterViewInit {
     {viewValue: 'Total'},
     {viewValue: 'Parcial'},
   ];
+
+  selectedGasto: string = 'Gastos administrativos';
 
   ELEMENT_DATA: Cronograma[] = []
   displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'subvencion'];
@@ -259,6 +265,10 @@ export class CalculatorComponent implements AfterViewInit {
     let tasaMensual = (1 + (tasa / 100)) ** (30/ 360) - 1
     return tasaMensual
   }
+  onGastoSelectionChange(event: any) {
+    this.selectedGasto = event.value;
+    console.log('Gasto seleccionado:', this.selectedGasto);
+  }
   addTNM(){
     let newTasa: Compensatorio = {
       name: "Tasa Nominal Mensual",
@@ -269,18 +279,34 @@ export class CalculatorComponent implements AfterViewInit {
   setGastosList(){
 
   }
-  deleteInterestArrayByName(nombre: string) {
-    this.compensatoryTasaArray = this.compensatoryTasaArray.filter(item => item.name !== nombre);
-  }
-  deleteComisonArrayByName(nombre: string) {
-    this.compensatoryComisionArray = this.compensatoryComisionArray.filter(item => item.name !== nombre);
-  }
-  deleteRetencionArrayByName(nombre: string) {
-    this.compensatoryRetencionArray = this.compensatoryRetencionArray.filter(item => item.name !== nombre);
+  deleteArrayElementByName(nombre: string,gastoType: string) {
+    if(this.category=="Tasas"){
+      this.compensatoryTasaArray = this.compensatoryTasaArray.filter(item => item.name !== nombre);
+    }
+    if(this.category=="Retencion") {
+      this.compensatoryRetencionArray = this.compensatoryRetencionArray.filter(item => item.name !== nombre);
+    }
+    if(this.category=="Gastos"){
+      if(gastoType=="Gastos administrativos"){
+        this.compensatoryAdministrativosArray = this.compensatoryAdministrativosArray.filter(item => item.name !== nombre);
+      }
+      if(gastoType=="Comisiones"){
+        this.compensatoryComisionArray = this.compensatoryComisionArray.filter(item => item.name !== nombre);
+      }
+      if(gastoType=="Seguros"){
+        this.compensatorySegurosArray = this.compensatorySegurosArray.filter(item => item.name !== nombre);
+      }
+      if(gastoType=="Gastos de formalización"){
+        this.compensatoryFormalizacionArray = this.compensatoryFormalizacionArray.filter(item => item.name !== nombre);
+      }
+      if(gastoType=="Otros costos adicionales"){
+        this.compensatoryOtrosArray = this.compensatoryOtrosArray.filter(item => item.name !== nombre);
+      }
+    }
   }
 
   addCompensatory(){
-    if(this.category=="Tasa"){
+    if(this.category=="Tasas"){
       if (this.CompensatoryTasaGroup.valid) {
         let name = this.CompensatoryTasaGroup.get('nombre')?.value ?? "";
         let valueString = this.CompensatoryTasaGroup.get('valor')?.value;
@@ -315,6 +341,99 @@ export class CalculatorComponent implements AfterViewInit {
         }
         this.CompensatoryRetencionGroup.get('nombre')?.setValue("");
         this.CompensatoryRetencionGroup.get('valor')?.setValue("");
+      }
+    }
+    if(this.category=="Gastos"){
+      if(this.selectedGasto=="Gastos administrativos"){
+        if (this.CompensatoryAdministracionGroup.valid) {
+          let name = this.CompensatoryAdministracionGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatoryAdministracionGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newAdministracion: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatoryAdministrativosArray.some(item => item.name === newAdministracion.name)) {
+            this.compensatoryAdministrativosArray.push(newAdministracion);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatoryAdministracionGroup.get('nombre')?.setValue("");
+          this.CompensatoryAdministracionGroup.get('valor')?.setValue("");
+        }
+      }
+      if(this.selectedGasto=="Comisiones"){
+        if (this.CompensatoryComisionGroup.valid) {
+          let name = this.CompensatoryComisionGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatoryComisionGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newComision: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatoryComisionArray.some(item => item.name === newComision.name)) {
+            this.compensatoryComisionArray.push(newComision);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatoryComisionGroup.get('nombre')?.setValue("");
+          this.CompensatoryComisionGroup.get('valor')?.setValue("");
+        }
+      }
+      if(this.selectedGasto=="Seguros"){
+        if (this.CompensatorySeguroGroup.valid) {
+          let name = this.CompensatorySeguroGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatorySeguroGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newSeguro: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatorySegurosArray.some(item => item.name === newSeguro.name)) {
+            this.compensatorySegurosArray.push(newSeguro);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatorySeguroGroup.get('nombre')?.setValue("");
+          this.CompensatorySeguroGroup.get('valor')?.setValue("");
+        }
+
+      }
+      if(this.selectedGasto=="Gastos de formalización"){
+        if (this.CompensatoryFormalizacionGroup.valid) {
+          let name = this.CompensatoryFormalizacionGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatoryFormalizacionGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newFormalizacion: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatoryFormalizacionArray.some(item => item.name === newFormalizacion.name)) {
+            this.compensatoryFormalizacionArray.push(newFormalizacion);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatoryFormalizacionGroup.get('nombre')?.setValue("");
+          this.CompensatoryFormalizacionGroup.get('valor')?.setValue("");
+        }
+      }
+      if(this.selectedGasto=="Otros costos adicionales"){
+        if (this.CompensatoryAdicionalGroup.valid) {
+          let name = this.CompensatoryAdicionalGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatoryAdicionalGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newAdicional: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatoryOtrosArray.some(item => item.name === newAdicional.name)) {
+            this.compensatoryOtrosArray.push(newAdicional);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatoryAdicionalGroup.get('nombre')?.setValue("");
+          this.CompensatoryAdicionalGroup.get('valor')?.setValue("");
+        }
       }
     }
   }

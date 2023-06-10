@@ -13,6 +13,8 @@ import {MatDatepicker} from "@angular/material/datepicker";
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
+import {MatButtonModule} from "@angular/material/button";
 
 @Pipe({
   name: 'customDate'
@@ -89,13 +91,11 @@ export class CalculatorComponent implements AfterViewInit {
     tiempo: new FormControl('', [Validators.required, Validators.min(60), Validators.max(300)]),
     moneda: new FormControl('', [Validators.required]),
   });
-
   PayFormGroup = new FormGroup({
     diaDePago: new FormControl('', [Validators.required, Validators.min(1), Validators.max(30)]),
     fechaSolicitud: new FormControl(Date, [Validators.required]),
     seguro: new FormControl('', [Validators.required]),
   })
-
   CompensatoryTasaGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(87.91)]),//segun el BCR
@@ -107,6 +107,14 @@ export class CalculatorComponent implements AfterViewInit {
   CompensatorySeguroGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
+  })
+  CompensatoryPenalidadGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(10)]),//No mayor al 10%
+  })
+  CompensatoryPortesGroup = new FormGroup({
+    nombre: new FormControl('', [Validators.required]),
+    valor: new FormControl('', [Validators.required, Validators.min(0)]),
   })
   CompensatoryAdministracionGroup = new FormGroup({
     nombre: new FormControl('', [Validators.required]),
@@ -124,17 +132,14 @@ export class CalculatorComponent implements AfterViewInit {
     nombre: new FormControl('', [Validators.required]),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
   })
-
   gracePeriodFormGroup = new FormGroup({
     meses: new FormControl('', [Validators.required,Validators.min(1), Validators.max(parseInt(<string>this.userFormGroup.get('tiempo')?.value))]),
     capitalizacion: new FormControl(false, [Validators.required]),
   })
-
   bornDatesFormGroup = new FormGroup({
     primerTitular: new FormControl(Date, [Validators.required]),
     segundoTitular: new FormControl(Date, [Validators.required])
   })
-
   stepper = true;
   gracePeriodWithCapitalization = false;
   calculateSend = false;
@@ -151,21 +156,26 @@ export class CalculatorComponent implements AfterViewInit {
   VAN="";
   TIR="";
   flag = false;
+  TCEA=0;
   compensatoryTasaArray:Compensatorio[]=[]
   compensatoryComisionArray:Compensatorio[]=[]
+  compensatoryPenalidadArray:Compensatorio[]=[]
+  compensatoryPortesArray:Compensatorio[]=[]
   compensatoryAdministrativosArray:Compensatorio[]=[]
   compensatorySegurosArray:Compensatorio[]=[]
   compensatoryOtrosArray:Compensatorio[]=[]
   compensatoryFormalizacionArray:Compensatorio[]=[]
   compensatoryRetencionArray:Compensatorio[]=[]
+
   gastos: Gastos[] = [
     {viewValue: 'Gastos administrativos'},
     {viewValue: 'Comisiones'},
     {viewValue: 'Seguros'},
+    {viewValue: 'Penalidad'},
+    {viewValue: 'Portes'},
     {viewValue: 'Gastos de formalización'},
     {viewValue: 'Otros costos adicionales'},
   ];
-
 
   desgravamens: Desgravamen[] = [
     {viewValue: 'Sin seguro'},
@@ -241,15 +251,16 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   next() {
-    if (this.userFormGroup.valid) {
+    /*if (this.userFormGroup.valid) {
       this.stepper = false;
       this.stepper = false;
       this.addTNM()
       this.setGastosList()
-    }
-    /*this.stepper = false;
+    }*/
+    this.stepper = false;
+    this.category="Gastos";
     this.addTNM()
-    this.setGastosList()*/
+    this.setGastosList()
 
 
   }
@@ -274,14 +285,22 @@ export class CalculatorComponent implements AfterViewInit {
       name: "Tasa Nominal Mensual",
       value: this.calculateTNM()*100
     };
-    this.compensatoryTasaArray.push(newTasa);
+    if(this.compensatoryTasaArray.length==0){
+      this.compensatoryTasaArray.push(newTasa);
+    }
   }
   setGastosList(){
 
   }
   deleteArrayElementByName(nombre: string,gastoType: string) {
     if(this.category=="Tasas"){
-      this.compensatoryTasaArray = this.compensatoryTasaArray.filter(item => item.name !== nombre);
+      const shouldDelete = confirm('¿Estás seguro que deseas borrar la tasa compensatoria establecida?\n ' +
+        'Esto podria afectar seriamente los calculos en la simulacion.');
+      if (shouldDelete) {
+        this.compensatoryTasaArray = this.compensatoryTasaArray.filter(item => item.name !== nombre);
+      } else {
+        return
+      }
     }
     if(this.category=="Retencion") {
       this.compensatoryRetencionArray = this.compensatoryRetencionArray.filter(item => item.name !== nombre);
@@ -295,6 +314,12 @@ export class CalculatorComponent implements AfterViewInit {
       }
       if(gastoType=="Seguros"){
         this.compensatorySegurosArray = this.compensatorySegurosArray.filter(item => item.name !== nombre);
+      }
+      if(gastoType=="Penalidad"){
+        this.compensatoryPenalidadArray = this.compensatoryPenalidadArray.filter(item => item.name !== nombre);
+      }
+      if(gastoType=="Portes"){
+        this.compensatoryPortesArray = this.compensatoryPortesArray.filter(item => item.name !== nombre);
       }
       if(gastoType=="Gastos de formalización"){
         this.compensatoryFormalizacionArray = this.compensatoryFormalizacionArray.filter(item => item.name !== nombre);
@@ -399,6 +424,44 @@ export class CalculatorComponent implements AfterViewInit {
         }
 
       }
+      if(this.selectedGasto=="Penalidad"){
+        if (this.CompensatoryPenalidadGroup.valid) {
+          let name = this.CompensatoryPenalidadGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatoryPenalidadGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newPenal: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatoryPenalidadArray.some(item => item.name === newPenal.name)) {
+            this.compensatoryPenalidadArray.push(newPenal);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatoryPenalidadGroup.get('nombre')?.setValue("");
+          this.CompensatoryPenalidadGroup.get('valor')?.setValue("");
+        }
+
+      }
+      if(this.selectedGasto=="Portes"){
+        if (this.CompensatoryPortesGroup.valid) {
+          let name = this.CompensatoryPortesGroup.get('nombre')?.value ?? "";
+          let valueString = this.CompensatoryPortesGroup.get('valor')?.value;
+          let value = parseFloat(valueString ?? '0');
+          let newPenal: Compensatorio = {
+            name: name as string,
+            value: value as number
+          };
+          if (!this.compensatoryPortesArray.some(item => item.name === newPenal.name)) {
+            this.compensatoryPortesArray.push(newPenal);
+          } else {
+            console.log("El nombre ya existe en el array.");
+          }
+          this.CompensatoryPortesGroup.get('nombre')?.setValue("");
+          this.CompensatoryPortesGroup.get('valor')?.setValue("");
+        }
+
+      }
       if(this.selectedGasto=="Gastos de formalización"){
         if (this.CompensatoryFormalizacionGroup.valid) {
           let name = this.CompensatoryFormalizacionGroup.get('nombre')?.value ?? "";
@@ -448,7 +511,6 @@ export class CalculatorComponent implements AfterViewInit {
 
     return VAN;
   }
-
   calcularTIRIncrementalMejorado(flujosDeCaja: number[]) {
     const maxIteraciones = 10000; // Número máximo de iteraciones
     const precision = 0.00001; // Precisión para la aproximación de la TIR
@@ -480,28 +542,30 @@ export class CalculatorComponent implements AfterViewInit {
     return 0;
   }
 
-
-
   setGracePeriod(gracePeriod: string) {
     this.gracePeriod = gracePeriod;
   }
 
-  setInputCompensatory(inputCompensatory: string) {
-    this.compensatory = inputCompensatory;
-  }
   setInputCategory(inputCategory: string) {
     this.category = inputCategory;
   }
   calculateTCEA(){
+    let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
+    let mesToDia=mes*30
     if(this.compensatoryTasaArray.length!=0){
-      this.calculateValorRecibido()
+      this.TCEA=((this.calculateValorEntregado()/this.calculateValorRecibido())/(360/120))-1//remplazar 120 por mesToDia
+      console.log("TCEA: "+this.TCEA)
+
+    }else {
+      console.log("Tasa Nominal No establecida")
+      //this.TCEA=0
     }
+
   }
   calculateValorRecibido(){
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
-    console.log("mes: "+mes)
     let mesToDia=mes*30
-    const searchTerm = ["tnm", "nominal mensual", "tasa nominal mensual"];
+    const searchTerm = ["tasa","compensatoria","tnm", "nominal mensual", "tasa nominal mensual"];
     const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.some(term => tasa.name.toLowerCase().includes(term)));
     let TNM: number | undefined;
     if (foundTasa) {
@@ -521,23 +585,71 @@ export class CalculatorComponent implements AfterViewInit {
       let valorNetoRecibidoALFDP=98150-descuento//remplazar 98150 por capital
       console.log("valorNetoRecibidoALFDP: "+valorNetoRecibidoALFDP)
 
+      //Le restamos tod0 menos los gastos administrativos
       let valorNetoRecibido=valorNetoRecibidoALFDP
-
-
-
+      if(this.compensatoryRetencionArray.length>0){
+        for (let i = 0; i < this.compensatoryRetencionArray.length; i++) {
+          valorNetoRecibido -= (this.compensatoryRetencionArray[i].value/100)*98150;//remplazar por capital
+        }
+      }
+      if(this.compensatorySegurosArray.length>0){
+        for (let i = 0; i < this.compensatorySegurosArray.length; i++) {
+          valorNetoRecibido -= (this.compensatorySegurosArray[i].value/100)*98150;//remplazar por capital
+        }
+      }
+      if(this.compensatoryPenalidadArray.length>0){
+        for (let i = 0; i < this.compensatoryPenalidadArray.length; i++) {
+          valorNetoRecibido -= (this.compensatoryPenalidadArray[i].value/100)*98150;//remplazar por capital
+        }
+      }
+      if(this.compensatoryFormalizacionArray.length>0){
+        for (let i = 0; i < this.compensatoryFormalizacionArray.length; i++) {
+          valorNetoRecibido -= (this.compensatoryFormalizacionArray[i].value);
+        }
+      }
+      if(this.compensatoryComisionArray.length>0){
+        for (let i = 0; i < this.compensatoryComisionArray.length; i++) {
+          valorNetoRecibido -= (this.compensatoryComisionArray[i].value);
+        }
+      }
+      if(this.compensatoryOtrosArray.length>0){
+        for (let i = 0; i < this.compensatoryOtrosArray.length; i++) {
+          valorNetoRecibido -= (this.compensatoryOtrosArray[i].value);
+        }
+      }
+      console.log("valorNetoRecibido: "+valorNetoRecibido)
+      return valorNetoRecibido
     } else {
       console.log("Tasa Nominal Mensual no encontrada");
+      return 0
     }
+  }
+  calculateValorEntregado(){
+    let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
+    let valorNetoEntregado=capital
 
-// Hacer uso de la variable 'value' en el resto del código
-
-
-
+    if(this.compensatoryRetencionArray.length>0){
+      for (let i = 0; i < this.compensatoryRetencionArray.length; i++) {
+        valorNetoEntregado -= (this.compensatoryRetencionArray[i].value/100)*98150;//remplazar por capital
+      }
+    }
+    if(this.compensatoryAdministrativosArray.length>0){
+      for (let i = 0; i < this.compensatoryAdministrativosArray.length; i++) {
+        valorNetoEntregado += (this.compensatoryAdministrativosArray[i].value);
+      }
+    }
+    if(this.compensatoryPortesArray.length>0){
+      for (let i = 0; i < this.compensatoryPortesArray.length; i++) {
+        valorNetoEntregado += (this.compensatoryPortesArray[i].value);
+      }
+    }
+    console.log("valorNetoEntregado: "+valorNetoEntregado)
+    return valorNetoEntregado
   }
 
   simulate() {
     this.calculateTCEA()
-    this.elementRef.nativeElement.ownerDocument
+    /*this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#ffffff';
 
     this.calculateTableData();
@@ -588,7 +700,7 @@ export class CalculatorComponent implements AfterViewInit {
           }
         }
       }
-    }
+    }*/
   }
   calculateTableData() {
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);

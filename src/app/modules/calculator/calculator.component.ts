@@ -278,7 +278,6 @@ export class CalculatorComponent implements AfterViewInit {
   }
   onGastoSelectionChange(event: any) {
     this.selectedGasto = event.value;
-    console.log('Gasto seleccionado:', this.selectedGasto);
   }
   addTNM(){
     let newTasa: Compensatorio = {
@@ -553,7 +552,7 @@ export class CalculatorComponent implements AfterViewInit {
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let mesToDia=mes*30
     if(this.compensatoryTasaArray.length!=0){
-      this.TCEA=((this.calculateValorEntregado()/this.calculateValorRecibido())/(360/120))-1//remplazar 120 por mesToDia
+      this.TCEA=((Number(this.calculateValorEntregado())/Number(this.calculateValorRecibido()))**(360/120))-1//remplazar 120 por mesToDia
       console.log("TCEA: "+this.TCEA)
 
     }else {
@@ -570,22 +569,17 @@ export class CalculatorComponent implements AfterViewInit {
     let TNM: number | undefined;
     if (foundTasa) {
       TNM = foundTasa.value/100;
-      console.log("TNM: "+TNM)
 
       let TEC= ((1 + TNM / 30) ** 120)- 1;//remplazar 120 por mesToDia
-      console.log("tec: "+TEC)
 
       let TasaDiariaEquivalente=TEC / (1 + TEC)
-      console.log("tasa diaria Equ: "+TasaDiariaEquivalente)
 
       let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
       let descuento=TasaDiariaEquivalente*98150//remplazar por capital
-      console.log("descuento: "+descuento)
 
       let valorNetoRecibidoALFDP=98150-descuento//remplazar 98150 por capital
-      console.log("valorNetoRecibidoALFDP: "+valorNetoRecibidoALFDP)
 
-      //Le restamos tod0 menos los gastos administrativos
+      //Le restamos tod0 menos los gastos administrativos y portes
       let valorNetoRecibido=valorNetoRecibidoALFDP
       if(this.compensatoryRetencionArray.length>0){
         for (let i = 0; i < this.compensatoryRetencionArray.length; i++) {
@@ -617,8 +611,8 @@ export class CalculatorComponent implements AfterViewInit {
           valorNetoRecibido -= (this.compensatoryOtrosArray[i].value);
         }
       }
-      console.log("valorNetoRecibido: "+valorNetoRecibido)
-      return valorNetoRecibido
+      console.log("Valor Neto Recibido: "+valorNetoRecibido)
+      return Number(valorNetoRecibido).toFixed(2)
     } else {
       console.log("Tasa Nominal Mensual no encontrada");
       return 0
@@ -626,7 +620,7 @@ export class CalculatorComponent implements AfterViewInit {
   }
   calculateValorEntregado(){
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
-    let valorNetoEntregado=capital
+    let valorNetoEntregado=98150//remplazar por capital
 
     if(this.compensatoryRetencionArray.length>0){
       for (let i = 0; i < this.compensatoryRetencionArray.length; i++) {
@@ -643,8 +637,8 @@ export class CalculatorComponent implements AfterViewInit {
         valorNetoEntregado += (this.compensatoryPortesArray[i].value);
       }
     }
-    console.log("valorNetoEntregado: "+valorNetoEntregado)
-    return valorNetoEntregado
+    console.log("valor Neto Entregado: "+valorNetoEntregado)
+    return Number(valorNetoEntregado).toFixed(2)
   }
 
   simulate() {

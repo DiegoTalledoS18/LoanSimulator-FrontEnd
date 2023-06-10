@@ -157,6 +157,7 @@ export class CalculatorComponent implements AfterViewInit {
   TIR="";
   flag = false;
   TCEA=0;
+  interesesCompensatorios=0;
   compensatoryTasaArray:Compensatorio[]=[]
   compensatoryComisionArray:Compensatorio[]=[]
   compensatoryPenalidadArray:Compensatorio[]=[]
@@ -556,9 +557,23 @@ export class CalculatorComponent implements AfterViewInit {
     }
   }
   calculateInteresesCompensatorios(){
-    //para calcular eso necesito PLAZO DE DIAS
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
-    //let interesesCompensatorios=capital*(())NECESITO EL PLAZO en dias
+    const searchTerm = ["tasa","compensatoria","tnm", "nominal mensual", "tasa nominal mensual"];
+    const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.some(term => tasa.name.toLowerCase().includes(term)));
+    let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
+    let mesToDia=mes*30
+    let TNM: number | undefined;
+    if(foundTasa){
+      TNM = foundTasa.value/100;
+      const valorNominalPagaré: number = capital
+      const tasaNominalMensual: number = TNM;
+      const plazoEnDias: number = mesToDia;
+      this.interesesCompensatorios= valorNominalPagaré * ((1 + tasaNominalMensual / 30) ** plazoEnDias - 1);
+    }else {
+      this.interesesCompensatorios=0
+    }
+
+
 
   }
   calculateValorRecibido(){
@@ -643,6 +658,7 @@ export class CalculatorComponent implements AfterViewInit {
 
   simulate() {
     this.calculateTCEA()
+    this.calculateInteresesCompensatorios()
     this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#ffffff';
 

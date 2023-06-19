@@ -18,17 +18,13 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
-import {CalculatorComponent} from "../calculator/calculator.component";
 import {LoginComponent} from "../login/login.component";
-import {SchedulesComponent} from "../schedules/schedules.component";
 
 const navbarRoutes: Route[] = [
   {
     path: '',
     component: LoginComponent
   },
-  { path: 'simulate', loadChildren: () => import('src/app/modules/calculator/calculator.module').then(m => m.CalculatorModule)},
-  { path: 'schedules', loadChildren: () => import('src/app/modules/schedules/schedule.module').then(m => m.ScheduleModule) },
 ]
 
 @NgModule({

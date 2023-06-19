@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, Input} from "@angular/core";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {UserService} from "../../services/user.services";
@@ -35,11 +35,16 @@ import {state, style, animate, transition, trigger} from "@angular/animations";
 
 export class LoginComponent implements AfterViewInit {
   isLoading: boolean = false;
+
   userFormGroup = new FormGroup({
     username: new FormControl('',[Validators.required]),
     password: new FormControl('',[Validators.required])
   });
+
+  currentUserName: string;
+
   constructor(private route: Router, private elementRef: ElementRef, private userService: UserService) {
+    this.currentUserName = "";
   }
 
   ngAfterViewInit() {
@@ -54,6 +59,11 @@ export class LoginComponent implements AfterViewInit {
         (response) => {
           // local storage
           localStorage.setItem('id', String(response.id));
+          this.userService.getCurrentUser(String(this.userFormGroup.get("username")?.value)).subscribe(
+            (response) => {
+              this.currentUserName = response.name;
+              console.log(this.currentUserName);
+            });
           this.route.navigate(['/calculator']);
           this.isLoading=false;
         },

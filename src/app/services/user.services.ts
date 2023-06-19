@@ -38,6 +38,11 @@ export class UserService {
     return throwError(() => new Error('Something happened with request, please try again later'));
   }
 
+  getCurrentUser(username: string): Observable<User> {
+    return this.http.get<User>(`${this.basePath}/${username}`, this.httpOptions)
+  }
+
+
   authenticate(username: ɵGetProperty<ɵTypedOrUntyped<{ password: FormControl<string | null>; username: FormControl<string | null> }, ɵFormGroupRawValue<{ password: FormControl<string | null>; username: FormControl<string | null> }>, any>, "username"> | undefined, password: ɵGetProperty<ɵTypedOrUntyped<{ password: FormControl<string | null>; username: FormControl<string | null> }, ɵFormGroupRawValue<{ password: FormControl<string | null>; username: FormControl<string | null> }>, any>, "password"> | undefined): Observable<User> {
     return this.http.get<User>(`${this.basePath}/authenticate/${username}/${password}`, this.httpOptions)
       .pipe(

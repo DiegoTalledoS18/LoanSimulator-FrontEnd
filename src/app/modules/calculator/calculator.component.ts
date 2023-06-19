@@ -12,9 +12,6 @@ import {MatDatepicker} from "@angular/material/datepicker";
 
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { ToastrService } from 'ngx-toastr';
-import {MatDialog, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
-import {MatButtonModule} from "@angular/material/button";
 
 @Pipe({
   name: 'customDate'

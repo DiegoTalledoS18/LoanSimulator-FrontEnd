@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
+import {LoginComponent} from "../login/login.component";
 
 @Component({
   selector: 'app-navbar',
@@ -8,10 +9,12 @@ import {ActivatedRoute, Router} from "@angular/router";
 })
 
 export class NavbarComponent implements OnInit {
-  name : string ;
+  name : string;
 
   constructor(private route:ActivatedRoute, private router: Router) {
-    this.name = this.route.snapshot.paramMap.get('name')!;
+
+    //console.log("MODULE ---> ",this.login.currentUserName);
+    this.name = "Druida";
   }
 
   ngOnInit(): void {

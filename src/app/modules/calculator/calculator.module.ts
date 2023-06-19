@@ -60,7 +60,6 @@ const calculatorRoutes: Route[] = [
   ],
 
   exports: [
-    NavbarComponent,
   ]
 })
 

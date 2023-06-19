@@ -6,7 +6,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {CalculatorComponent, CustomDatePipe} from "./calculator.component";
+import {NavbarComponent} from "./navbar.component";
 import {MatLegacyRadioModule} from "@angular/material/legacy-radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSelectModule} from "@angular/material/select";
@@ -18,24 +18,25 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
-import {NavbarComponent} from "../navbar/navbar.component";
-import {MatToolbarModule} from "@angular/material/toolbar";
+import {CalculatorComponent} from "../calculator/calculator.component";
+import {LoginComponent} from "../login/login.component";
+import {SchedulesComponent} from "../schedules/schedules.component";
 
-const calculatorRoutes: Route[] = [
+const navbarRoutes: Route[] = [
   {
     path: '',
-    component: CalculatorComponent
-  }
+    component: LoginComponent
+  },
+  { path: 'simulate', loadChildren: () => import('src/app/modules/calculator/calculator.module').then(m => m.CalculatorModule)},
+  { path: 'schedules', loadChildren: () => import('src/app/modules/schedules/schedule.module').then(m => m.ScheduleModule) },
 ]
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    CalculatorComponent,
-    CustomDatePipe,
   ],
   imports: [
-    RouterModule.forChild(calculatorRoutes),
+    RouterModule.forChild(navbarRoutes),
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -56,14 +57,9 @@ const calculatorRoutes: Route[] = [
     MatTableModule,
     MatIconModule,
     MatGridListModule,
-    MatToolbarModule
-  ],
-
-  exports: [
-    NavbarComponent,
   ]
 })
 
-export class CalculatorModule
+export class NavbarModule
 {
 }

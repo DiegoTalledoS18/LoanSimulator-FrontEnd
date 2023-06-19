@@ -125,3 +125,7 @@ mat-form-field {
   visibility: visible;
   opacity: 1;
 }
+
+::ng-deep .mat-option-drop{
+  font-size: 12px;
+}

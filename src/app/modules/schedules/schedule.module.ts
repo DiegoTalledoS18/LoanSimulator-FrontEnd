@@ -6,7 +6,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {CommonModule} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {CalculatorComponent, CustomDatePipe} from "./calculator.component";
+import {SchedulesComponent} from "./schedules.component";
 import {MatLegacyRadioModule} from "@angular/material/legacy-radio";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSelectModule} from "@angular/material/select";
@@ -18,24 +18,21 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
-import {NavbarComponent} from "../navbar/navbar.component";
 import {MatToolbarModule} from "@angular/material/toolbar";
 
-const calculatorRoutes: Route[] = [
+const scheduleComponent: Route[] = [
   {
     path: '',
-    component: CalculatorComponent
+    component: SchedulesComponent
   }
 ]
 
 @NgModule({
   declarations: [
-    NavbarComponent,
-    CalculatorComponent,
-    CustomDatePipe,
+    SchedulesComponent,
   ],
   imports: [
-    RouterModule.forChild(calculatorRoutes),
+    RouterModule.forChild(scheduleComponent),
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -60,10 +57,9 @@ const calculatorRoutes: Route[] = [
   ],
 
   exports: [
-    NavbarComponent,
   ]
 })
 
-export class CalculatorModule
+export class ScheduleModule
 {
 }

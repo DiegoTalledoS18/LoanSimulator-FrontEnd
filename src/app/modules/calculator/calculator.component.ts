@@ -85,7 +85,7 @@ export class CalculatorComponent implements AfterViewInit {
 
   userFormGroup = new FormGroup({
     capital: new FormControl('', [Validators.required, Validators.min(65200), Validators.max(464200)]),
-    cuotaInicial: new FormControl('', [Validators.required, this.cuotaInicialValidator]),
+    cuotaInicial: new FormControl('', [Validators.required, this.cuotaInicialValidator, this.cuotaInicialValidatorMax]),
     tipotasa: new FormControl('', [Validators.required]),
     tasa: new FormControl('', [Validators.required, Validators.min(4), Validators.max(49.99)]),
     tiempo: new FormControl('', [Validators.required, Validators.min(60), Validators.max(300)]),
@@ -140,6 +140,7 @@ export class CalculatorComponent implements AfterViewInit {
     primerTitular: new FormControl(Date, [Validators.required]),
     segundoTitular: new FormControl(Date, [Validators.required])
   })
+
   stepper = true;
   gracePeriodWithCapitalization = false;
   calculateSend = false;
@@ -234,6 +235,17 @@ export class CalculatorComponent implements AfterViewInit {
     return null;
   }
 
+  cuotaInicialValidatorMax(control: AbstractControl): { [key: string]: any } | null {
+    const capital = +control.parent?.get('capital')?.value;
+    const cuotaInicial = +control.value;
+
+    if (cuotaInicial > capital) {
+      return { 'cuotaInicialInvalidaMax': true };
+    }
+
+    return null;
+  }
+
   periodoGraciaValidator(control: FormControl): { [key: string]: any } | null {
     // @ts-ignore
     const duracionPrestamo = +this.userFormGroup.get('tiempo')?.value;
@@ -256,7 +268,7 @@ export class CalculatorComponent implements AfterViewInit {
       this.stepper = false;
       this.stepper = false;
       this.addTNM()
-      this.setGastosList()
+      //this.setGastosList()
     }
 
 
@@ -273,9 +285,11 @@ export class CalculatorComponent implements AfterViewInit {
     let tasaMensual = (1 + (tasa / 100)) ** (30/ 360) - 1
     return tasaMensual
   }
+
   onGastoSelectionChange(event: any) {
     this.selectedGasto = event.value;
   }
+
   addTNM(){
     let newTasa: Compensatorio = {
       name: "Tasa Nominal Mensual",
@@ -285,9 +299,7 @@ export class CalculatorComponent implements AfterViewInit {
       this.compensatoryTasaArray.push(newTasa);
     }
   }
-  setGastosList(){
 
-  }
   deleteArrayElementByName(nombre: string,gastoType: string) {
     if(this.category=="Tasas"){
       const shouldDelete = confirm('¿Estás seguro que deseas borrar la tasa compensatoria establecida?\n ' +
@@ -496,6 +508,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
     }
   }
+
   calcularVAN(flujosDeCaja: number[], tasaDescuento: number){
     let VAN = 0;
 
@@ -507,6 +520,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     return VAN;
   }
+
   calcularTIRIncrementalMejorado(flujosDeCaja: number[]) {
     const maxIteraciones = 10000; // Número máximo de iteraciones
     const precision = 0.00001; // Precisión para la aproximación de la TIR
@@ -545,6 +559,7 @@ export class CalculatorComponent implements AfterViewInit {
   setInputCategory(inputCategory: string) {
     this.category = inputCategory;
   }
+
   calculateTCEA(){
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let mesToDia=mes*30
@@ -556,6 +571,7 @@ export class CalculatorComponent implements AfterViewInit {
       //this.TCEA=0
     }
   }
+
   calculateInteresesCompensatorios(){
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     const searchTerm = ["tasa","compensatoria","tnm", "nominal mensual", "tasa nominal mensual"];
@@ -569,13 +585,11 @@ export class CalculatorComponent implements AfterViewInit {
       const tasaNominalMensual: number = TNM;
       const plazoEnDias: number = mesToDia;
       this.interesesCompensatorios= valorNominalPagaré * ((1 + tasaNominalMensual / 30) ** plazoEnDias - 1);
-    }else {
+    } else {
       this.interesesCompensatorios=0
     }
-
-
-
   }
+
   calculateValorRecibido(){
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let mesToDia=mes*30
@@ -633,6 +647,7 @@ export class CalculatorComponent implements AfterViewInit {
       return 0
     }
   }
+
   calculateValorEntregado(){
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     let valorNetoEntregado=capital
@@ -712,6 +727,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
     }
   }
+
   calculateTableData() {
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;

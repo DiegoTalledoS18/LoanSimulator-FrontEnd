@@ -1,4 +1,7 @@
-  <div>
+
+<app-navbar></app-navbar>
+
+<div>
     <div class="global-container" *ngIf="!this.calculateSend">
         <div class="card">
           <mat-card class="container-card" *ngIf="stepper==true">
@@ -39,6 +42,10 @@
 
                   <mat-error *ngIf="userFormGroup.get('cuotaInicial')?.hasError('cuotaInicialInvalida')">
                     Ingrese el rango de cuota inicial <strong>permitido</strong>
+                  </mat-error>
+
+                  <mat-error *ngIf="userFormGroup.get('cuotaInicial')?.hasError('cuotaInicialInvalidaMax')">
+                    Cuota Inicial <strong>sobrepasa</strong> el capital
                   </mat-error>
 
                 </mat-form-field>
@@ -244,7 +251,7 @@
                   </mat-button-toggle-group>
                 </div>
                 <div *ngIf=" this.compensatoryTasaArray.length<1 && this.category=='Tasas'">
-                  <form [formGroup]="CompensatoryTasaGroup"  >
+                  <form [formGroup]="CompensatoryTasaGroup">
                     <mat-form-field appearance="fill" style="width: 54%;margin-top: 20px;" >
                       <mat-label >Tasa Compensatoria (Nombre)</mat-label>
                       <input matInput formControlName="nombre">
@@ -270,7 +277,7 @@
                     <mat-form-field style="width: 20%;margin-top: 20px;">
                       <mat-label>Tipo de gasto</mat-label>
                       <mat-select (selectionChange)="onGastoSelectionChange($event)" [(value)]="selectedGasto">
-                        <mat-option *ngFor="let gasto of gastos" [value]="gasto.viewValue">
+                        <mat-option class="mat-option-drop" *ngFor="let gasto of gastos" [value]="gasto.viewValue">
                           {{gasto.viewValue}}
                         </mat-option>
                       </mat-select>
@@ -647,7 +654,7 @@
           <div style="display: flex; justify-content: center">
             <div style="display: flex;justify-content: space-between; width: 25%; margin-top: 10px">
               <p>TCEA Referencial de Operación:</p>
-              <p>Valor TCEA</p>
+              <p>{{this.TCEA}}</p>
             </div>
           </div>
         </div>

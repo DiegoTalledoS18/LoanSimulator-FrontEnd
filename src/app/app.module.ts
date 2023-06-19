@@ -7,22 +7,28 @@ import {RouterModule} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-
+import { NavbarComponent } from './modules/navbar/navbar.component';
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
-  declarations: [
-    AppComponent,
+    declarations: [
+        AppComponent,
+    ],
+    imports: [
+        RouterModule.forRoot(appRoutes),
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule,
+        HttpClientModule,
+        MatRadioModule,
+        MatSlideToggleModule,
+        MatToolbarModule,
+        MatButtonModule,
+    ],
+    providers: [],
+  exports: [
   ],
-  imports: [
-    RouterModule.forRoot(appRoutes),
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule,
-    HttpClientModule,
-    MatRadioModule,
-    MatSlideToggleModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

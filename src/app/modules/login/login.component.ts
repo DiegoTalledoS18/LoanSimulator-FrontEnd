@@ -47,7 +47,6 @@ export class LoginComponent implements AfterViewInit {
       .body.style.backgroundColor = '#e4efff';
   }
 
-
   login(){
     if(this.userFormGroup.valid) {
       this.isLoading = true;
@@ -55,7 +54,7 @@ export class LoginComponent implements AfterViewInit {
         (response) => {
           // local storage
           localStorage.setItem('id', String(response.id));
-          this.route.navigate(['/register']);
+          this.route.navigate(['/calculator']);
           this.isLoading=false;
         },
         (error) => {

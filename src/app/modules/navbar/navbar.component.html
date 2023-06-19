@@ -1,0 +1,9 @@
+<mat-toolbar color="primary">
+  <h2>Hola {{this.name}} !! </h2>
+  <div class="mat-spacer"></div>
+  <!-- App Options -->
+  <a mat-button [routerLink]="['/calculator/schedules']">My Schedules</a>
+  <a mat-button [routerLink]="['/calculator/simulate']">Simulate</a>
+  <a mat-button (click)="Logout()">Logout</a>
+
+</mat-toolbar>

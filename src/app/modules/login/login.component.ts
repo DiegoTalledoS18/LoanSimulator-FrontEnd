@@ -68,6 +68,7 @@ export class LoginComponent implements AfterViewInit {
           this.isLoading=false;
         },
         (error) => {
+          this.userFormGroup.setValue({username: '', password: ''})
           this.isLoading=false;
         }
       );

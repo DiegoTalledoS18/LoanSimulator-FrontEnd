@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
   constructor(private route:ActivatedRoute, private router: Router) {
 
     //console.log("MODULE ---> ",this.login.currentUserName);
-    this.name = "Druida";
+    this.name = "";
   }
 
   ngOnInit(): void {

@@ -578,10 +578,10 @@ export class CalculatorComponent implements AfterViewInit {
     let TNM: number | undefined;
     if(foundTasa){
       TNM = foundTasa.value/100;
-      const valorNominalPagaré: number = capital
+      const valorNominalPagare: number = capital
       const tasaNominalMensual: number = TNM;
       const plazoEnDias: number = mesToDia;
-      this.interesesCompensatorios= valorNominalPagaré * ((1 + tasaNominalMensual / 30) ** plazoEnDias - 1);
+      this.interesesCompensatorios= valorNominalPagare * ((1 + tasaNominalMensual / 30) ** plazoEnDias - 1);
     } else {
       this.interesesCompensatorios=0
     }
@@ -603,7 +603,7 @@ export class CalculatorComponent implements AfterViewInit {
       let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
       let descuento=TasaDiariaEquivalente*capital
 
-      let valorNetoRecibidoALFDP=capital-descuento
+      let valorNetoRecibidoALFDP = capital-descuento
 
       //Le restamos tod0 menos los gastos administrativos y portes
       let valorNetoRecibido=valorNetoRecibidoALFDP

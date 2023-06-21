@@ -600,7 +600,7 @@ export class CalculatorComponent implements AfterViewInit {
 
       let TasaDiariaEquivalente=TEC / (1 + TEC)
 
-      let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
+      let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value; //REVISAR CON EL PROFE
       let descuento=TasaDiariaEquivalente*capital
 
       let valorNetoRecibidoALFDP = capital-descuento
@@ -754,7 +754,7 @@ export class CalculatorComponent implements AfterViewInit {
     this.tasa_mensual = (1 + (tasa / 100)) ** (30/ 360) - 1
 
     let interes_k: number = 0.0
-    let saldo: number = capital
+    let saldo: number = montoFinal
     let amortizacion: number = 0
 
     //Calculo del Seguro de desgravamen
@@ -862,7 +862,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     //Calculo de VAN y TIR
 
-    const inversionInicial = capital*-1; // Inversión inicial (monto del préstamo)
+    const inversionInicial = montoFinal*-1; // Inversión inicial (monto del préstamo)
     const cuotaMensual = parseFloat(cuota.toFixed(2)); // Cuota mensual constante
 
     // Construir el arreglo de flujos de caja

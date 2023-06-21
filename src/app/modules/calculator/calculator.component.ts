@@ -764,6 +764,8 @@ export class CalculatorComponent implements AfterViewInit {
       seguro = 0.004396 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
     }
 
+    let comisiones=this.calculateComisionValue()
+
     //Calculo del periodo de gracia
     if(this.gracePeriod == 'Cero'){
       meses_gracia = 0
@@ -784,9 +786,9 @@ export class CalculatorComponent implements AfterViewInit {
             vencimiento: date,
             amortizacion:  parseFloat(amortizacion.toFixed(2)),
             interes: parseFloat(interes_k.toFixed(2)),
-            cuota: parseFloat(cuota.toFixed(2)),
+            cuota: parseFloat((cuota-comisiones).toFixed(2)),
             saldo: saldo,
-            comisiones: 0.00,
+            comisiones: comisiones,
             subvencion: 0.00,
           }
         )
@@ -811,9 +813,9 @@ export class CalculatorComponent implements AfterViewInit {
             vencimiento: date,
             amortizacion:  parseFloat(amortizacion.toFixed(2)),
             interes: parseFloat(interes_k.toFixed(2)),
-            cuota: parseFloat(cuota.toFixed(2)),
+            cuota: parseFloat((cuota-comisiones).toFixed(2)),
             saldo: saldo,
-            comisiones: 0.00,
+            comisiones: comisiones,
             subvencion: 0.00,
           }
         )
@@ -851,9 +853,9 @@ export class CalculatorComponent implements AfterViewInit {
           vencimiento: date,
           amortizacion:  parseFloat(amortizacion.toFixed(2)),
           interes: parseFloat(interes_k.toFixed(2)),
-          cuota: parseFloat(cuota.toFixed(2)),
+          cuota: parseFloat((cuota-comisiones).toFixed(2)),
           saldo: saldo,
-          comisiones: 0.00,
+          comisiones: comisiones,
           subvencion: 0.00,
         }
       )
@@ -883,6 +885,43 @@ export class CalculatorComponent implements AfterViewInit {
 
     console.log('VAN:', VAN_);
     console.log('TIR:', TIR_);
+  }
+  calculateComisionValue(){
+    let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value; //REVISAR CON EL PROFE
+    let value=0
+
+    if(this.compensatoryPenalidadArray.length>0){
+      for (let i = 0; i < this.compensatoryPenalidadArray.length; i++) {
+        value += (this.compensatoryPenalidadArray[i].value/100)*capital;
+      }
+    }
+    if(this.compensatoryFormalizacionArray.length>0){
+      for (let i = 0; i < this.compensatoryFormalizacionArray.length; i++) {
+        value += (this.compensatoryFormalizacionArray[i].value);
+      }
+    }
+    if(this.compensatoryComisionArray.length>0){
+      for (let i = 0; i < this.compensatoryComisionArray.length; i++) {
+        value += (this.compensatoryComisionArray[i].value);
+      }
+    }
+    if(this.compensatoryOtrosArray.length>0){
+      for (let i = 0; i < this.compensatoryOtrosArray.length; i++) {
+        value += (this.compensatoryOtrosArray[i].value);
+      }
+    }
+    if(this.compensatoryAdministrativosArray.length>0){
+      for (let i = 0; i < this.compensatoryAdministrativosArray.length; i++) {
+        value += (this.compensatoryAdministrativosArray[i].value);
+      }
+    }
+    if(this.compensatoryPortesArray.length>0){
+      for (let i = 0; i < this.compensatoryPortesArray.length; i++) {
+        value += (this.compensatoryPortesArray[i].value);
+      }
+    }
+
+    return value
   }
 
   navigateBack() {

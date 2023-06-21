@@ -129,3 +129,9 @@ mat-form-field {
 ::ng-deep .mat-option-drop{
   font-size: 12px;
 }
+
+.button-save {
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}

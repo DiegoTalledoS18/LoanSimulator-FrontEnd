@@ -436,7 +436,7 @@
                         Ingrese un porcentaje <strong>permitido</strong>
                       </mat-error>
                     </mat-form-field>
-                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px;margin-bottom: 15px">Agregar</button>
+                    <button dis mat-raised-button color="primary" (click)="addCompensatory()" style="height: 50px; margin-bottom: 15px">Agregar</button>
                   </form>
                   <form [formGroup]="CompensatoryAdicionalGroup" *ngIf="selectedGasto=='Otros costos adicionales'" >
                     <mat-form-field style="width: 20%;margin-top: 20px;">
@@ -762,5 +762,11 @@
           </table>
         </mat-expansion-panel>
       </div>
+
+      <div class="button-save">
+        <button mat-raised-button color="primary" (click)="addCompensatory()">Save</button>
+      </div>
+
+
     </div>
   </div>

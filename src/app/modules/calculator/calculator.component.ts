@@ -728,7 +728,7 @@ export class CalculatorComponent implements AfterViewInit {
   calculateTableData() {
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
-    //let cuotaInicial: number = <number><unknown>this.userFormGroup.get('cuotaInicial')?.value;
+    let cuotaInicial: number = <number><unknown>this.userFormGroup.get('cuotaInicial')?.value;
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
     let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
     let seguro_valor : string = <string>this.PayFormGroup.get('seguro')?.value;
@@ -737,6 +737,9 @@ export class CalculatorComponent implements AfterViewInit {
     let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
     let date = new Date(this.fecha);
     let seguro: number
+
+    //Capital - Cuota Inicial = Monto a Financiar
+    let montoFinal: number = capital - cuotaInicial
 
     //Conversion de Tasa Nomina a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {

@@ -143,7 +143,7 @@
             </div>
             <form [formGroup]="PayFormGroup" style="margin: 30px">
               <p>Fechas de pago</p>
-              <div  style="display: flex;justify-content: space-between; padding-bottom: 0" >
+              <div  style="display: flex;justify-content: space-between; padding-bottom: 1rem" >
                 <div style="width: 47%; margin-top: 10px">
                   <mat-form-field color="primary" appearance="fill" style="width: 100%;" >
                     <mat-label>Fecha de solicitud</mat-label>
@@ -196,15 +196,6 @@
                     </mat-error>
 
                   </mat-form-field>
-                  <div style="align-items: center;display: flex;height: 100px;justify-content: center;width: 200px;">
-                    <p style="padding-top: 8px">Periodo de gracia con capitalización de intereses</p>
-                    <mat-slide-toggle formControlName="capitalizacion" color="primary"></mat-slide-toggle>
-                    <div style="display: flex; justify-content: center;  align-items: center">
-                      <div class="tooltip"  ><mat-icon matSuffix>help</mat-icon>
-                        <span class="tooltiptext">Los intereses se capitalizan durante el periodo de gracia.</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </form>
               <div>
@@ -220,10 +211,10 @@
                   </mat-error>
                 </mat-form-field>
               </div>
-              <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between">
+              <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between; margin-bottom: 1rem">
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento primer titular</mat-label>
-                  <input matInput [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
+                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
                   <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2 color="primary"></mat-datepicker>
                   <mat-error *ngIf=" bornDatesFormGroup.get('primerTitular')?.hasError('required') ">
@@ -232,7 +223,7 @@
                 </mat-form-field>
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado'||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento segundo titular</mat-label>
-                  <input matInput [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
+                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
                   <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
                   <mat-datepicker #picker3 color="primary"></mat-datepicker>
                   <mat-error *ngIf="bornDatesFormGroup.get('segundoTitular')?.hasError('required')">
@@ -241,7 +232,7 @@
                 </mat-form-field>
               </form>
 
-              <div style="margin-bottom: 0.5rem">
+              <div style="margin-bottom: 1rem">
                 <p>Intereses y Gastos Compensatorios</p>
                 <div>
                   <mat-button-toggle-group name="fontStyle" aria-label="Font Style">

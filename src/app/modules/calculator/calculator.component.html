@@ -5,9 +5,6 @@
     <div class="global-container" *ngIf="!this.calculateSend">
         <div class="card">
           <mat-card class="container-card" *ngIf="stepper==true">
-            <div style="display: flex">
-              <button (click)="navigateBack()" style="margin-left: 35px;margin-bottom: 0; color: #6d42ba;font-weight: bolder; text-decoration: none;" mat-button>< Regresar</button>
-            </div>
             <div class="margin-horizontal" >
               <h1 style="font-weight: inherit; font-size: 32px">Simulador de Préstamos</h1>
               <p>Paso 1 de 2</p>
@@ -15,7 +12,7 @@
             </div>
             <form [formGroup]="userFormGroup"  >
               <div style="display: flex; justify-content: center">
-                <mat-form-field class= "form-field-username " appearance="fill" style="width: 90%; margin-top: 10px;">
+                <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
                   <mat-label>Capital</mat-label>
                   <input matInput autocomplete="off" formControlName="capital" type="number">
                   <mat-error *ngIf="userFormGroup.get('capital')?.hasError('required')">
@@ -743,9 +740,9 @@
               <th mat-header-cell *matHeaderCellDef> Comisiones </th>
               <td mat-cell *matCellDef="let element"> {{element.comisiones}} </td>
             </ng-container>
-            <ng-container matColumnDef="subvencion">
-              <th mat-header-cell *matHeaderCellDef> Subvencion </th>
-              <td mat-cell *matCellDef="let element"> {{element.subvencion}} </td>
+            <ng-container matColumnDef="seguro">
+              <th mat-header-cell *matHeaderCellDef> Seguro </th>
+              <td mat-cell *matCellDef="let element"> {{element.seguro}} </td>
             </ng-container>
             <ng-container matColumnDef="cuota">
               <th mat-header-cell *matHeaderCellDef> Cuota </th>
@@ -764,6 +761,10 @@
 
       <div class="button-save">
         <button mat-raised-button color="primary" (click)="addCompensatory()">Save</button>
+      </div>
+
+      <div class="button-reload">
+        <button mat-raised-button color="primary" (click)="addCompensatory()">Simular otro Prestamos</button>
       </div>
 
     </div>

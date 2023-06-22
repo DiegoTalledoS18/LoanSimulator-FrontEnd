@@ -58,7 +58,7 @@ export interface Cronograma {
   amortizacion: number;
   interes: number;
   comisiones: number;
-  subvencion: number;
+  seguro: number;
   cuota: number;
   saldo: number;
 }
@@ -202,7 +202,7 @@ export class CalculatorComponent implements AfterViewInit {
   selectedGasto: string = 'Gastos administrativos';
 
   ELEMENT_DATA: Cronograma[] = []
-  displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'subvencion'];
+  displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'seguro'];
 
 
   constructor(private route: Router, private elementRef: ElementRef, private _adapter: DateAdapter<any>,
@@ -786,10 +786,10 @@ export class CalculatorComponent implements AfterViewInit {
             vencimiento: date,
             amortizacion:  parseFloat(amortizacion.toFixed(2)),
             interes: parseFloat(interes_k.toFixed(2)),
-            cuota: parseFloat((cuota-comisiones).toFixed(2)),
+            cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
             comisiones: comisiones,
-            subvencion: 0.00,
+            seguro: 0.00,
           }
         )
 
@@ -813,10 +813,10 @@ export class CalculatorComponent implements AfterViewInit {
             vencimiento: date,
             amortizacion:  parseFloat(amortizacion.toFixed(2)),
             interes: parseFloat(interes_k.toFixed(2)),
-            cuota: parseFloat((cuota-comisiones).toFixed(2)),
+            cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
             comisiones: comisiones,
-            subvencion: 0.00,
+            seguro: 0.00,
           }
         )
         date = new Date(date.setMonth(date.getMonth() + 1));
@@ -853,10 +853,10 @@ export class CalculatorComponent implements AfterViewInit {
           vencimiento: date,
           amortizacion:  parseFloat(amortizacion.toFixed(2)),
           interes: parseFloat(interes_k.toFixed(2)),
-          cuota: parseFloat((cuota-comisiones).toFixed(2)),
+          cuota: parseFloat((cuota).toFixed(2)),
           saldo: saldo,
           comisiones: comisiones,
-          subvencion: 0.00,
+          seguro: 0.00,
         }
       )
       date = new Date(date.setMonth(date.getMonth() + 1));

@@ -222,7 +222,7 @@
               <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between; margin-bottom: 1rem">
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento primer titular</mat-label>
-                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
+                  <input matInput [max]="maxDate_m" [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
                   <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
                   <mat-datepicker #picker2 color="primary"></mat-datepicker>
                   <mat-error *ngIf=" bornDatesFormGroup.get('primerTitular')?.hasError('required') ">
@@ -231,7 +231,7 @@
                 </mat-form-field>
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado'||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento segundo titular</mat-label>
-                  <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
+                  <input matInput [max]="maxDate_m" [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
                   <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
                   <mat-datepicker #picker3 color="primary"></mat-datepicker>
                   <mat-error *ngIf="bornDatesFormGroup.get('segundoTitular')?.hasError('required')">

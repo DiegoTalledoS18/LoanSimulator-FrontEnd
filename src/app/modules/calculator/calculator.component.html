@@ -176,7 +176,6 @@
                 </mat-button-toggle-group>
               </div>
               <form [formGroup]="gracePeriodFormGroup" *ngIf="this.gracePeriod!='Cero'" >
-
                 <div style="display: flex; width: 90%; justify-content: space-between">
                   <mat-form-field appearance="fill"  style="width: 52%; margin-top: 10px;">
                     <mat-label>Periodo de gracias (meses)</mat-label>
@@ -195,6 +194,8 @@
                   </mat-form-field>
                 </div>
               </form>
+
+              <p>Seguros</p>
               <div>
                 <mat-form-field appearance="fill" style="width: 47%">
                   <mat-label>Seguro de Desgravamen</mat-label>
@@ -204,7 +205,17 @@
                     </mat-option>
                   </mat-select>
                   <mat-error *ngIf="PayFormGroup.get('seguro')?.hasError('required')">
-                    Seguro <strong>requerido</strong>
+                    Seguro de desgravamen es <strong>requerido</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div>
+                <mat-form-field appearance="fill" style="width: 47%">
+                  <mat-label>Seguro contra todo Riesgo</mat-label>
+                  <input matInput type="number" formControlName="seguro_riesgo">
+                  <mat-error *ngIf="PayFormGroup.get('seguro_riesgo')?.hasError('required')">
+                    Seguro de riesgo es <strong>requerido</strong>
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -229,6 +240,8 @@
                 </mat-form-field>
               </form>
 
+              <p>Gastos Compensatorios</p>
+
               <div style="margin-bottom: 1rem;margin-top: 0.5rem">
                 <div>
                   <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
@@ -242,12 +255,9 @@
                     <mat-form-field appearance="fill" style="width: 54%;margin-top: 20px;" >
                       <mat-label >Tasa Compensatoria (Nombre)</mat-label>
                       <input matInput formControlName="nombre">
-                      <mat-error *ngIf="CompensatoryTasaGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 30%;margin-top: 20px;">
-                      <mat-label >%</mat-label>
+                      <mat-label>%</mat-label>
                       <input matInput type="number" formControlName="valor">
                       <mat-error *ngIf="CompensatoryTasaGroup.get('valor')?.hasError('required')">
                         Porcentaje es <strong>requerido</strong>
@@ -269,16 +279,9 @@
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Gasto Administrativo (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatoryAdministracionGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
-                    </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >S/.</mat-label>
-                      <!--<input matInput formControlName="valor" type="number">-->
+                      <input matInput formControlName="valor" type="number">
                       <mat-error *ngIf="CompensatoryAdministracionGroup.get('valor')?.hasError('required')">
                         Monto es <strong>requerido</strong>
                       </mat-error>
@@ -297,16 +300,9 @@
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Comision (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatoryComisionGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
-                    </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >S/.</mat-label>
-                      <!--<input matInput formControlName="valor" type="number">-->
+                      <input matInput formControlName="valor" type="number">
                       <mat-error *ngIf="CompensatoryComisionGroup.get('valor')?.hasError('required')">
                         Monto es <strong>requerido</strong>
                       </mat-error>
@@ -325,16 +321,9 @@
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Seguro (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatorySeguroGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
-                    </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >%</mat-label>
-                      <!--<input matInput formControlName="valor" type="number">-->
+                      <input matInput formControlName="valor" type="number">
                       <mat-error *ngIf="CompensatorySeguroGroup.get('valor')?.hasError('required')">
                         Porcentaje es <strong>requerido</strong>
                       </mat-error>
@@ -355,13 +344,6 @@
                           {{gasto.viewValue}}
                         </mat-option>
                       </mat-select>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Penalidad (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatoryPenalidadGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
                     </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >%</mat-label>
@@ -387,16 +369,9 @@
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Gastos de formalización (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatoryFormalizacionGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
-                    </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >S/</mat-label>
-                      <!--<input matInput formControlName="valor" type="number">-->
+                      <input matInput formControlName="valor" type="number">
                       <mat-error *ngIf="CompensatoryFormalizacionGroup.get('valor')?.hasError('required')">
                         Monto es <strong>requerido</strong>
                       </mat-error>
@@ -415,16 +390,9 @@
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Portes (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatoryPortesGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
-                    </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >S/</mat-label>
-                      <!--<input matInput formControlName="valor" type="number">-->
+                      <input matInput formControlName="valor" type="number">
                       <mat-error *ngIf="CompensatoryPortesGroup.get('valor')?.hasError('required')">
                         Monto es <strong>requerido</strong>
                       </mat-error>
@@ -443,16 +411,9 @@
                         </mat-option>
                       </mat-select>
                     </mat-form-field>
-                    <mat-form-field appearance="fill" style="width: 40%;margin-top: 20px;" >
-                      <mat-label>Costo Adicional (Nombre)</mat-label>
-                      <!--<input matInput formControlName="nombre">-->
-                      <mat-error *ngIf="CompensatoryAdicionalGroup.get('nombre')?.hasError('required')">
-                        Nombre es <strong>requerido</strong>
-                      </mat-error>
-                    </mat-form-field>
                     <mat-form-field appearance="fill" style="width: 20%;margin-top: 20px;">
                       <mat-label >S/</mat-label>
-                      <!--<input matInput formControlName="valor" type="number">-->
+                      <input matInput formControlName="valor" type="number">
                       <mat-error *ngIf="CompensatoryAdicionalGroup.get('valor')?.hasError('required')">
                         Monto es <strong>requerido</strong>
                       </mat-error>
@@ -494,11 +455,7 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">TASA COMPENSATORIA</p>
-                      <p>{{ item.name }}</p>
                       <p>{{ item.value }} %</p>
-                    </div>
-                    <div>
-                      <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'null')" style="margin: auto;">Eliminar</button>
                     </div>
                   </mat-card-content>
                 </mat-card>
@@ -508,7 +465,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">RETENCION DE FONDOS</p>
-                      <p>{{ item.name }}</p>
                       <p>{{ item.value }} %</p>
                     </div>
                     <div>
@@ -522,7 +478,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">GASTOS ADMINISTRATIVOS</p>
-                      <p>{{ item.name }}</p>
                       <p>S/ {{ item.value }} </p>
                     </div>
                     <div>
@@ -536,7 +491,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">SEGUROS</p>
-                      <p>{{ item.name }}</p>
                       <p>{{ item.value }} %</p>
                     </div>
                     <div>
@@ -550,7 +504,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">PENALIDAD</p>
-                      <p>{{ item.name }}</p>
                       <p>{{ item.value }} %</p>
                     </div>
                     <div>
@@ -564,7 +517,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">PORTES</p>
-                      <p>{{ item.name }}</p>
                       <p>{{ item.value }} %</p>
                     </div>
                     <div>
@@ -578,7 +530,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">GASTOS DE FORMALIZACION</p>
-                      <p>{{ item.name }}</p>
                       <p>S/ {{ item.value }}</p>
                     </div>
                     <div>
@@ -592,7 +543,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">COMISION</p>
-                      <p>{{ item.name }}</p>
                       <p>S/ {{ item.value }} </p>
                     </div>
                     <div>
@@ -606,7 +556,6 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">OTROS GASTOS</p>
-                      <p>{{ item.name }}</p>
                       <p>S/ {{ item.value }} </p>
                     </div>
                     <div>
@@ -751,6 +700,10 @@
             <ng-container matColumnDef="saldo">
               <th mat-header-cell *matHeaderCellDef> Saldo </th>
               <td mat-cell *matCellDef="let element"> {{element.saldo}} </td>
+            </ng-container>
+            <ng-container matColumnDef="flujo">
+              <th mat-header-cell *matHeaderCellDef> Flujo </th>
+              <td mat-cell *matCellDef="let element"> {{element.flujo}} </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

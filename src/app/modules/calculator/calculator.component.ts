@@ -61,6 +61,7 @@ export interface Cronograma {
   seguro: number;
   cuota: number;
   saldo: number;
+  flujo: number;
 }
 
 @Component({
@@ -92,37 +93,38 @@ export class CalculatorComponent implements AfterViewInit {
     diaDePago: new FormControl('', [Validators.required, Validators.min(1), Validators.max(30)]),
     fechaSolicitud: new FormControl(Date, [Validators.required]),
     seguro: new FormControl('', [Validators.required]),
+    seguro_riesgo: new FormControl('', [Validators.required]),
   })
   CompensatoryTasaGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(87.91)]),//segun el BCR
   })
   CompensatoryComisionGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0)]),
   })
   CompensatorySeguroGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
   })
   CompensatoryPenalidadGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(10)]),//No mayor al 10%
   })
   CompensatoryPortesGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0)]),
   })
   CompensatoryAdministracionGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0)]),
   })
   CompensatoryFormalizacionGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0)]),
   })
   CompensatoryAdicionalGroup = new FormGroup({
-    nombre: new FormControl('', [Validators.required]),
+    nombre: new FormControl(''),
     valor: new FormControl('', [Validators.required, Validators.min(0)]),
   })
   CompensatoryRetencionGroup = new FormGroup({
@@ -202,7 +204,7 @@ export class CalculatorComponent implements AfterViewInit {
   selectedGasto: string = 'Gastos administrativos';
 
   ELEMENT_DATA: Cronograma[] = []
-  displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'seguro'];
+  displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'seguro', 'flujo'];
 
 
   constructor(private route: Router, private elementRef: ElementRef, private _adapter: DateAdapter<any>,
@@ -485,15 +487,16 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   calcularVAN(flujosDeCaja: number[], tasaDescuento: number){
+
+    console.log("COKI: ",tasaDescuento)
+
     let VAN = 0;
 
     for (let i = 0; i < flujosDeCaja.length; i++) {
       VAN += flujosDeCaja[i] / Math.pow((1 + tasaDescuento), i);
-      //console.log(flujosDeCaja[i]+"/(1+"+tasaDescuento+")^"+i+"= "+flujosDeCaja[i] / Math.pow(1 + tasaDescuento, i))
-      //console.log("van= "+VAN)
     }
 
-    return VAN;
+    return VAN * - 1;
   }
 
   calcularTIRIncrementalMejorado(flujosDeCaja: number[]) {
@@ -710,11 +713,15 @@ export class CalculatorComponent implements AfterViewInit {
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
     let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
     let seguro_valor : string = <string>this.PayFormGroup.get('seguro')?.value;
-    let cuota : number;
+    let seguro_riesgo_valor: number = <number><unknown>this.PayFormGroup.get('seguro_riesgo')?.value;
+    let cuota : number = 0;
 
     let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
     let date = new Date(this.fecha);
     let seguro_desgravamen: number = 0;
+    let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
+
+    console.log("Seguro Riesgo: ", seguro_riesgo)
 
     //Capital - Cuota Inicial = Monto a Financiar
     let montoFinal: number = capital - cuotaInicial
@@ -740,6 +747,13 @@ export class CalculatorComponent implements AfterViewInit {
 
     let comisiones = this.calculateComisionValue()
 
+    //Calculo de VAN y TIR
+    const inversionInicial = montoFinal * - 1; // Inversión inicial (monto del préstamo)
+    let flujoMensual = 0 // Cuota mensual constante
+
+    // Construir el arreglo de flujos de caja
+    const flujosDeCaja = [inversionInicial]; // Primer elemento es la inversión inicial
+
     //Calculo del periodo de gracia
     if(this.gracePeriod == 'Cero'){
       meses_gracia = 0
@@ -748,11 +762,22 @@ export class CalculatorComponent implements AfterViewInit {
     if(this.gracePeriod == 'Total'){
       for (let i = 0; i < meses_gracia; i++) {
 
+        //Calculo del Seguro de desgravamen
+        if (seguro_valor == 'Sin seguro') {
+          seguro_desgravamen = 0
+        } else {
+          seguro_desgravamen = 0.00044 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+        }
+
         interes_k = saldo * this.tasa_mensual
         cuota = 0
         amortizacion = 0
 
         saldo = parseFloat((saldo + interes_k).toFixed(2))
+
+        flujoMensual = cuota + comisiones + seguro_desgravamen + seguro_riesgo;
+
+        flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
         this.ELEMENT_DATA?.push(
           {
@@ -764,6 +789,7 @@ export class CalculatorComponent implements AfterViewInit {
             saldo: saldo,
             comisiones: comisiones,
             seguro: parseFloat((seguro_desgravamen).toFixed(2)),
+            flujo: parseFloat(flujoMensual.toFixed(2))
           }
         )
 
@@ -775,11 +801,22 @@ export class CalculatorComponent implements AfterViewInit {
     if(this.gracePeriod == 'Parcial'){
       for (let i = 0; i < meses_gracia; i++) {
 
+        //Calculo del Seguro de desgravamen
+        if (seguro_valor == 'Sin seguro') {
+          seguro_desgravamen = 0
+        } else {
+          seguro_desgravamen = 0.00044 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+        }
+
         interes_k = saldo * this.tasa_mensual
         cuota = interes_k
         amortizacion = 0 //amortizacion = interes_k - cuota
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
+
+        flujoMensual = cuota + comisiones + seguro_desgravamen + seguro_riesgo;
+
+        flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
         this.ELEMENT_DATA?.push(
           {
@@ -791,6 +828,7 @@ export class CalculatorComponent implements AfterViewInit {
             saldo: saldo,
             comisiones: comisiones,
             seguro: parseFloat((seguro_desgravamen).toFixed(2)),
+            flujo: parseFloat(flujoMensual.toFixed(2))
           }
         )
         date = new Date(date.setMonth(date.getMonth() + 1));
@@ -836,11 +874,15 @@ export class CalculatorComponent implements AfterViewInit {
 
       //amortizacion = cuota - interes_k
 
-      amortizacion = cuota - interes_k - seguro_desgravamen - comisiones
+      amortizacion = cuota - interes_k - seguro_desgravamen
 
       //amortizacion = this.cuota - interes_k - seguro
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
+
+      flujoMensual = cuota + comisiones + seguro_riesgo
+
+      flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)))
 
       this.ELEMENT_DATA?.push(
         {
@@ -852,30 +894,20 @@ export class CalculatorComponent implements AfterViewInit {
           saldo: saldo,
           comisiones: comisiones,
           seguro: parseFloat((seguro_desgravamen).toFixed(2)),
+          flujo: parseFloat(flujoMensual.toFixed(2))
         }
       )
       date = new Date(date.setMonth(date.getMonth() + 1));
     }
 
-    //Calculo de VAN y TIR
+    let cok = 20 / 100 //0.2 --> COK
+    let coki = 0.0;
 
-    const inversionInicial = montoFinal * - 1; // Inversión inicial (monto del préstamo)
-    const cuotaMensual = parseFloat(cuota.toFixed(2)); // Cuota mensual constante
+    coki = (Math.pow((1+cok),(30/360))) - 1
 
-    // Construir el arreglo de flujos de caja
-    const flujosDeCaja = [inversionInicial]; // Primer elemento es la inversión inicial
-
-    // Generar los flujos de caja mensuales
-    for (let i = 1; i <= mes; i++) {
-      flujosDeCaja.push(cuotaMensual);
-    }
-
-    console.log("Cuota Mensual: " + cuotaMensual)
-    console.log("TEA: "+(this.tea / 100))
-
-    const VAN_ = this.calcularVAN(flujosDeCaja,this.tea/100);
+    const VAN_ = this.calcularVAN(flujosDeCaja, coki);
     const TIR_ = this.calcularTIRIncrementalMejorado(flujosDeCaja)
-    this.TIR = (TIR_ * 100).toFixed(2) + "%";
+    this.TIR = (TIR_ * 100).toFixed(6) + "%";
     this.VAN= VAN_.toFixed(2);
 
     console.log('VAN:', VAN_);

@@ -538,12 +538,15 @@ export class CalculatorComponent implements AfterViewInit {
     this.category = inputCategory;
   }
 
-  calculateTCEA(){
+  calculateTCEA(tir: number){
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
-    let mesToDia=mes*30
+    let mesToDia = mes * 30
     if(this.compensatoryTasaArray.length!=0){
-      this.TCEA=((Number(this.calculateValorEntregado())/Number(this.calculateValorRecibido()))**(360/mesToDia))-1
-      console.log("TCEA: "+this.TCEA)
+      //this.TCEA=((Number(this.calculateValorEntregado())/Number(this.calculateValorRecibido()))**(360/mesToDia))-1
+
+      this.TCEA = Math.pow(Number((1 + tir)), (30 / 360)) - 1;
+
+      console.log("TCEA: "+ this.TCEA)
     }else {
       console.log("Tasa Nominal No establecida")
       //this.TCEA=0
@@ -650,7 +653,6 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   simulate() {
-    this.calculateTCEA()
     this.calculateInteresesCompensatorios()
     this.elementRef.nativeElement.ownerDocument
       .body.style.backgroundColor = '#ffffff';
@@ -720,6 +722,7 @@ export class CalculatorComponent implements AfterViewInit {
     let date = new Date(this.fecha);
     let seguro_desgravamen: number = 0;
     let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
+    let valor_seguro: number = 0.0;
 
     console.log("Seguro Riesgo: ", seguro_riesgo)
 
@@ -765,8 +768,10 @@ export class CalculatorComponent implements AfterViewInit {
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
           seguro_desgravamen = 0
+        } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
+          seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
         } else {
-          seguro_desgravamen = 0.00044 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+          seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -792,9 +797,7 @@ export class CalculatorComponent implements AfterViewInit {
             flujo: parseFloat(flujoMensual.toFixed(2))
           }
         )
-
         date = new Date(date.setMonth(date.getMonth() + 1));
-
       }
     }
 
@@ -804,8 +807,10 @@ export class CalculatorComponent implements AfterViewInit {
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
           seguro_desgravamen = 0
+        } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
+          seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
         } else {
-          seguro_desgravamen = 0.00044 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+          seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -835,12 +840,26 @@ export class CalculatorComponent implements AfterViewInit {
       }
     }
 
-    console.log("TEM ", this.tasa_mensual_cuota * 100)
+    //Calculo del Seguro de desgravamen
+    if (seguro_valor == 'Sin seguro') {
+      seguro_desgravamen = 0
+      valor_seguro = 0.0
+    } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
+      seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+      valor_seguro = 0.035
+    } else {
+      seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+      valor_seguro = 0.065
+    }
 
-    console.log("TEM + Seguro", this.tasa_mensual_cuota * 100 + 0.044)
+    console.log("TEM:", this.tasa_mensual_cuota * 100)
+
+    console.log("TEM + Seguro:", this.tasa_mensual_cuota * 100 + 0.035)
+
+    console.log("Seguro Desgravamen:", valor_seguro)
 
     //Metodo Interbank, añadimos seguro a la TEM
-    this.tasa_mensual_cuota = (this.tasa_mensual_cuota * 100) + 0.044
+    this.tasa_mensual_cuota = (this.tasa_mensual_cuota * 100) + valor_seguro
 
     //Dividimos entre 100 para obtener el valor de la TEM
     this.tasa_mensual_cuota = this.tasa_mensual_cuota / 100
@@ -866,10 +885,11 @@ export class CalculatorComponent implements AfterViewInit {
       //Calculo del Seguro de desgravamen
       if (seguro_valor == 'Sin seguro') {
         seguro_desgravamen = 0
+      } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
+        seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
       } else {
-        seguro_desgravamen = 0.00044 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+        seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
       }
-
       interes_k = saldo * this.tasa_mensual
 
       //amortizacion = cuota - interes_k
@@ -910,9 +930,12 @@ export class CalculatorComponent implements AfterViewInit {
     this.TIR = (TIR_ * 100).toFixed(6) + "%";
     this.VAN= VAN_.toFixed(2);
 
+    this.calculateTCEA(TIR_);
+
     console.log('VAN:', VAN_);
     console.log('TIR:', TIR_);
   }
+
   calculateComisionValue(){
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value; //REVISAR CON EL PROFE
     let value=0

@@ -212,8 +212,9 @@ export class CalculatorComponent implements AfterViewInit {
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
+    const currentDate = new Date().getDate();
 
-    this.minDate = new Date(currentYear, currentMonth, 1);
+    this.minDate = new Date(currentYear, currentMonth, currentDate - 1);
     this.maxDate = new Date(currentYear + 5, 1, 15);
 
     const mesesControl = this.gracePeriodFormGroup.get('meses');

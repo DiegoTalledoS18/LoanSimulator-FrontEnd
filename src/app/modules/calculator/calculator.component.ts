@@ -150,6 +150,7 @@ export class CalculatorComponent implements AfterViewInit {
   maxDate = new Date();
   tea = 0;
   tasa_mensual = 0.0;
+  tasa_mensual_cuota = 0.0;
   cuota = 0;
   VAN="";
   TIR="";
@@ -169,7 +170,6 @@ export class CalculatorComponent implements AfterViewInit {
   gastos: Gastos[] = [
     {viewValue: 'Gastos administrativos'},
     {viewValue: 'Comisiones'},
-    {viewValue: 'Seguros'},
     {viewValue: 'Penalidad'},
     {viewValue: 'Portes'},
     {viewValue: 'Gastos de formalización'},
@@ -317,9 +317,6 @@ export class CalculatorComponent implements AfterViewInit {
       if(gastoType=="Comisiones"){
         this.compensatoryComisionArray = this.compensatoryComisionArray.filter(item => item.name !== nombre);
       }
-      if(gastoType=="Seguros"){
-        this.compensatorySegurosArray = this.compensatorySegurosArray.filter(item => item.name !== nombre);
-      }
       if(gastoType=="Penalidad"){
         this.compensatoryPenalidadArray = this.compensatoryPenalidadArray.filter(item => item.name !== nombre);
       }
@@ -338,7 +335,7 @@ export class CalculatorComponent implements AfterViewInit {
   addCompensatory(){
     if(this.category=="Tasas"){
       if (this.CompensatoryTasaGroup.valid) {
-        let name = this.CompensatoryTasaGroup.get('nombre')?.value ?? "";
+        let name = String(this.compensatoryTasaArray.length + 1);
         let valueString = this.CompensatoryTasaGroup.get('valor')?.value;
         let value = parseFloat(valueString ?? '0');
         let newTasa: Compensatorio = {
@@ -357,7 +354,7 @@ export class CalculatorComponent implements AfterViewInit {
     }
     if(this.category=="Retencion") {
       if (this.CompensatoryRetencionGroup.valid) {
-        let name = this.CompensatoryRetencionGroup.get('nombre')?.value ?? "";
+        let name = String(this.compensatoryRetencionArray.length + 1);
         let valueString = this.CompensatoryRetencionGroup.get('valor')?.value;
         let value = parseFloat(valueString ?? '0');
         let newRetencion: Compensatorio = {
@@ -376,7 +373,7 @@ export class CalculatorComponent implements AfterViewInit {
     if(this.category=="Gastos"){
       if(this.selectedGasto=="Gastos administrativos"){
         if (this.CompensatoryAdministracionGroup.valid) {
-          let name = this.CompensatoryAdministracionGroup.get('nombre')?.value ?? "";
+          let name = String(this.compensatoryAdministrativosArray.length + 1);
           let valueString = this.CompensatoryAdministracionGroup.get('valor')?.value;
           let value = parseFloat(valueString ?? '0');
           let newAdministracion: Compensatorio = {
@@ -394,7 +391,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
       if(this.selectedGasto=="Comisiones"){
         if (this.CompensatoryComisionGroup.valid) {
-          let name = this.CompensatoryComisionGroup.get('nombre')?.value ?? "";
+          let name = String(this.compensatoryComisionArray.length + 1);
           let valueString = this.CompensatoryComisionGroup.get('valor')?.value;
           let value = parseFloat(valueString ?? '0');
           let newComision: Compensatorio = {
@@ -410,28 +407,9 @@ export class CalculatorComponent implements AfterViewInit {
           this.CompensatoryComisionGroup.get('valor')?.setValue("");
         }
       }
-      if(this.selectedGasto=="Seguros"){
-        if (this.CompensatorySeguroGroup.valid) {
-          let name = this.CompensatorySeguroGroup.get('nombre')?.value ?? "";
-          let valueString = this.CompensatorySeguroGroup.get('valor')?.value;
-          let value = parseFloat(valueString ?? '0');
-          let newSeguro: Compensatorio = {
-            name: name as string,
-            value: value as number
-          };
-          if (!this.compensatorySegurosArray.some(item => item.name === newSeguro.name)) {
-            this.compensatorySegurosArray.push(newSeguro);
-          } else {
-            console.log("El nombre ya existe en el array.");
-          }
-          this.CompensatorySeguroGroup.get('nombre')?.setValue("");
-          this.CompensatorySeguroGroup.get('valor')?.setValue("");
-        }
-
-      }
       if(this.selectedGasto=="Penalidad"){
         if (this.CompensatoryPenalidadGroup.valid) {
-          let name = this.CompensatoryPenalidadGroup.get('nombre')?.value ?? "";
+          let name = String(this.compensatoryPenalidadArray.length + 1);
           let valueString = this.CompensatoryPenalidadGroup.get('valor')?.value;
           let value = parseFloat(valueString ?? '0');
           let newPenal: Compensatorio = {
@@ -450,7 +428,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
       if(this.selectedGasto=="Portes"){
         if (this.CompensatoryPortesGroup.valid) {
-          let name = this.CompensatoryPortesGroup.get('nombre')?.value ?? "";
+          let name = String(this.compensatoryPortesArray.length + 1);
           let valueString = this.CompensatoryPortesGroup.get('valor')?.value;
           let value = parseFloat(valueString ?? '0');
           let newPenal: Compensatorio = {
@@ -469,7 +447,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
       if(this.selectedGasto=="Gastos de formalización"){
         if (this.CompensatoryFormalizacionGroup.valid) {
-          let name = this.CompensatoryFormalizacionGroup.get('nombre')?.value ?? "";
+          let name = String(this.compensatoryFormalizacionArray.length + 1);
           let valueString = this.CompensatoryFormalizacionGroup.get('valor')?.value;
           let value = parseFloat(valueString ?? '0');
           let newFormalizacion: Compensatorio = {
@@ -487,7 +465,7 @@ export class CalculatorComponent implements AfterViewInit {
       }
       if(this.selectedGasto=="Otros costos adicionales"){
         if (this.CompensatoryAdicionalGroup.valid) {
-          let name = this.CompensatoryAdicionalGroup.get('nombre')?.value ?? "";
+          let name = String(this.compensatoryOtrosArray.length + 1);
           let valueString = this.CompensatoryAdicionalGroup.get('valor')?.value;
           let value = parseFloat(valueString ?? '0');
           let newAdicional: Compensatorio = {
@@ -736,35 +714,31 @@ export class CalculatorComponent implements AfterViewInit {
 
     let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
     let date = new Date(this.fecha);
-    let seguro: number
+    let seguro_desgravamen: number = 0;
 
     //Capital - Cuota Inicial = Monto a Financiar
     let montoFinal: number = capital - cuotaInicial
 
-    //Conversion de Tasa Nomina a Tasa Efectiva
+    //Conversion de Tasa Nominal a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
-      tasa = tasa/100
-      tasa = (1+tasa/360)**(360)-1
+      tasa = tasa / 100
+      tasa = (1 + tasa / 360)**(360) - 1
     }
 
+    //Variable TEA = Tasa
     this.tea = tasa
     this.tea = parseFloat(this.tea.toFixed(7))
 
-    //Calculo de la Tasa Mensual
+    //Calculo de la Tasa Mensual (TEM)
     this.tasa_mensual = (1 + (tasa / 100)) ** (30/ 360) - 1
+
+    this.tasa_mensual_cuota = this.tasa_mensual
 
     let interes_k: number = 0.0
     let saldo: number = montoFinal
     let amortizacion: number = 0
 
-    //Calculo del Seguro de desgravamen
-    if (seguro_valor == 'Sin seguro') {
-      seguro = 0
-    } else {
-      seguro = 0.004396 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
-    }
-
-    let comisiones=this.calculateComisionValue()
+    let comisiones = this.calculateComisionValue()
 
     //Calculo del periodo de gracia
     if(this.gracePeriod == 'Cero'){
@@ -789,7 +763,7 @@ export class CalculatorComponent implements AfterViewInit {
             cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
             comisiones: comisiones,
-            seguro: 0.00,
+            seguro: parseFloat((seguro_desgravamen).toFixed(2)),
           }
         )
 
@@ -803,7 +777,7 @@ export class CalculatorComponent implements AfterViewInit {
 
         interes_k = saldo * this.tasa_mensual
         cuota = interes_k
-        amortizacion = interes_k-cuota
+        amortizacion = 0 //amortizacion = interes_k - cuota
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
 
@@ -816,18 +790,32 @@ export class CalculatorComponent implements AfterViewInit {
             cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
             comisiones: comisiones,
-            seguro: 0.00,
+            seguro: parseFloat((seguro_desgravamen).toFixed(2)),
           }
         )
         date = new Date(date.setMonth(date.getMonth() + 1));
       }
     }
 
-    let division_d =  ((1 + this.tasa_mensual) ** (mes-meses_gracia)) - 1
+    console.log("TEM ", this.tasa_mensual_cuota * 100)
+
+    console.log("TEM + Seguro", this.tasa_mensual_cuota * 100 + 0.044)
+
+    //Metodo Interbank, añadimos seguro a la TEM
+    this.tasa_mensual_cuota = (this.tasa_mensual_cuota * 100) + 0.044
+
+    //Dividimos entre 100 para obtener el valor de la TEM
+    this.tasa_mensual_cuota = this.tasa_mensual_cuota / 100
+
+    let division_d =  ((1 + this.tasa_mensual_cuota) ** (mes - meses_gracia)) - 1
+
+    //let division_d =  ((1 + this.tasa_mensual) ** (mes-meses_gracia)) - 1
 
     //console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
 
-    let division_u = this.tasa_mensual * ((1 + this.tasa_mensual) ** (mes-meses_gracia))
+    let division_u = this.tasa_mensual_cuota * ((1 + this.tasa_mensual_cuota) ** (mes - meses_gracia))
+
+    //let division_u = this.tasa_mensual * ((1 + this.tasa_mensual) ** (mes-meses_gracia))
 
     //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
 
@@ -837,14 +825,21 @@ export class CalculatorComponent implements AfterViewInit {
 
     for (let i = 0; i < mes-meses_gracia; i++) {
 
-      //console.log('FOR')
+      //Calculo del Seguro de desgravamen
+      if (seguro_valor == 'Sin seguro') {
+        seguro_desgravamen = 0
+      } else {
+        seguro_desgravamen = 0.00044 * saldo //Porcentaje para el seguro de Desgravamen en el BBVA es 0.04396%
+      }
 
       interes_k = saldo * this.tasa_mensual
 
-      //amortizacion = cuota - interes_k - seguro
-      amortizacion = cuota - interes_k
+      //amortizacion = cuota - interes_k
+
+      amortizacion = cuota - interes_k - seguro_desgravamen - comisiones
 
       //amortizacion = this.cuota - interes_k - seguro
+
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
       this.ELEMENT_DATA?.push(
@@ -856,7 +851,7 @@ export class CalculatorComponent implements AfterViewInit {
           cuota: parseFloat((cuota).toFixed(2)),
           saldo: saldo,
           comisiones: comisiones,
-          seguro: 0.00,
+          seguro: parseFloat((seguro_desgravamen).toFixed(2)),
         }
       )
       date = new Date(date.setMonth(date.getMonth() + 1));
@@ -864,7 +859,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     //Calculo de VAN y TIR
 
-    const inversionInicial = montoFinal*-1; // Inversión inicial (monto del préstamo)
+    const inversionInicial = montoFinal * - 1; // Inversión inicial (monto del préstamo)
     const cuotaMensual = parseFloat(cuota.toFixed(2)); // Cuota mensual constante
 
     // Construir el arreglo de flujos de caja
@@ -875,13 +870,13 @@ export class CalculatorComponent implements AfterViewInit {
       flujosDeCaja.push(cuotaMensual);
     }
 
-    console.log("Cuota Mensual: "+cuotaMensual)
-    console.log("TEA: "+(this.tea/100))
+    console.log("Cuota Mensual: " + cuotaMensual)
+    console.log("TEA: "+(this.tea / 100))
+
     const VAN_ = this.calcularVAN(flujosDeCaja,this.tea/100);
     const TIR_ = this.calcularTIRIncrementalMejorado(flujosDeCaja)
     this.TIR = (TIR_ * 100).toFixed(2) + "%";
     this.VAN= VAN_.toFixed(2);
-
 
     console.log('VAN:', VAN_);
     console.log('TIR:', TIR_);

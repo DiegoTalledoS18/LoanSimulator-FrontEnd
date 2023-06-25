@@ -540,16 +540,15 @@ export class CalculatorComponent implements AfterViewInit {
 
   calculateTCEA(tir: number){
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
-    let mesToDia = mes * 30
-    if(this.compensatoryTasaArray.length!=0){
-      //this.TCEA=((Number(this.calculateValorEntregado())/Number(this.calculateValorRecibido()))**(360/mesToDia))-1
 
-      this.TCEA = Math.pow(Number((1 + tir)), (30 / 360)) - 1;
+    if(this.compensatoryTasaArray.length!=0){
+
+      this.TCEA = Math.pow(Number((1 + tir)), (360 / 30)) - 1;
 
       console.log("TCEA: "+ this.TCEA)
-    }else {
+
+    } else {
       console.log("Tasa Nominal No establecida")
-      //this.TCEA=0
     }
   }
 

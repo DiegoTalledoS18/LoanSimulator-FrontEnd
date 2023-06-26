@@ -683,6 +683,17 @@
               <p>Tipo de seguro:</p>
               <p>{{PayFormGroup.get('seguro')!.value}}</p>
             </div>
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Porcentaje de Seguro de Desgravamen:</p>
+              <p *ngIf="(PayFormGroup.get('seguro')?.value) == 'Convencional individual'">0.028%</p>
+              <p *ngIf="(PayFormGroup.get('seguro')?.value) == 'Convencional mancomunado'">0.052%</p>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; width: 100%">
+              <p>Porcentaje de Seguro contra todo Riesgo:</p>
+              <p>{{PayFormGroup.get('seguro_riesgo')?.value}}%</p>
+            </div>
+
           <div style="display: flex; justify-content: space-between; width: 100%">
             <p>VAN:</p>
             <p>{{VAN}}</p>
@@ -694,10 +705,6 @@
           <div style="display: flex; justify-content: space-between; width: 100%">
             <p>Tasa de Costo Efectivo Anual:</p>
             <p>{{(TCEA*100).toFixed(5)}} %</p>
-          </div>
-          <div style="display: flex; justify-content: space-between; width: 100%">
-            <p>Interes Compensatorio:</p>
-            <p>{{interesesCompensatorios}}</p>
           </div>
         </mat-expansion-panel>
       </div>

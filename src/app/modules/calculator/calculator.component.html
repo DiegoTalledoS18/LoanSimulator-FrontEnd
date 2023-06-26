@@ -196,29 +196,58 @@
               </form>
 
               <p>Seguros</p>
-              <div>
-                <mat-form-field appearance="fill" style="width: 47%">
-                  <mat-label>Seguro de Desgravamen</mat-label>
-                  <mat-select formControlName="seguro">
-                    <mat-option *ngFor="let desgravamen of desgravamens" [value]="desgravamen.viewValue">
-                      {{desgravamen.viewValue}}
-                    </mat-option>
-                  </mat-select>
-                  <mat-error *ngIf="PayFormGroup.get('seguro')?.hasError('required')">
-                    Seguro de desgravamen es <strong>requerido</strong>
-                  </mat-error>
-                </mat-form-field>
+              <div  style="display: flex;justify-content: space-between; padding-bottom: 1rem" >
+                <div style="width: 47%; margin-top: 10px">
+                  <mat-form-field appearance="fill" style="width: 100%">
+                    <mat-label>Seguro contra todo Riesgo (%)</mat-label>
+                    <input matInput type="number" formControlName="seguro_riesgo">
+                    <mat-error *ngIf="PayFormGroup.get('seguro_riesgo')?.hasError('required')">
+                      Porcentaje es <strong>requerido</strong>
+                    </mat-error>
+                    <mat-error *ngIf="PayFormGroup.get('seguro_riesgo')?.hasError('min')	">
+                      Ingrese un porcentaje <strong>permitido</strong>
+                    </mat-error>
+                    <mat-error *ngIf="PayFormGroup.get('seguro_riesgo')?.hasError('max')	">
+                      Ingrese un porcentaje <strong>permitido</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div style="width: 47%; margin-top: 10px">
+                  <mat-form-field appearance="fill" style="width: 100%">
+                    <mat-label>Seguro de Desgravamen</mat-label>
+                    <mat-select formControlName="seguro">
+                      <mat-option *ngFor="let desgravamen of desgravamens" [value]="desgravamen.viewValue">
+                        {{desgravamen.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="PayFormGroup.get('seguro')?.hasError('required')">
+                      Seguro de desgravamen es <strong>requerido</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
               </div>
 
-              <div>
-                <mat-form-field appearance="fill" style="width: 47%">
-                  <mat-label>Seguro contra todo Riesgo</mat-label>
-                  <input matInput type="number" formControlName="seguro_riesgo">
-                  <mat-error *ngIf="PayFormGroup.get('seguro_riesgo')?.hasError('required')">
-                    Seguro de riesgo es <strong>requerido</strong>
-                  </mat-error>
-                </mat-form-field>
+              <p>Costos de Oportunidad</p>
+              <div  style="display: flex;justify-content: space-between; padding-bottom: 1rem" >
+                <div style="width: 47%; margin-top: 10px">
+                  <form [formGroup]="COKGroup" >
+                    <mat-form-field appearance="fill" style="width: 100%">
+                      <mat-label>Tasa de descuento (%)</mat-label>
+                      <input matInput type="number" formControlName="valor">
+                      <mat-error *ngIf="COKGroup.get('valor')?.hasError('required')">
+                        Porcentaje es <strong>requerido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="COKGroup.get('valor')?.hasError('min')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
+                      </mat-error>
+                      <mat-error *ngIf="COKGroup.get('valor')?.hasError('max')	">
+                        Ingrese un porcentaje <strong>permitido</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </form>
+                </div>
               </div>
+
               <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between; margin-bottom: 1rem">
                 <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
                   <mat-label>Fecha de nacimiento primer titular</mat-label>
@@ -617,6 +646,23 @@
               <p>{{this.tasa_mensual.toFixed(7)}}%</p>
             </div>
 
+          <div style="display: flex; justify-content: space-between; width: 100%">
+            <div *ngIf="this.gracePeriod == 'Cero'" style="display: flex; justify-content: space-between; width: 100%">
+              <p>Periodo de Gracia:</p>
+              <p>Cero</p>
+            </div>
+            <div *ngIf="this.gracePeriod != 'Cero'" style="display: flex; justify-content: space-between; width: 100%">
+              <div *ngIf="this.gracePeriod == 'Total'">
+                <p>Periodo de Gracia Total:</p>
+              </div>
+              <div *ngIf="this.gracePeriod == 'Parcial'">
+                <p>Periodo de Gracia Parcial:</p>
+              </div>
+              <p *ngIf="(gracePeriodFormGroup.get('meses')!.value)=='1'">{{gracePeriodFormGroup.get('meses')!.value}} mes</p>
+              <p *ngIf="(gracePeriodFormGroup.get('meses')!.value)!='1'">{{gracePeriodFormGroup.get('meses')!.value}} meses</p>
+            </div>
+          </div>
+
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Cuota:</p>
               <p>{{this.cuota.toFixed(2)}}</p>
@@ -655,7 +701,7 @@
           </div>
         </mat-expansion-panel>
       </div>
-      <div style="display: flex;justify-content: center; margin-top: 10px;">
+      <div style="display: flex;justify-content: center; margin-top: 10px; ">
         <mat-expansion-panel (opened)="panelOpenState = true"
                              (closed)="panelOpenState = false" style="width: 80%; box-shadow: none;">
           <mat-expansion-panel-header>
@@ -712,13 +758,17 @@
         </mat-expansion-panel>
       </div>
 
-      <div class="button-save">
-        <button mat-raised-button color="primary" (click)="addCompensatory()">Save</button>
+      <div style="display: flex;justify-content: center; margin: 2rem">
+        <div style="width: 80%;display:flex;justify-content: space-between">
+          <div class="button-reload">
+            <button mat-raised-button color="primary" (click)="addCompensatory()">Simular otro Prestamo</button>
+          </div>
+          <div class="button-save">
+            <button mat-raised-button color="primary" (click)="addCompensatory()">Save</button>
+          </div>
+        </div>
       </div>
 
-      <div class="button-reload">
-        <button mat-raised-button color="primary" (click)="addCompensatory()">Simular otro Prestamo</button>
-      </div>
 
     </div>
   </div>

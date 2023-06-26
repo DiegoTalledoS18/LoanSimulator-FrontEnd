@@ -93,7 +93,10 @@ export class CalculatorComponent implements AfterViewInit {
     diaDePago: new FormControl('', [Validators.required, Validators.min(1), Validators.max(30)]),
     fechaSolicitud: new FormControl(Date, [Validators.required]),
     seguro: new FormControl('', [Validators.required]),
-    seguro_riesgo: new FormControl('', [Validators.required]),
+    seguro_riesgo: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
+  })
+  COKGroup = new FormGroup({
+    valor: new FormControl('', [Validators.required, Validators.min(0), Validators.max(100)]),
   })
   CompensatoryTasaGroup = new FormGroup({
     nombre: new FormControl(''),
@@ -270,6 +273,7 @@ export class CalculatorComponent implements AfterViewInit {
       this.addTNM()
       //this.setGastosList()
     }
+
 
 
   }
@@ -659,7 +663,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     this.calculateTableData();
 
-    if (this.PayFormGroup.valid) {
+    if (this.PayFormGroup.valid && this.COKGroup.valid) {
       if (this.gracePeriod == 'Cero') {
         if (this.PayFormGroup.get('seguro')?.value != 'Sin seguro') {
           if (this.PayFormGroup.get('seguro')?.value == 'Convencional individual' || this.PayFormGroup.get('seguro')?.value == 'Con devolución individual') {
@@ -709,6 +713,7 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   calculateTableData() {
+    let COK : number = parseInt(<string>this.COKGroup.get('valor')?.value);
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     let cuotaInicial: number = <number><unknown>this.userFormGroup.get('cuotaInicial')?.value;
@@ -919,8 +924,7 @@ export class CalculatorComponent implements AfterViewInit {
       )
       date = new Date(date.setMonth(date.getMonth() + 1));
     }
-
-    let cok = 20 / 100 //0.2 --> COK
+    let cok = COK / 100 //0.2 --> COK
     let coki = 0.0;
 
     coki = (Math.pow((1+cok),(30/360))) - 1

@@ -15,7 +15,7 @@
         <mat-card-title-group>
           <mat-card-title>{{ element.name }}</mat-card-title>
           <mat-card-subtitle>Detalles</mat-card-subtitle>
-          <button mat-flat-button color="primary">Mostrar</button>
+          <button mat-flat-button color="primary" (click)="openDialog(element)">Mostrar</button>
         </mat-card-title-group>
       </mat-card-header>
       <mat-card-content>
@@ -25,5 +25,6 @@
       </mat-card-content>
     </mat-card>
   </div>
+
 </div>
 

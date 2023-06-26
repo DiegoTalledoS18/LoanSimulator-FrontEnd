@@ -20,8 +20,10 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {Component} from '@angular/core';
+import { DialogComponent } from './dialog/dialog.component';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 const scheduleComponent: Route[] = [
@@ -34,6 +36,7 @@ const scheduleComponent: Route[] = [
 @NgModule({
   declarations: [
     SchedulesComponent,
+    DialogComponent,
   ],
   imports: [
     RouterModule.forChild(scheduleComponent),
@@ -59,7 +62,8 @@ const scheduleComponent: Route[] = [
     MatGridListModule,
     MatToolbarModule,
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    MatDialogModule,
   ],
 
   exports: [

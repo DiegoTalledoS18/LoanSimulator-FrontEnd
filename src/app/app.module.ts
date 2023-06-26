@@ -10,22 +10,25 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { NavbarComponent } from './modules/navbar/navbar.component';
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatButtonModule} from "@angular/material/button";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
     declarations: [
         AppComponent,
+
     ],
-    imports: [
-        RouterModule.forRoot(appRoutes),
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule,
-        HttpClientModule,
-        MatRadioModule,
-        MatSlideToggleModule,
-        MatToolbarModule,
-        MatButtonModule,
-    ],
+  imports: [
+    RouterModule.forRoot(appRoutes),
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule,
+    HttpClientModule,
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatTableModule,
+  ],
     providers: [],
   exports: [
   ],

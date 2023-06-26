@@ -6,6 +6,6 @@ export interface Schedule {
   seguroDesgravamen: number;
   van: number;
   tir: number;
-  userIdt: number
+  userIdt: number;
 }
 

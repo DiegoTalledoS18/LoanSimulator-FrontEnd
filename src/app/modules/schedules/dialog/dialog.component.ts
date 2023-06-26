@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Cronograma } from '../schedules.component';
+import {Schedule} from "../../../models/schedule";
 
 @Component({
   selector: 'app-dialog',
@@ -12,6 +12,6 @@ export class DialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Cronograma
+    @Inject(MAT_DIALOG_DATA) public data: Schedule
   ) {}
 }

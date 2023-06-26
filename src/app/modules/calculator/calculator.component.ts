@@ -143,25 +143,36 @@ export class CalculatorComponent implements AfterViewInit {
     segundoTitular: new FormControl(Date, [Validators.required])
   })
 
+  //Boolean Declarations
   stepper = true;
   gracePeriodWithCapitalization = false;
   calculateSend = false;
-  gracePeriod = "Cero";
-  compensatory="Comision";
-  category="Gastos";
   panelOpenState = false;
+  flag = false;
+
+  //String Declarations
+  gracePeriod = "Cero";
+  compensatory = "Comision";
+  category = "Gastos";
   fecha = "";
+  VAN = "";
+  TIR = "";
+
+  //Date Declarations
   minDate = new Date();
   maxDate = new Date();
+  minDate_m = new Date();
+  maxDate_m = new Date();
+
+  //Int Declarations
   tea = 0;
   tasa_mensual = 0.0;
   tasa_mensual_cuota = 0.0;
   cuota = 0;
-  VAN="";
-  TIR="";
-  flag = false;
-  TCEA=0;
-  interesesCompensatorios=0;
+  TCEA = 0;
+  interesesCompensatorios = 0;
+
+  //Array Declarations
   compensatoryTasaArray:Compensatorio[]=[]
   compensatoryComisionArray:Compensatorio[]=[]
   compensatoryPenalidadArray:Compensatorio[]=[]
@@ -206,6 +217,7 @@ export class CalculatorComponent implements AfterViewInit {
 
   selectedGasto: string = 'Gastos administrativos';
 
+  //Table Data
   ELEMENT_DATA: Cronograma[] = []
   displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'seguro', 'flujo'];
 
@@ -217,8 +229,13 @@ export class CalculatorComponent implements AfterViewInit {
     const currentMonth = new Date().getMonth();
     const currentDate = new Date().getDate();
 
-    this.minDate = new Date(currentYear, currentMonth, currentDate - 1);
+    console.log(currentYear - 18, "/", 12, "/", 31)
+
+    this.minDate = new Date(currentYear, currentMonth, currentDate);
     this.maxDate = new Date(currentYear + 5, 1, 15);
+
+    this.maxDate_m = new Date(currentYear - 18, 11, 31);
+    //this.maxDate_m = new Date(currentYear, currentMonth, currentDate);
 
     const mesesControl = this.gracePeriodFormGroup.get('meses');
 

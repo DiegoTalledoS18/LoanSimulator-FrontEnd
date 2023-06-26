@@ -1,2 +1,29 @@
-<p>schedules works!</p>
+<div style="background-color: white">
+  <h1>
+    Hola Diego !
+  </h1>
+  <h2>
+    Cronograma de pagos
+  </h2>
+  <h3>
+    Consulta tus simulaciones guardadas aqui.
+  </h3>
+  <mat-divider></mat-divider>
+  <div *ngFor="let element of ELEMENT_DATA" >
+    <mat-card class="example-card">
+      <mat-card-header>
+        <mat-card-title-group>
+          <mat-card-title>{{ element.name }}</mat-card-title>
+          <mat-card-subtitle>Detalles</mat-card-subtitle>
+          <button mat-flat-button color="primary">Mostrar</button>
+        </mat-card-title-group>
+      </mat-card-header>
+      <mat-card-content>
+        Cuota: {{element.cuota}}
+        VAN: {{element.van}}
+        TIR:{{element.tir}}
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
 

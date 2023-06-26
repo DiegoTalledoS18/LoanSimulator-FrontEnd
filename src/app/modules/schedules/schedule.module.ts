@@ -19,6 +19,10 @@ import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {MatToolbarModule} from "@angular/material/toolbar";
+import {Component} from '@angular/core';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatListModule} from '@angular/material/list';
+
 
 const scheduleComponent: Route[] = [
   {
@@ -53,7 +57,9 @@ const scheduleComponent: Route[] = [
     MatTableModule,
     MatIconModule,
     MatGridListModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatListModule,
+    MatDividerModule
   ],
 
   exports: [

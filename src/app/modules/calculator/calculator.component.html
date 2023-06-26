@@ -196,7 +196,7 @@
               </form>
 
               <p>Seguros</p>
-              <div  style="display: flex;justify-content: space-between; padding-bottom: 1rem" >
+              <div style="display: flex;justify-content: space-between; padding-bottom: 1rem" >
                 <div style="width: 47%; margin-top: 10px">
                   <mat-form-field appearance="fill" style="width: 100%">
                     <mat-label>Seguro contra todo Riesgo (%)</mat-label>
@@ -227,6 +227,27 @@
                 </div>
               </div>
 
+              <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between; margin-bottom: 1rem">
+                <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
+                  <mat-label style="font-size: 14px;">Fecha de nacimiento primer titular</mat-label>
+                  <input matInput [max]="maxDate_m" [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
+                  <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2 color="primary"></mat-datepicker>
+                  <mat-error *ngIf=" bornDatesFormGroup.get('primerTitular')?.hasError('required') ">
+                    Fecha <strong>requerida</strong>
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado'||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
+                  <mat-label style="font-size: 14px;">Fecha de nacimiento segundo titular</mat-label>
+                  <input matInput [max]="maxDate_m" [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
+                  <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+                  <mat-datepicker #picker3 color="primary"></mat-datepicker>
+                  <mat-error *ngIf="bornDatesFormGroup.get('segundoTitular')?.hasError('required')">
+                    Fecha <strong>requerida</strong>
+                  </mat-error>
+                </mat-form-field>
+              </form>
+
               <p>Costos de Oportunidad</p>
               <div  style="display: flex;justify-content: space-between; padding-bottom: 1rem" >
                 <div style="width: 47%; margin-top: 10px">
@@ -247,27 +268,6 @@
                   </form>
                 </div>
               </div>
-
-              <form [formGroup]="bornDatesFormGroup" *ngIf="this.PayFormGroup.get('seguro')?.value!='' && this.PayFormGroup.get('seguro')?.value!='Sin seguro'" style="display: flex;justify-content: space-between; margin-bottom: 1rem">
-                <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value!='Sin seguro'" color="primary" appearance="fill" style="width: 47%">
-                  <mat-label>Fecha de nacimiento primer titular</mat-label>
-                  <input matInput [max]="maxDate_m" [matDatepicker]="picker2" formControlName="primerTitular" (dateChange)="showDate(picker2)">
-                  <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-                  <mat-datepicker #picker2 color="primary"></mat-datepicker>
-                  <mat-error *ngIf=" bornDatesFormGroup.get('primerTitular')?.hasError('required') ">
-                    Fecha <strong>requerida</strong>
-                  </mat-error>
-                </mat-form-field>
-                <mat-form-field *ngIf="this.PayFormGroup.get('seguro')?.value=='Convencional mancomunado'||this.PayFormGroup.get('seguro')?.value=='Con devolución mancomunado' " color="primary" appearance="fill" style="width: 47%">
-                  <mat-label>Fecha de nacimiento segundo titular</mat-label>
-                  <input matInput [max]="maxDate_m" [matDatepicker]="picker3" formControlName="segundoTitular" (dateChange)="showDate(picker3)">
-                  <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
-                  <mat-datepicker #picker3 color="primary"></mat-datepicker>
-                  <mat-error *ngIf="bornDatesFormGroup.get('segundoTitular')?.hasError('required')">
-                    Fecha <strong>requerida</strong>
-                  </mat-error>
-                </mat-form-field>
-              </form>
 
               <p>Gastos Compensatorios</p>
 
@@ -483,7 +483,7 @@
                 <mat-card style="margin: 1rem;" *ngIf="this.category=='Tasas'">
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                      <p style="font-weight: bolder">TASA COMPENSATORIA</p>
+                      <p style="font-weight: bolder">TASA EFECTIVA MENSUAL (TEM)</p>
                       <p>{{ item.value }} %</p>
                     </div>
                   </mat-card-content>
@@ -546,7 +546,7 @@
                   <mat-card-content style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                       <p style="font-weight: bolder">PORTES</p>
-                      <p>{{ item.value }} %</p>
+                      <p>S/ {{ item.value }}</p>
                     </div>
                     <div>
                       <button mat-flat-button color="primary" (click)="deleteArrayElementByName(item.name,'Portes')" style="margin: auto;">Eliminar</button>

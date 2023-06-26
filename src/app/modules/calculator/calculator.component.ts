@@ -196,8 +196,8 @@ export class CalculatorComponent implements AfterViewInit {
     {viewValue: 'Sin seguro'},
     {viewValue: 'Convencional individual'},
     {viewValue: 'Convencional mancomunado'},
-    {viewValue: 'Con devolución individual'},
-    {viewValue: 'Con devolución mancomunado'},
+    //{viewValue: 'Con devolución individual'},
+    //{viewValue: 'Con devolución mancomunado'},
   ];
 
   currencys: Currency[] = [
@@ -790,10 +790,13 @@ export class CalculatorComponent implements AfterViewInit {
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
           seguro_desgravamen = 0
+          valor_seguro = 0.0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-          seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          valor_seguro = 0.028
         } else {
-          seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          valor_seguro = 0.052
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -830,9 +833,9 @@ export class CalculatorComponent implements AfterViewInit {
         if (seguro_valor == 'Sin seguro') {
           seguro_desgravamen = 0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-          seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
         } else {
-          seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -867,11 +870,11 @@ export class CalculatorComponent implements AfterViewInit {
       seguro_desgravamen = 0
       valor_seguro = 0.0
     } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-      seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
-      valor_seguro = 0.035
+      seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+      valor_seguro = 0.028
     } else {
-      seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
-      valor_seguro = 0.065
+      seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+      valor_seguro = 0.052
     }
 
     console.log("TEM:", this.tasa_mensual_cuota * 100)
@@ -907,11 +910,15 @@ export class CalculatorComponent implements AfterViewInit {
       //Calculo del Seguro de desgravamen
       if (seguro_valor == 'Sin seguro') {
         seguro_desgravamen = 0
+        valor_seguro = 0.0
       } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-        seguro_desgravamen = 0.00035 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+        seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+        valor_seguro = 0.028
       } else {
-        seguro_desgravamen = 0.00065 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+        seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+        valor_seguro = 0.052
       }
+
       interes_k = saldo * this.tasa_mensual
 
       //amortizacion = cuota - interes_k
@@ -941,8 +948,9 @@ export class CalculatorComponent implements AfterViewInit {
       )
       date = new Date(date.setMonth(date.getMonth() + 1));
     }
+
     let cok = COK / 100 //0.2 --> COK
-    let coki = 0.0;
+    let coki: number;
 
     coki = (Math.pow((1+cok),(30/360))) - 1
 

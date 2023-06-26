@@ -59,7 +59,7 @@ export class LoginComponent implements AfterViewInit {
         (response) => {
           // local storage
           localStorage.setItem('id', String(response.id));
-          this.userService.getCurrentUser(String(this.userFormGroup.get("username")?.value)).subscribe(
+          this.userService.authenticate(String(this.userFormGroup.get("username")?.value), String(this.userFormGroup.get("password")?.value)).subscribe(
             (response) => {
               this.currentUserName = response.name;
               console.log(this.currentUserName);

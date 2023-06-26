@@ -642,6 +642,7 @@ export class CalculatorComponent implements AfterViewInit {
           valorNetoRecibido -= (this.compensatoryOtrosArray[i].value);
         }
       }
+
       //console.log("Valor Neto Recibido: "+valorNetoRecibido)
       return Number(valorNetoRecibido).toFixed(2)
     } else {
@@ -669,7 +670,8 @@ export class CalculatorComponent implements AfterViewInit {
         valorNetoEntregado += (this.compensatoryPortesArray[i].value);
       }
     }
-    //console.log("valor Neto Entregado: "+valorNetoEntregado)
+
+    //console.log("valor Neto Entregado: " + valorNetoEntregado)
     return Number(valorNetoEntregado).toFixed(2)
   }
 
@@ -966,7 +968,7 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   calculateComisionValue(){
-    let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value; //REVISAR CON EL PROFE
+    let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
     let value=0
 
     if(this.compensatoryPenalidadArray.length>0){
@@ -1020,6 +1022,10 @@ export class CalculatorComponent implements AfterViewInit {
 
   calculate() {
     console.log("hola")
+  }
+
+  refresh(){
+    this.route.navigate(['/calculator']);
   }
 
 }

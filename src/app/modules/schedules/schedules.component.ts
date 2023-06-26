@@ -1,6 +1,4 @@
 import { Component,OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import {DialogComponent} from "./dialog/dialog.component";
 
 export interface Cronograma {
   cuota: number;
@@ -18,14 +16,10 @@ export interface Cronograma {
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.css']
 })
-
 export class SchedulesComponent {
   userName= ""
   ELEMENT_DATA: Cronograma[] = []
   displayedColumns: string[] = ['id', 'cuota', 'interes', 'saldofinal'];
-  selectedElement: Cronograma | null = null;
-
-  constructor(public dialog: MatDialog) {}
 
 
   ngOnInit(): void {
@@ -53,11 +47,5 @@ export class SchedulesComponent {
         userIdt: 2,
       }
     ];
-  }
-
-  openDialog(element: Cronograma): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      data: element,
-    });
   }
 }

@@ -1,8 +1,11 @@
 export interface Schedule {
-  anio: number;
   cuota: number;
-  capital_am: number;
-  interes: number;
-  amortizacion_ac: number;
-  capital_pen: number;
+  name: string;
+  tem: number;
+  saldoInicial: number;
+  seguroDesgravamen: number;
+  van: number;
+  tir: number;
+  userIdt: number
 }
+

@@ -18,6 +18,7 @@ export interface Cronograma {
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.css']
 })
+
 export class SchedulesComponent {
   userName= ""
   ELEMENT_DATA: Cronograma[] = []
@@ -59,5 +60,4 @@ export class SchedulesComponent {
       data: element,
     });
   }
-
 }

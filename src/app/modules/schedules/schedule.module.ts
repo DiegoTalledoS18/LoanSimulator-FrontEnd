@@ -24,7 +24,7 @@ import { DialogComponent } from './dialog/dialog.component';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatListModule} from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
-
+import {NavbarComponent} from "../navbar/navbar.component";
 
 const scheduleComponent: Route[] = [
   {
@@ -35,6 +35,7 @@ const scheduleComponent: Route[] = [
 
 @NgModule({
   declarations: [
+    //NavbarComponent,
     SchedulesComponent,
     DialogComponent,
   ],

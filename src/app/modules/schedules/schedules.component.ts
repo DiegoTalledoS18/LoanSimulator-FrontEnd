@@ -1,4 +1,4 @@
-import {Component,OnInit } from '@angular/core';
+import {Component, OnInit } from '@angular/core';
 import {ScheduleService} from "../../services/schedule.services";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogComponent} from "./dialog/dialog.component";

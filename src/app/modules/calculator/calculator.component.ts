@@ -13,6 +13,9 @@ import {MatDatepicker} from "@angular/material/datepicker";
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
+import {ScheduleService} from "../../services/schedule.services";
+import {Schedule} from "../../models/schedule";
+
 @Pipe({
   name: 'customDate'
 })
@@ -81,6 +84,7 @@ export interface Cronograma {
 
 export class CalculatorComponent implements AfterViewInit {
 
+  //Form Group Declarations
   userFormGroup = new FormGroup({
     capital: new FormControl('', [Validators.required, Validators.min(65200), Validators.max(464200)]),
     cuotaInicial: new FormControl('', [Validators.required, this.cuotaInicialValidator, this.cuotaInicialValidatorMax]),
@@ -171,17 +175,21 @@ export class CalculatorComponent implements AfterViewInit {
   cuota = 0;
   TCEA = 0;
   interesesCompensatorios = 0;
+  montoFinal = 0.0;
+  seguro_desgravamen = 0.0;
 
   //Array Declarations
-  compensatoryTasaArray:Compensatorio[]=[]
-  compensatoryComisionArray:Compensatorio[]=[]
-  compensatoryPenalidadArray:Compensatorio[]=[]
-  compensatoryPortesArray:Compensatorio[]=[]
-  compensatoryAdministrativosArray:Compensatorio[]=[]
-  compensatorySegurosArray:Compensatorio[]=[]
-  compensatoryOtrosArray:Compensatorio[]=[]
-  compensatoryFormalizacionArray:Compensatorio[]=[]
-  compensatoryRetencionArray:Compensatorio[]=[]
+  compensatoryTasaArray: Compensatorio[] = []
+  compensatoryComisionArray: Compensatorio[] = []
+  compensatoryPenalidadArray: Compensatorio[] = []
+  compensatoryPortesArray: Compensatorio[] = []
+  compensatoryAdministrativosArray: Compensatorio[] = []
+  compensatorySegurosArray: Compensatorio[] = []
+  compensatoryOtrosArray: Compensatorio[] = []
+  compensatoryFormalizacionArray: Compensatorio[] = []
+  compensatoryRetencionArray: Compensatorio[] = []
+
+  sendData: Schedule[];
 
   gastos: Gastos[] = [
     {viewValue: 'Gastos administrativos'},
@@ -223,7 +231,9 @@ export class CalculatorComponent implements AfterViewInit {
 
 
   constructor(private route: Router, private elementRef: ElementRef, private _adapter: DateAdapter<any>,
-              @Inject(MAT_DATE_LOCALE) private _locale: string) {
+              @Inject(MAT_DATE_LOCALE) private _locale: string, private scheduleService: ScheduleService) {
+
+    this.sendData = [] as Schedule[];
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth();
@@ -744,14 +754,14 @@ export class CalculatorComponent implements AfterViewInit {
 
     let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
     let date = new Date(this.fecha);
-    let seguro_desgravamen: number = 0;
+    //let seguro_desgravamen: number = 0;
     let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
     let valor_seguro: number = 0.0;
 
     console.log("Seguro Riesgo: ", seguro_riesgo)
 
     //Capital - Cuota Inicial = Monto a Financiar
-    let montoFinal: number = capital - cuotaInicial
+    this.montoFinal = capital - cuotaInicial
 
     //Conversion de Tasa Nominal a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
@@ -769,13 +779,13 @@ export class CalculatorComponent implements AfterViewInit {
     this.tasa_mensual_cuota = this.tasa_mensual
 
     let interes_k: number = 0.0
-    let saldo: number = montoFinal
+    let saldo: number = this.montoFinal
     let amortizacion: number = 0
 
     let comisiones = this.calculateComisionValue()
 
     //Calculo de VAN y TIR
-    const inversionInicial = montoFinal * - 1; // Inversión inicial (monto del préstamo)
+    const inversionInicial = this.montoFinal * - 1; // Inversión inicial (monto del préstamo)
     let flujoMensual = 0 // Cuota mensual constante
 
     // Construir el arreglo de flujos de caja
@@ -791,13 +801,13 @@ export class CalculatorComponent implements AfterViewInit {
 
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
-          seguro_desgravamen = 0
+          this.seguro_desgravamen = 0
           valor_seguro = 0.0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-          seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
           valor_seguro = 0.028
         } else {
-          seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
           valor_seguro = 0.052
         }
 
@@ -807,7 +817,7 @@ export class CalculatorComponent implements AfterViewInit {
 
         saldo = parseFloat((saldo + interes_k).toFixed(2))
 
-        flujoMensual = cuota + comisiones + seguro_desgravamen + seguro_riesgo;
+        flujoMensual = cuota + comisiones + this.seguro_desgravamen  + seguro_riesgo;
 
         flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
@@ -820,7 +830,7 @@ export class CalculatorComponent implements AfterViewInit {
             cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
             comisiones: comisiones,
-            seguro: parseFloat((seguro_desgravamen).toFixed(2)),
+            seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
             flujo: parseFloat(flujoMensual.toFixed(2))
           }
         )
@@ -833,11 +843,11 @@ export class CalculatorComponent implements AfterViewInit {
 
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
-          seguro_desgravamen = 0
+          this.seguro_desgravamen  = 0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-          seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
         } else {
-          seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -846,7 +856,7 @@ export class CalculatorComponent implements AfterViewInit {
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
 
-        flujoMensual = cuota + comisiones + seguro_desgravamen + seguro_riesgo;
+        flujoMensual = cuota + comisiones + this.seguro_desgravamen  + seguro_riesgo;
 
         flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
@@ -859,7 +869,7 @@ export class CalculatorComponent implements AfterViewInit {
             cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
             comisiones: comisiones,
-            seguro: parseFloat((seguro_desgravamen).toFixed(2)),
+            seguro: parseFloat((this.seguro_desgravamen ).toFixed(2)),
             flujo: parseFloat(flujoMensual.toFixed(2))
           }
         )
@@ -869,13 +879,13 @@ export class CalculatorComponent implements AfterViewInit {
 
     //Calculo del Seguro de desgravamen
     if (seguro_valor == 'Sin seguro') {
-      seguro_desgravamen = 0
+      this.seguro_desgravamen = 0
       valor_seguro = 0.0
     } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-      seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+      this.seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
       valor_seguro = 0.028
     } else {
-      seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+      this.seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
       valor_seguro = 0.052
     }
 
@@ -893,13 +903,9 @@ export class CalculatorComponent implements AfterViewInit {
 
     let division_d =  ((1 + this.tasa_mensual_cuota) ** (mes - meses_gracia)) - 1
 
-    //let division_d =  ((1 + this.tasa_mensual) ** (mes-meses_gracia)) - 1
-
     //console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
 
     let division_u = this.tasa_mensual_cuota * ((1 + this.tasa_mensual_cuota) ** (mes - meses_gracia))
-
-    //let division_u = this.tasa_mensual * ((1 + this.tasa_mensual) ** (mes-meses_gracia))
 
     //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
 
@@ -911,13 +917,13 @@ export class CalculatorComponent implements AfterViewInit {
 
       //Calculo del Seguro de desgravamen
       if (seguro_valor == 'Sin seguro') {
-        seguro_desgravamen = 0
+        this.seguro_desgravamen = 0
         valor_seguro = 0.0
       } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-        seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+        this.seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
         valor_seguro = 0.028
       } else {
-        seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+        this.seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
         valor_seguro = 0.052
       }
 
@@ -925,7 +931,7 @@ export class CalculatorComponent implements AfterViewInit {
 
       //amortizacion = cuota - interes_k
 
-      amortizacion = cuota - interes_k - seguro_desgravamen
+      amortizacion = cuota - interes_k - this.seguro_desgravamen
 
       //amortizacion = this.cuota - interes_k - seguro
 
@@ -944,7 +950,7 @@ export class CalculatorComponent implements AfterViewInit {
           cuota: parseFloat((cuota).toFixed(2)),
           saldo: saldo,
           comisiones: comisiones,
-          seguro: parseFloat((seguro_desgravamen).toFixed(2)),
+          seguro: parseFloat((this.seguro_desgravamen ).toFixed(2)),
           flujo: parseFloat(flujoMensual.toFixed(2))
         }
       )
@@ -959,7 +965,7 @@ export class CalculatorComponent implements AfterViewInit {
     const VAN_ = this.calcularVAN(flujosDeCaja, coki);
     const TIR_ = this.calcularTIRIncrementalMejorado(flujosDeCaja)
     this.TIR = (TIR_ * 100).toFixed(6) + "%";
-    this.VAN= VAN_.toFixed(2);
+    this.VAN = VAN_.toFixed(2);
 
     this.calculateTCEA(TIR_);
 
@@ -1028,4 +1034,38 @@ export class CalculatorComponent implements AfterViewInit {
     this.route.navigate(['/calculator']);
   }
 
+  saveSchedule(){
+
+    let name = "Cronograma Prueba 2"
+
+    let cuota = this.cuota;
+    let tem = this.tasa_mensual;
+    let saldoInicial = this.montoFinal;
+    let seguro = this.seguro_desgravamen;
+    let van = Number(this.VAN);
+    let tir = 0.33434;
+    let userId = 1;
+
+    this.sendData.push(
+      {
+        cuota: cuota,
+        name: name,
+        tem: tem,
+        saldoInicial: saldoInicial,
+        seguroDesgravamen: seguro,
+        van: van,
+        tir: tir,
+        userIdt: userId,
+      });
+
+    this.sendData.forEach(element => {
+      this.scheduleService.create(element).subscribe(response2 => {
+        console.log("Response 2: ", response2);
+      })
+    });
+
+    console.log(this.sendData);
+
+    this.route.navigate(['/calculator/schedules']);
+  }
 }

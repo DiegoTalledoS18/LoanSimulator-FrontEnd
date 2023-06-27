@@ -24,7 +24,7 @@ export class SchedulesComponent {
   ngOnInit(): void {
     this.userName = "Diego Talledo";
 
-    this.scheduleService.getAll().subscribe((response) => {
+    this.scheduleService.getById(1).subscribe((response) => {
       console.log(response)
 
       this.data = response;

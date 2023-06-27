@@ -44,6 +44,13 @@ export class ScheduleService {
         catchError(this.handleError));
   }
 
+  getById(id: Number): Observable<Schedule> {
+    return this.http.get<Schedule>(`${this.basePath}/${id}`, this.httpOptions)
+      .pipe(
+        retry(2),
+        catchError(this.handleError));
+  }
+
   create(schedule: any): Observable<Schedule> {
     return this.http.post<Schedule>(`${this.basePath}/create`, JSON.stringify(schedule), this.httpOptions)
       .pipe(

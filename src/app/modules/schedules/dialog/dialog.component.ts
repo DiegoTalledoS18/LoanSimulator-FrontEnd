@@ -9,7 +9,6 @@ import {Schedule} from "../../../models/schedule";
 })
 export class DialogComponent {
   displayedColumns: string[] = ['cuota', 'interes', 'saldo final'];
-
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Schedule

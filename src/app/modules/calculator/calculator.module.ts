@@ -20,7 +20,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatGridListModule} from "@angular/material/grid-list";
 import {NavbarComponent} from "../navbar/navbar.component";
 import {MatToolbarModule} from "@angular/material/toolbar";
-
+import {SaveDialogComponent} from "./save-dialog/save-dialog.component";
+import { MatDialogModule } from '@angular/material/dialog';
 
 const calculatorRoutes: Route[] = [
   {
@@ -34,6 +35,7 @@ const calculatorRoutes: Route[] = [
     NavbarComponent,
     CalculatorComponent,
     CustomDatePipe,
+    SaveDialogComponent
   ],
   imports: [
     RouterModule.forChild(calculatorRoutes),
@@ -57,7 +59,8 @@ const calculatorRoutes: Route[] = [
     MatTableModule,
     MatIconModule,
     MatGridListModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDialogModule
   ],
 
   exports: [

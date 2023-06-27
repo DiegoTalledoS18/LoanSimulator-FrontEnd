@@ -2,6 +2,9 @@ import {AfterViewInit, Component, ElementRef} from '@angular/core';
 import {Router} from "@angular/router";
 import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Inject} from '@angular/core';
+import {SaveDialogComponent} from "./save-dialog/save-dialog.component";
+
+
 import {
   MAT_MOMENT_DATE_FORMATS,
   MomentDateAdapter,
@@ -15,6 +18,8 @@ import { DatePipe } from '@angular/common';
 
 import {ScheduleService} from "../../services/schedule.services";
 import {Schedule} from "../../models/schedule";
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {DialogComponent} from "../schedules/dialog/dialog.component";
 
 @Pipe({
   name: 'customDate'
@@ -231,7 +236,7 @@ export class CalculatorComponent implements AfterViewInit {
 
 
   constructor(private route: Router, private elementRef: ElementRef, private _adapter: DateAdapter<any>,
-              @Inject(MAT_DATE_LOCALE) private _locale: string, private scheduleService: ScheduleService) {
+              @Inject(MAT_DATE_LOCALE) private _locale: string, private scheduleService: ScheduleService, public dialog: MatDialog) {
 
     this.sendData = [] as Schedule[];
 
@@ -1034,6 +1039,12 @@ export class CalculatorComponent implements AfterViewInit {
     this.route.navigate(['/calculator']);
   }
 
+  openDialog(element: Schedule[]): void {
+    const dialogRef = this.dialog.open(SaveDialogComponent,{
+      data: element
+    });
+  }
+
   saveSchedule(){
 
     let name = "Cronograma 4"
@@ -1058,6 +1069,8 @@ export class CalculatorComponent implements AfterViewInit {
         userIdt: userId,
       });
 
+    this.openDialog(this.sendData)
+
     this.sendData.forEach(element => {
       this.scheduleService.create(element).subscribe(response2 => {
         console.log("Response 2: ", response2);
@@ -1065,7 +1078,5 @@ export class CalculatorComponent implements AfterViewInit {
     });
 
     console.log(this.sendData);
-
-    this.route.navigate(['/calculator/schedules']);
   }
 }

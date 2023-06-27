@@ -59,8 +59,11 @@ export class LoginComponent implements AfterViewInit {
         (response) => {
           // local storage
           localStorage.setItem('id', String(response.id));
-          this.currentUserName = response.name;
-          console.log(this.currentUserName);
+          localStorage.setItem('name', response.name);
+
+          //this.currentUserName = response.name;
+          //console.log(this.currentUserName);
+
           this.route.navigate(['/calculator']);
           this.isLoading=false;
         },

@@ -11,6 +11,7 @@ import {Schedule} from "../../models/schedule";
 })
 export class SchedulesComponent {
   userName= ""
+  idUser = 0;
   ELEMENT_DATA: Schedule[] = []
   data: any;
   element: Schedule | undefined;
@@ -22,9 +23,13 @@ export class SchedulesComponent {
   }
 
   ngOnInit(): void {
-    this.userName = "Diego Talledo";
+    this.userName = String(localStorage.getItem('name'));
 
-    this.scheduleService.getById(1).subscribe((response) => {
+    this.idUser = Number(localStorage.getItem('id'));
+
+    console.log("ID LOCAL STORAGE: ", this.idUser);
+
+    this.scheduleService.getById(this.idUser).subscribe((response) => {
       console.log(response)
 
       this.data = response;

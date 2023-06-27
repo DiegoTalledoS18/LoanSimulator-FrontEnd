@@ -1,0 +1,16 @@
+.custom-div {
+  margin-right: 1rem;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  color: white;
+  background: linear-gradient(-45deg, #744abe, #634abe, #524abe,#5455dd);
+  background-size: 100% 100%;
+  animation: gradient 15s ease infinite;
+}
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}

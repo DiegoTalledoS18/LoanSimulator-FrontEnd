@@ -8,7 +8,7 @@ import {Schedule} from "../../../models/schedule";
   styleUrls: ['./dialog.component.css']
 })
 export class DialogComponent {
-  displayedColumns: string[] = ['cuota', 'interes', 'saldofinal'];
+  displayedColumns: string[] = ['cuota', 'interes', 'saldo final'];
 
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,

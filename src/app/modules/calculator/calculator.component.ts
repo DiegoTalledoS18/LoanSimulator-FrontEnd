@@ -766,8 +766,8 @@ export class CalculatorComponent implements AfterViewInit {
 
     console.log("Seguro Riesgo: ", seguro_riesgo)
 
-    //Capital - Cuota Inicial = Monto a Financiar
-    this.montoFinal = capital - cuotaInicial
+    //Capital - Cuota Inicial - Bono del Buen Pagador = Monto a Financiar
+    this.montoFinal = capital - cuotaInicial;
 
     //Conversion de Tasa Nominal a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
@@ -1076,7 +1076,7 @@ export class CalculatorComponent implements AfterViewInit {
         userIdt: userId,
       });
 
-    this.openDialog(this.sendData)
+    //this.openDialog(this.sendData)
 
   }
 }

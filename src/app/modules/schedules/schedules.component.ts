@@ -32,7 +32,7 @@ export class SchedulesComponent {
       console.log(response)
 
       this.data = response;
-
+      
       this.data.forEach((element: { cuota: number; name: string; tem: number; saldoInicial: number; seguroDesgravamen: number;periodoGracia: number; van: number; tir: number; userIdt: number; }) => {
         this.ELEMENT_DATA.push({
           cuota: element.cuota,

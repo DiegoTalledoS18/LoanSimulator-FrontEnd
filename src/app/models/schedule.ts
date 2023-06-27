@@ -4,6 +4,7 @@ export interface Schedule {
   tem: number;
   saldoInicial: number;
   seguroDesgravamen: number;
+  periodoGracia: number;
   van: number;
   tir: number;
   userIdt: number;

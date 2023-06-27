@@ -182,6 +182,7 @@ export class CalculatorComponent implements AfterViewInit {
   interesesCompensatorios = 0;
   montoFinal = 0.0;
   seguro_desgravamen = 0.0;
+  idUser = 0;
 
   //Array Declarations
   compensatoryTasaArray: Compensatorio[] = []
@@ -765,8 +766,8 @@ export class CalculatorComponent implements AfterViewInit {
 
     console.log("Seguro Riesgo: ", seguro_riesgo)
 
-    //Capital - Cuota Inicial = Monto a Financiar
-    this.montoFinal = capital - cuotaInicial
+    //Capital - Cuota Inicial - Bono del Buen Pagador = Monto a Financiar
+    this.montoFinal = capital - cuotaInicial;
 
     //Conversion de Tasa Nominal a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
@@ -1047,7 +1048,11 @@ export class CalculatorComponent implements AfterViewInit {
 
   saveSchedule(){
 
-    let name = "Cronograma 4"
+    this.idUser = Number(localStorage.getItem('id'));
+
+    let mesesPeriodo = Number(this.gracePeriodFormGroup.get('meses')!.value);
+
+    let name = "Cronograma 5"
 
     let cuota = this.cuota;
     let tem = this.tasa_mensual;
@@ -1055,7 +1060,7 @@ export class CalculatorComponent implements AfterViewInit {
     let seguro = this.seguro_desgravamen;
     let van = Number(this.VAN);
     let tir = this.TIR;
-    let userId = 1;
+    let userId = this.idUser;
 
     this.sendData.push(
       {
@@ -1064,12 +1069,13 @@ export class CalculatorComponent implements AfterViewInit {
         tem: Number(tem.toFixed(6)),
         saldoInicial: saldoInicial,
         seguroDesgravamen: seguro,
+        periodoGracia: mesesPeriodo,
         van: van,
         tir: Number(tir.toFixed(5)),
         userIdt: userId,
       });
 
-    this.openDialog(this.sendData)
+    //this.openDialog(this.sendData)
 
     this.sendData.forEach(element => {
       this.scheduleService.create(element).subscribe(response2 => {

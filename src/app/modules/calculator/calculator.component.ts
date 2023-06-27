@@ -160,7 +160,6 @@ export class CalculatorComponent implements AfterViewInit {
   category = "Gastos";
   fecha = "";
   VAN = "";
-  TIR = "";
 
   //Date Declarations
   minDate = new Date();
@@ -174,6 +173,7 @@ export class CalculatorComponent implements AfterViewInit {
   tasa_mensual_cuota = 0.0;
   cuota = 0;
   TCEA = 0;
+  TIR = 0.0;
   interesesCompensatorios = 0;
   montoFinal = 0.0;
   seguro_desgravamen = 0.0;
@@ -964,7 +964,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     const VAN_ = this.calcularVAN(flujosDeCaja, coki);
     const TIR_ = this.calcularTIRIncrementalMejorado(flujosDeCaja)
-    this.TIR = (TIR_ * 100).toFixed(6) + "%";
+    this.TIR = Number((TIR_ * 100).toFixed(6));
     this.VAN = VAN_.toFixed(2);
 
     this.calculateTCEA(TIR_);
@@ -1036,25 +1036,25 @@ export class CalculatorComponent implements AfterViewInit {
 
   saveSchedule(){
 
-    let name = "Cronograma Prueba 2"
+    let name = "Cronograma 4"
 
     let cuota = this.cuota;
     let tem = this.tasa_mensual;
     let saldoInicial = this.montoFinal;
     let seguro = this.seguro_desgravamen;
     let van = Number(this.VAN);
-    let tir = 0.33434;
+    let tir = this.TIR;
     let userId = 1;
 
     this.sendData.push(
       {
-        cuota: cuota,
+        cuota: Number(cuota.toFixed(2)),
         name: name,
-        tem: tem,
+        tem: Number(tem.toFixed(6)),
         saldoInicial: saldoInicial,
         seguroDesgravamen: seguro,
         van: van,
-        tir: tir,
+        tir: Number(tir.toFixed(5)),
         userIdt: userId,
       });
 

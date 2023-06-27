@@ -23,24 +23,24 @@ export class SchedulesComponent {
   }
 
   ngOnInit(): void {
+
     this.userName = String(localStorage.getItem('name'));
 
     this.idUser = Number(localStorage.getItem('id'));
-
-    console.log("ID LOCAL STORAGE: ", this.idUser);
 
     this.scheduleService.getById(this.idUser).subscribe((response) => {
       console.log(response)
 
       this.data = response;
 
-      this.data.forEach((element: { cuota: number; name: string; tem: number; saldoInicial: number; seguroDesgravamen: number; van: number; tir: number; userIdt: number; }) => {
+      this.data.forEach((element: { cuota: number; name: string; tem: number; saldoInicial: number; seguroDesgravamen: number;periodoGracia: number; van: number; tir: number; userIdt: number; }) => {
         this.ELEMENT_DATA.push({
           cuota: element.cuota,
           name: (element.name).toUpperCase(),
           tem: element.tem,
           saldoInicial: element.saldoInicial,
           seguroDesgravamen: element.seguroDesgravamen,
+          periodoGracia: element.periodoGracia,
           van: element.van,
           tir: element.tir,
           userIdt: element.userIdt,

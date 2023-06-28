@@ -158,6 +158,7 @@ export class CalculatorComponent implements AfterViewInit {
   calculateSend = false;
   panelOpenState = false;
   flag = false;
+  bonoBuenPagador=false
 
   //String Declarations
   gracePeriod = "Cero";
@@ -165,6 +166,7 @@ export class CalculatorComponent implements AfterViewInit {
   category = "Gastos";
   fecha = "";
   VAN = "";
+  displayableCapital= "";
 
   //Date Declarations
   minDate = new Date();
@@ -183,8 +185,7 @@ export class CalculatorComponent implements AfterViewInit {
   montoFinal = 0.0;
   seguro_desgravamen = 0.0;
   idUser = 0;
-  displayableCapital= "";
-  bonoBuenPagador=false
+  comisiones = 0;
 
   //Array Declarations
   compensatoryTasaArray: Compensatorio[] = []
@@ -816,7 +817,7 @@ export class CalculatorComponent implements AfterViewInit {
     let saldo: number = this.montoFinal
     let amortizacion: number = 0
 
-    let comisiones = this.calculateComisionValue()
+    this.comisiones = this.calculateComisionValue()
 
     //Calculo de VAN y TIR
     const inversionInicial = this.montoFinal * - 1; // Inversión inicial (monto del préstamo)
@@ -851,7 +852,7 @@ export class CalculatorComponent implements AfterViewInit {
 
         saldo = parseFloat((saldo + interes_k).toFixed(2))
 
-        flujoMensual = cuota + comisiones + this.seguro_desgravamen  + seguro_riesgo;
+        flujoMensual = cuota + this.comisiones + this.seguro_desgravamen  + seguro_riesgo;
 
         flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
@@ -863,7 +864,7 @@ export class CalculatorComponent implements AfterViewInit {
             interes: parseFloat(interes_k.toFixed(2)),
             cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
-            comisiones: comisiones,
+            comisiones: this.comisiones,
             seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
             flujo: parseFloat(flujoMensual.toFixed(2))
           }
@@ -890,7 +891,7 @@ export class CalculatorComponent implements AfterViewInit {
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
 
-        flujoMensual = cuota + comisiones + this.seguro_desgravamen  + seguro_riesgo;
+        flujoMensual = cuota + this.comisiones + this.seguro_desgravamen  + seguro_riesgo;
 
         flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
@@ -902,7 +903,7 @@ export class CalculatorComponent implements AfterViewInit {
             interes: parseFloat(interes_k.toFixed(2)),
             cuota: parseFloat((cuota).toFixed(2)),
             saldo: saldo,
-            comisiones: comisiones,
+            comisiones: this.comisiones,
             seguro: parseFloat((this.seguro_desgravamen ).toFixed(2)),
             flujo: parseFloat(flujoMensual.toFixed(2))
           }
@@ -971,7 +972,7 @@ export class CalculatorComponent implements AfterViewInit {
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
-      flujoMensual = cuota + comisiones + seguro_riesgo
+      flujoMensual = cuota + this.comisiones + seguro_riesgo
 
       flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)))
 
@@ -983,7 +984,7 @@ export class CalculatorComponent implements AfterViewInit {
           interes: parseFloat(interes_k.toFixed(2)),
           cuota: parseFloat((cuota).toFixed(2)),
           saldo: saldo,
-          comisiones: comisiones,
+          comisiones: this.comisiones,
           seguro: parseFloat((this.seguro_desgravamen ).toFixed(2)),
           flujo: parseFloat(flujoMensual.toFixed(2))
         }
@@ -1079,6 +1080,7 @@ export class CalculatorComponent implements AfterViewInit {
     this.idUser = Number(localStorage.getItem('id'));
 
     let mesesPeriodo = Number(this.gracePeriodFormGroup.get('meses')!.value);
+    let tipoGracia = this.gracePeriod;
 
     let name = "Cronograma 5"
 
@@ -1098,7 +1100,9 @@ export class CalculatorComponent implements AfterViewInit {
         tem: Number(tem.toFixed(6)),
         saldoInicial: saldoInicial,
         seguroDesgravamen: seguro,
-        periodoGracia: mesesPeriodo,
+        periodoGracia: tipoGracia,
+        periodoGraciaValor: mesesPeriodo,
+        comisiones: this.comisiones,
         van: van,
         tir: Number(tir.toFixed(5)),
         userIdt: userId,

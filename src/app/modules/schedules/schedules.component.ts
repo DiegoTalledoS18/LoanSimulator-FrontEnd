@@ -35,7 +35,19 @@ export class SchedulesComponent {
 
       this.data = response;
 
-      this.data.forEach((element: { cuota: number; name: string; tem: number; saldoInicial: number; seguroDesgravamen: number;periodoGracia: number; van: number; tir: number; userIdt: number; }) => {
+      this.data.forEach((element: {
+        cuota: number;
+        name: string;
+        tem: number;
+        saldoInicial: number;
+        seguroDesgravamen: number;
+        periodoGracia: string;
+        periodoGraciaValor: number;
+        comisiones: number;
+        van: number;
+        tir: number;
+        userIdt: number;
+      }) => {
         this.ELEMENT_DATA.push({
           cuota: element.cuota,
           name: (element.name).toUpperCase(),
@@ -43,6 +55,8 @@ export class SchedulesComponent {
           saldoInicial: element.saldoInicial,
           seguroDesgravamen: element.seguroDesgravamen,
           periodoGracia: element.periodoGracia,
+          periodoGraciaValor: element.periodoGraciaValor,
+          comisiones: element.comisiones,
           van: element.van,
           tir: element.tir,
           userIdt: element.userIdt,

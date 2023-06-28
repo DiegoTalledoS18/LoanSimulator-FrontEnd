@@ -5,11 +5,13 @@
 }
 
 .global-container{
-  padding-top: 50px;
+  padding-top: 30px;
+  padding-bottom: 80px;
   margin: 0 auto;
   width: 900px;
   height: 900px;
   font-family: 'Poppins', sans-serif;
+  display: flex;justify-content: center
 }
 
 .container-card{
@@ -130,3 +132,10 @@ mat-form-field {
   font-size: 12px;
 }
 
+.custom-div {
+  color: white;
+  background: linear-gradient(260deg, #744abe, #634abe, #524abe,#5455dd);
+  background-size: 100% 100%;
+  animation: gradient 1s ease infinite;
+  display: block; text-align: center; justify-content: center;padding-top: 80px;padding-bottom: 50px;
+}

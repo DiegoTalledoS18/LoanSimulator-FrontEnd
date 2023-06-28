@@ -3,6 +3,7 @@ import {ScheduleService} from "../../services/schedule.services";
 import {MatDialog} from "@angular/material/dialog";
 import {DialogComponent} from "./dialog/dialog.component";
 import {Schedule} from "../../models/schedule";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-schedules',
@@ -18,13 +19,14 @@ export class SchedulesComponent {
   displayedColumns: string[] = ['id', 'cuota', 'interes', 'saldo final'];
   selectedElement: Schedule | null = null;
 
-  constructor(private scheduleService: ScheduleService ,public dialog: MatDialog) {
+  constructor(private route: Router,private scheduleService: ScheduleService ,public dialog: MatDialog) {
 
   }
 
   ngOnInit(): void {
 
     this.userName = String(localStorage.getItem('name'));
+    if(this.userName=="null"){this.userName=""}
 
     this.idUser = Number(localStorage.getItem('id'));
 
@@ -32,7 +34,7 @@ export class SchedulesComponent {
       console.log(response)
 
       this.data = response;
-      
+
       this.data.forEach((element: { cuota: number; name: string; tem: number; saldoInicial: number; seguroDesgravamen: number;periodoGracia: number; van: number; tir: number; userIdt: number; }) => {
         this.ELEMENT_DATA.push({
           cuota: element.cuota,
@@ -58,4 +60,7 @@ export class SchedulesComponent {
     });
   }
 
+  return() {
+    this.route.navigate(['/calculator']);
+  }
 }

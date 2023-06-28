@@ -1,10 +1,10 @@
-<div style="margin: 3rem; align-items: center">
-  <div style="display: flex;justify-content: center">
+<div style="margin: 3rem 1rem; align-items: center">
+  <div style="display: flex;justify-content: left">
     <p>Completar informacion</p>
   </div>
   <form [formGroup]="NameGroup" style="margin-bottom: 1rem">
     <div style="display: flex; justify-content: center">
-      <mat-form-field class= "form-field-username" appearance="fill" style="width: 90%; margin-top: 10px;">
+      <mat-form-field class= "form-field-username" appearance="fill" style="width: 100%; margin-top: 10px;">
         <mat-label>Nombre del prestamo</mat-label>
         <input matInput autocomplete="off" formControlName="name">
         <mat-error *ngIf="NameGroup.get('name')?.hasError('required')">
@@ -15,7 +15,7 @@
   </form>
   <div style="display: flex; justify-content: right">
     <button style="margin-right: 2rem" mat-button mat-dialog-close>Cancelar</button>
-    <button style="margin-right: 2rem" mat-raised-button color="primary" (click)="sendData()">Guardar</button>
+    <button style="margin-right: 2rem;background-color: #524abe;color: white" mat-raised-button  (click)="sendData()">Guardar</button>
   </div>
 </div>
 

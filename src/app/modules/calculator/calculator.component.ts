@@ -1037,7 +1037,7 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   refresh(){
-    this.route.navigate(['/calculator']);
+    location.reload();
   }
 
   openDialog(element: Schedule[]): void {
@@ -1076,7 +1076,7 @@ export class CalculatorComponent implements AfterViewInit {
         userIdt: userId,
       });
 
-    //this.openDialog(this.sendData)
+    this.openDialog(this.sendData)
 
   }
 }

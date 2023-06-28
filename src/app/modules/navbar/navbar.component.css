@@ -8,4 +8,9 @@
   flex: 1 1 auto;
   margin: 10px;
 }
-
+.custom-div {
+  color: white;
+  background: linear-gradient(-45deg, #744abe, #634abe, #524abe,#5455dd);
+  background-size: 100% 100%;
+  animation: gradient 15s ease infinite;
+}

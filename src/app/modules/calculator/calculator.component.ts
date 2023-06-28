@@ -183,6 +183,8 @@ export class CalculatorComponent implements AfterViewInit {
   montoFinal = 0.0;
   seguro_desgravamen = 0.0;
   idUser = 0;
+  displayableCapital= "";
+  bonoBuenPagador=false
 
   //Array Declarations
   compensatoryTasaArray: Compensatorio[] = []
@@ -306,7 +308,6 @@ export class CalculatorComponent implements AfterViewInit {
       this.addTNM()
       //this.setGastosList()
     }
-
 
 
   }
@@ -747,6 +748,13 @@ export class CalculatorComponent implements AfterViewInit {
     }
   }
 
+  formatCurrency(amount: number): string {
+    return amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   calculateTableData() {
     let COK : number = parseInt(<string>this.COKGroup.get('valor')?.value);
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
@@ -764,10 +772,30 @@ export class CalculatorComponent implements AfterViewInit {
     let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
     let valor_seguro: number = 0.0;
 
+    this.displayableCapital=this.formatCurrency(capital)
+
     console.log("Seguro Riesgo: ", seguro_riesgo)
 
+    console.log("BBP: "+this.bonoBuenPagador)
+    let bbp_bonus=0
+    if(this.bonoBuenPagador){
+      if (capital >= 57500 && capital <= 82200) {
+        bbp_bonus = 17500;
+      } else if (capital > 82200 && capital <= 123200) {
+        bbp_bonus = 14400;
+      } else if (capital > 123200 && capital <= 205300) {
+        bbp_bonus = 12900;
+      } else if (capital > 205300 && capital <= 304100) {
+        bbp_bonus = 6200;
+      } else if (capital > 304100 && capital <= 410600) {
+        bbp_bonus = 0;
+      } else {
+        bbp_bonus = 0; // No aplica el subsidio
+      }
+    }
+    console.log("BBP capital: "+bbp_bonus)
     //Capital - Cuota Inicial - Bono del Buen Pagador = Monto a Financiar
-    this.montoFinal = capital - cuotaInicial;
+    this.montoFinal = capital - cuotaInicial-bbp_bonus;
 
     //Conversion de Tasa Nominal a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
@@ -1077,6 +1105,11 @@ export class CalculatorComponent implements AfterViewInit {
       });
 
     this.openDialog(this.sendData)
+
+  }
+
+  setBBP() {
+    this.bonoBuenPagador = !this.bonoBuenPagador;
 
   }
 }

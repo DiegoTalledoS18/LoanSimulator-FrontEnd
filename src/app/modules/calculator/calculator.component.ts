@@ -967,6 +967,10 @@ export class CalculatorComponent implements AfterViewInit {
 
       interes_k = saldo * this.tasa_mensual
 
+      console.log("Saldo: ", saldo + " * " + this.tasa_mensual + " = " + interes_k)
+
+      //console.log("Interes K: ", interes_k)
+
       //amortizacion = cuota - interes_k
 
       amortizacion = cuota - interes_k - this.seguro_desgravamen
@@ -995,7 +999,7 @@ export class CalculatorComponent implements AfterViewInit {
       date = new Date(date.setMonth(date.getMonth() + 1));
     }
 
-    let cok = COK / 100 //0.2 --> COK
+    let cok = COK / 100
     let coki: number;
 
     coki = (Math.pow((1+cok),(30/360))) - 1
@@ -1104,7 +1108,7 @@ export class CalculatorComponent implements AfterViewInit {
       {
         cuota: Number(cuota.toFixed(2)),
         name: name,
-        tem: Number(tem.toFixed(7)),
+        tem: tem,
         saldoInicial: saldoInicial,
         seguroDesgravamen: seguro,
         periodoGracia: tipoGracia,

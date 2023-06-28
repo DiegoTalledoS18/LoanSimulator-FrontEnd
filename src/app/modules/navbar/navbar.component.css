@@ -10,7 +10,7 @@
 }
 .custom-div {
   color: white;
-  background: linear-gradient(-45deg, #7a55bd, #634abe, #524abe, #5f60de);
+  background: linear-gradient(-55deg, #8060bd, #634abe, #5d55c4, #6e6fd7);
   background-size: 100% 100%;
   animation: gradient 15s ease infinite;
 }

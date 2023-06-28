@@ -54,6 +54,8 @@ export class DialogComponent {
 
         interes_k = saldo * tem
 
+        console.log(saldo + " * " + tem + " = " + interes_k)
+
         cuota_parcial = 0
 
         amortizacion = 0
@@ -96,6 +98,8 @@ export class DialogComponent {
       seguro = (seguroDesgravamen / 100) * saldo
 
       interes_k = saldo * tem
+
+      console.log(saldo + " * " + tem + " = " + interes_k)
 
       amortizacion = cuota - interes_k - seguro
 

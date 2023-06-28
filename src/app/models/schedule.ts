@@ -7,6 +7,7 @@ export interface Schedule {
   periodoGracia: string;
   periodoGraciaValor: number;
   comisiones: number;
+  tiempo: number;
   van: number;
   tir: number;
   userIdt: number;

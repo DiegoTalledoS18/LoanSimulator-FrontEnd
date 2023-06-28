@@ -46,6 +46,7 @@ export class SchedulesComponent {
         comisiones: number;
         van: number;
         tir: number;
+        tiempo: number;
         userIdt: number;
       }) => {
         this.ELEMENT_DATA.push({
@@ -59,6 +60,7 @@ export class SchedulesComponent {
           comisiones: element.comisiones,
           van: element.van,
           tir: element.tir,
+          tiempo: element.tiempo,
           userIdt: element.userIdt,
         });
 

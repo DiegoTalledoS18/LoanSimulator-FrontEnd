@@ -1079,10 +1079,11 @@ export class CalculatorComponent implements AfterViewInit {
 
     this.idUser = Number(localStorage.getItem('id'));
 
+    let name = ""
+
+    let meses = Number(this.userFormGroup.get('tiempo')!.value);
     let mesesPeriodo = Number(this.gracePeriodFormGroup.get('meses')!.value);
     let tipoGracia = this.gracePeriod;
-
-    let name = "Cronograma 5"
 
     let cuota = this.cuota;
     let tem = this.tasa_mensual;
@@ -1105,6 +1106,7 @@ export class CalculatorComponent implements AfterViewInit {
         comisiones: this.comisiones,
         van: van,
         tir: Number(tir.toFixed(5)),
+        tiempo: meses,
         userIdt: userId,
       });
 

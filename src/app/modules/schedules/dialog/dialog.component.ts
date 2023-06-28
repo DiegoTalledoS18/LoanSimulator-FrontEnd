@@ -27,78 +27,21 @@ export class DialogComponent {
     tir: number;
     userIdt: number;*/
 
-    /*let COK : number = parseInt(<string>this.COKGroup.get('valor')?.value);
-    let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
-    let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
-    let cuotaInicial: number = <number><unknown>this.userFormGroup.get('cuotaInicial')?.value;
-    let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
-    let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
-    let seguro_valor : string = <string>this.PayFormGroup.get('seguro')?.value;
-    let seguro_riesgo_valor: number = <number><unknown>this.PayFormGroup.get('seguro_riesgo')?.value;
-    let cuota : number = 0;
 
-    let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
-    let date = new Date(this.fecha);
-    //let seguro_desgravamen: number = 0;
-    let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
-    let valor_seguro: number = 0.0;
-
-    this.displayableCapital=this.formatCurrency(capital)
-
-    console.log("Seguro Riesgo: ", seguro_riesgo)
-
-    console.log("BBP: "+this.bonoBuenPagador)
-    let bbp_bonus=0
-    if(this.bonoBuenPagador){
-      if (capital >= 57500 && capital <= 82200) {
-        bbp_bonus = 17500;
-      } else if (capital > 82200 && capital <= 123200) {
-        bbp_bonus = 14400;
-      } else if (capital > 123200 && capital <= 205300) {
-        bbp_bonus = 12900;
-      } else if (capital > 205300 && capital <= 304100) {
-        bbp_bonus = 6200;
-      } else if (capital > 304100 && capital <= 410600) {
-        bbp_bonus = 0;
-      } else {
-        bbp_bonus = 0; // No aplica el subsidio
-      }
-    }
-    console.log("BBP capital: "+bbp_bonus)
-    //Capital - Cuota Inicial - Bono del Buen Pagador = Monto a Financiar
-    this.montoFinal = capital - cuotaInicial-bbp_bonus;
-
-    //Conversion de Tasa Nominal a Tasa Efectiva
-    if (tipotasa == 'Tasa Nominal Anual') {
-      tasa = tasa / 100
-      tasa = (1 + tasa / 360)**(360) - 1
-    }
-
-    //Variable TEA = Tasa
-    this.tea = tasa
-    this.tea = parseFloat(this.tea.toFixed(7))
-
-    //Calculo de la Tasa Mensual (TEM)
-    this.tasa_mensual = (1 + (tasa / 100)) ** (30/ 360) - 1
-
-    this.tasa_mensual_cuota = this.tasa_mensual
-
-    let interes_k: number = 0.0
-    let saldo: number = this.montoFinal
-    let amortizacion: number = 0
-
-    let comisiones = this.calculateComisionValue()
-
-    //Calculo de VAN y TIR
-    const inversionInicial = this.montoFinal * - 1; // Inversión inicial (monto del préstamo)
-    let flujoMensual = 0 // Cuota mensual constante
-
-    // Construir el arreglo de flujos de caja
-    const flujosDeCaja = [inversionInicial]; // Primer elemento es la inversión inicial
-
+    let cuotaInicial=this.data.saldoInicial
+    let cuota =this.data.cuota
+    let tem=this.data.tem
+    let seguroDesgravamen=this.data.seguroDesgravamen
+    let periodoGracia =this.data.periodoGracia
+    let van=this.data.van
+    let tir=this.data.tir
+    let mesesgracia=0
     //Calculo del periodo de gracia
-    if(this.gracePeriod == 'Cero'){
-      meses_gracia = 0
+    if(periodoGracia == 0){
+      mesesgracia=0
+    }
+    else {
+
     }
 
     if(this.gracePeriod == 'Total'){
@@ -275,6 +218,6 @@ export class DialogComponent {
     this.calculateTCEA(TIR_);
 
     console.log('VAN:', VAN_);
-    console.log('TIR:', TIR_);*/
+    console.log('TIR:', TIR_);
   }
 }

@@ -186,6 +186,7 @@ export class CalculatorComponent implements AfterViewInit {
   seguro_desgravamen = 0.0;
   idUser = 0;
   comisiones = 0;
+  valor_seguro = 0.0;
 
   //Array Declarations
   compensatoryTasaArray: Compensatorio[] = []
@@ -771,7 +772,6 @@ export class CalculatorComponent implements AfterViewInit {
     let date = new Date(this.fecha);
     //let seguro_desgravamen: number = 0;
     let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
-    let valor_seguro: number = 0.0;
 
     this.displayableCapital=this.formatCurrency(capital)
 
@@ -837,13 +837,13 @@ export class CalculatorComponent implements AfterViewInit {
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
           this.seguro_desgravamen = 0
-          valor_seguro = 0.0
+          this.valor_seguro = 0.0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
           this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
-          valor_seguro = 0.028
+          this.valor_seguro = 0.028
         } else {
           this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
-          valor_seguro = 0.052
+          this.valor_seguro = 0.052
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -879,10 +879,13 @@ export class CalculatorComponent implements AfterViewInit {
         //Calculo del Seguro de desgravamen
         if (seguro_valor == 'Sin seguro') {
           this.seguro_desgravamen  = 0
+          this.valor_seguro = 0.0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
           this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          this.valor_seguro = 0.028
         } else {
           this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          this.valor_seguro = 0.052
         }
 
         interes_k = saldo * this.tasa_mensual
@@ -915,23 +918,23 @@ export class CalculatorComponent implements AfterViewInit {
     //Calculo del Seguro de desgravamen
     if (seguro_valor == 'Sin seguro') {
       this.seguro_desgravamen = 0
-      valor_seguro = 0.0
+      this.valor_seguro = 0.0
     } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
       this.seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
-      valor_seguro = 0.028
+      this.valor_seguro = 0.028
     } else {
       this.seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
-      valor_seguro = 0.052
+      this.valor_seguro = 0.052
     }
 
     console.log("TEM:", this.tasa_mensual_cuota * 100)
 
     console.log("TEM + Seguro:", this.tasa_mensual_cuota * 100 + 0.035)
 
-    console.log("Seguro Desgravamen:", valor_seguro)
+    console.log("Seguro Desgravamen:", this.valor_seguro)
 
     //Metodo Interbank, añadimos seguro a la TEM
-    this.tasa_mensual_cuota = (this.tasa_mensual_cuota * 100) + valor_seguro
+    this.tasa_mensual_cuota = (this.tasa_mensual_cuota * 100) + this.valor_seguro
 
     //Dividimos entre 100 para obtener el valor de la TEM
     this.tasa_mensual_cuota = this.tasa_mensual_cuota / 100
@@ -953,13 +956,13 @@ export class CalculatorComponent implements AfterViewInit {
       //Calculo del Seguro de desgravamen
       if (seguro_valor == 'Sin seguro') {
         this.seguro_desgravamen = 0
-        valor_seguro = 0.0
+        this.valor_seguro = 0.0
       } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
         this.seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
-        valor_seguro = 0.028
+        this.valor_seguro = 0.028
       } else {
         this.seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
-        valor_seguro = 0.052
+        this.valor_seguro = 0.052
       }
 
       interes_k = saldo * this.tasa_mensual
@@ -1088,7 +1091,10 @@ export class CalculatorComponent implements AfterViewInit {
     let cuota = this.cuota;
     let tem = this.tasa_mensual;
     let saldoInicial = this.montoFinal;
-    let seguro = this.seguro_desgravamen;
+    let seguro = this.valor_seguro;
+
+    console.log("Seguro Desgravamen Mandado: ", this.valor_seguro)
+
     let van = Number(this.VAN);
     let tir = this.TIR;
     let userId = this.idUser;
@@ -1098,7 +1104,7 @@ export class CalculatorComponent implements AfterViewInit {
       {
         cuota: Number(cuota.toFixed(2)),
         name: name,
-        tem: Number(tem.toFixed(6)),
+        tem: Number(tem.toFixed(7)),
         saldoInicial: saldoInicial,
         seguroDesgravamen: seguro,
         periodoGracia: tipoGracia,

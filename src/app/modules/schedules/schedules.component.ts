@@ -16,7 +16,7 @@ export class SchedulesComponent {
   ELEMENT_DATA: Schedule[] = []
   data: any;
   element: Schedule | undefined;
-  displayedColumns: string[] = ['id', 'cuota', 'interes', 'saldo final'];
+  displayedColumns: string[] = ['id', 'cuota', 'interes', 'saldo_final'];
   selectedElement: Schedule | null = null;
 
   constructor(private route: Router,private scheduleService: ScheduleService ,public dialog: MatDialog) {

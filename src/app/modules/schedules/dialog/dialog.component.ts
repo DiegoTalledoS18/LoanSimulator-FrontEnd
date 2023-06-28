@@ -16,68 +16,76 @@ export interface table {
 export class DialogComponent {
   ELEMENT_DATA: table[] = []
   displayedColumns: string[] = ['cuota', 'interes', 'saldo_final'];
-  constructor(
-    public dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Schedule
-  ) {
+
+  constructor(public dialogRef: MatDialogRef<DialogComponent>, @Inject(MAT_DIALOG_DATA) public data: Schedule) {
     this.calculateTableData()
     console.log(this.ELEMENT_DATA)
   }
+
   calculateTableData() {
     this.ELEMENT_DATA=[]
+
     //Data del Backend
     let saldoInicial = this.data.saldoInicial
     let cuota = this.data.cuota
     let tem = this.data.tem
     let seguroDesgravamen = this.data.seguroDesgravamen
+
+    console.log("TEM: ", this.data.tem)
+
     let periodoGracia = this.data.periodoGracia
     let periodoGraciaValor = this.data.periodoGraciaValor
     let tiempo = this.data.tiempo
 
     //Variables de calculo
-    let saldo = 0;
+    let saldo = saldoInicial;
     let interes_k = 0.0;
     let amortizacion = 0.0;
     let seguro = 0.0;
+    let cuota_parcial = 0.0;
 
 
-    if(periodoGracia == "Cero"){
+    if (periodoGracia == "Cero"){
       console.log("Periodo de gracia cero")
     }
 
     if(periodoGracia == 'Total'){
       for (let i = 0; i < periodoGraciaValor; i++) {
 
-        //let seguro = seguroDesgravamen * saldoInicial
-        interes_k = saldoInicial * tem
-        cuota = 0
+        interes_k = saldo * tem
+
+        cuota_parcial = 0
+
         amortizacion = 0
+
         saldo = parseFloat((saldo + interes_k).toFixed(2))
 
         this.ELEMENT_DATA?.push(
           {
-            cuota: cuota,
-            interes: interes_k,
-            saldo_final: saldo,
+            cuota: Number(cuota_parcial.toFixed(2)),
+            interes: Number(interes_k.toFixed(2)),
+            saldo_final: Number(saldo.toFixed(2)),
           }
         )
       }
     }
 
-    if(periodoGracia == 'Parcial'){
+    if (periodoGracia == 'Parcial') {
       for (let i = 0; i < periodoGraciaValor; i++) {
 
-        interes_k = saldoInicial * tem
-        cuota = interes_k
+        interes_k = saldo * tem
+
+        cuota_parcial = interes_k
+
         amortizacion = 0
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
 
         this.ELEMENT_DATA?.push(
           {
-            cuota: cuota,
-            interes: interes_k,
-            saldo_final: saldo,
+            cuota: Number(cuota_parcial.toFixed(2)),
+            interes: Number(interes_k.toFixed(2)),
+            saldo_final: Number(saldo.toFixed(2)),
           }
         )
       }
@@ -85,17 +93,19 @@ export class DialogComponent {
 
     for (let i = 0; i < tiempo - periodoGraciaValor; i++) {
 
-      seguro = seguroDesgravamen * saldoInicial
-      interes_k = saldoInicial * tem
+      seguro = (seguroDesgravamen / 100) * saldo
+
+      interes_k = saldo * tem
+
       amortizacion = cuota - interes_k - seguro
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
       this.ELEMENT_DATA?.push(
         {
-          cuota: cuota,
-          interes: interes_k,
-          saldo_final: saldo,
+          cuota: Number(cuota.toFixed(2)),
+          interes: Number(interes_k.toFixed(2)),
+          saldo_final: Number(saldo.toFixed(2)),
         }
       )
     }

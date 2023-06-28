@@ -4,7 +4,7 @@
     <h3>
       Hola {{userName}} !
     </h3>
-    <h1 style="font-size: 35px">
+    <h1 style="font-size: 32px;">
       Cronogramas de pagos
     </h1>
     <h3>
@@ -13,20 +13,23 @@
   </div>
   <div class="card-container">
     <div *ngFor="let element of ELEMENT_DATA" >
-      <mat-card class="example-card" style="margin: 0.5rem 2rem 1rem 1rem; box-shadow: 5px 5px 10px -5px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);">
+      <mat-card class="example-card" style="margin: 0.5rem 2rem 1rem 2rem; box-shadow: 5px 5px 10px -5px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);">
         <mat-card-header>
           <mat-card-title-group>
-            <mat-card-title>{{ element.name }}</mat-card-title>
+            <mat-card-title class="title-card">{{ element.name }}</mat-card-title>
             <mat-card-subtitle>Detalles</mat-card-subtitle>
             <button style="background-color: #524ABEFF" mat-flat-button color="primary" (click)="openDialog(element)">Mostrar</button>
           </mat-card-title-group>
         </mat-card-header>
-        <mat-card-content>
+        <mat-card-content class="content-card">
           <div>
             Cuota: {{element.cuota}}
           </div>
           <div>
-            VAN: {{element.van}} TIR: {{element.tir}} %
+            VAN: {{element.van}}
+          </div>
+          <div>
+            TIR: {{element.tir}} %
           </div>
         </mat-card-content>
       </mat-card>

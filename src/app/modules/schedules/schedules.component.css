@@ -14,3 +14,27 @@
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
 }
+
+.example-card {
+  background-color: #eef0fd;
+  border-radius: 1rem;
+  padding: 10px 10px 10px 10px;
+}
+
+.title-card {
+  font-size: 1.2rem;
+  color: black;
+  padding-bottom: 1rem;
+}
+
+.content-card {
+  line-height: 1.7rem;
+  padding-top: 6px;
+}
+
+.example-card:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+  transition: transform 0.5s ease;
+  background-color: #ffffff;
+}

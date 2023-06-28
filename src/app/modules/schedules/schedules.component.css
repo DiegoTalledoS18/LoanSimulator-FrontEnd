@@ -5,7 +5,7 @@
   border-radius: 0.5rem;
   padding: 2rem;
   color: white;
-  background: linear-gradient(-45deg, #744abe, #634abe, #524abe,#5455dd);
+  background: linear-gradient(-45deg, #7a55bd, #634abe, #524abe, #5f60de);
   background-size: 100% 100%;
   animation: gradient 15s ease infinite;
 }

@@ -68,6 +68,7 @@ export class SchedulesComponent {
 
       });
     });
+
   }
 
   openDialog(element: Schedule): void {

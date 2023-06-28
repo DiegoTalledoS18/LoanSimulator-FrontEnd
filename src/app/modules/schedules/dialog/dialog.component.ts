@@ -15,25 +15,16 @@ export interface table {
 })
 export class DialogComponent {
   ELEMENT_DATA: table[] = []
-  displayedColumns: string[] = ['cuota', 'interes', 'saldo final'];
+  displayedColumns: string[] = ['cuota', 'interes', 'saldo_final'];
   constructor(
     public dialogRef: MatDialogRef<DialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Schedule
   ) {
-
+    this.calculateTableData()
+    console.log(this.ELEMENT_DATA)
   }
   calculateTableData() {
-
-    /*cuota: number;
-    name: string;
-    tem: number;
-    saldoInicial: number;
-    seguroDesgravamen: number;
-    periodoGracia: number;
-    van: number;
-    tir: number;
-    userIdt: number;*/
-
+    this.ELEMENT_DATA=[]
     //Data del Backend
     let saldoInicial = this.data.saldoInicial
     let cuota = this.data.cuota

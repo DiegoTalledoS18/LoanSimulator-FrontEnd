@@ -26,7 +26,8 @@ export class SchedulesComponent {
   ngOnInit(): void {
 
     this.userName = String(localStorage.getItem('name'));
-    if(this.userName=="null"){this.userName=""}
+
+    if(this.userName=="null") { this.userName = "" }
 
     this.idUser = Number(localStorage.getItem('id'));
 

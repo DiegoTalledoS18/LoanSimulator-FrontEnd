@@ -23,15 +23,13 @@ export class DialogComponent {
   }
 
   calculateTableData() {
-    this.ELEMENT_DATA=[]
+    this.ELEMENT_DATA = []
 
     //Data del Backend
     let saldoInicial = this.data.saldoInicial
     let cuota = this.data.cuota
     let tem = this.data.tem
     let seguroDesgravamen = this.data.seguroDesgravamen
-
-    console.log("TEM: ", this.data.tem)
 
     let periodoGracia = this.data.periodoGracia
     let periodoGraciaValor = this.data.periodoGraciaValor
@@ -53,11 +51,7 @@ export class DialogComponent {
       for (let i = 0; i < periodoGraciaValor; i++) {
 
         interes_k = saldo * tem
-
-        console.log(saldo + " * " + tem + " = " + interes_k)
-
         cuota_parcial = 0
-
         amortizacion = 0
 
         saldo = parseFloat((saldo + interes_k).toFixed(2))
@@ -76,9 +70,7 @@ export class DialogComponent {
       for (let i = 0; i < periodoGraciaValor; i++) {
 
         interes_k = saldo * tem
-
         cuota_parcial = interes_k
-
         amortizacion = 0
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
@@ -96,11 +88,7 @@ export class DialogComponent {
     for (let i = 0; i < tiempo - periodoGraciaValor; i++) {
 
       seguro = (seguroDesgravamen / 100) * saldo
-
       interes_k = saldo * tem
-
-      console.log(saldo + " * " + tem + " = " + interes_k)
-
       amortizacion = cuota - interes_k - seguro
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))

@@ -198,7 +198,6 @@ export class CalculatorComponent implements AfterViewInit {
   compensatoryOtrosArray: Compensatorio[] = []
   compensatoryFormalizacionArray: Compensatorio[] = []
   compensatoryRetencionArray: Compensatorio[] = []
-
   sendData: Schedule[];
 
   gastos: Gastos[] = [
@@ -255,11 +254,9 @@ export class CalculatorComponent implements AfterViewInit {
     this.maxDate = new Date(currentYear + 5, 1, 15);
 
     this.maxDate_m = new Date(currentYear - 18, 11, 31);
-    //this.maxDate_m = new Date(currentYear, currentMonth, currentDate);
 
     const mesesControl = this.gracePeriodFormGroup.get('meses');
 
-    // Agregar validador personalizado a mesesControl
     // @ts-ignore
     mesesControl?.setValidators(this.periodoGraciaValidator.bind(this));
   }
@@ -308,11 +305,11 @@ export class CalculatorComponent implements AfterViewInit {
       this.stepper = false;
       this.stepper = false;
       this.addTNM()
-      //this.setGastosList()
     }
 
 
   }
+
   calculateTNM(){
     let tasa: number = <number><unknown>this.userFormGroup.get('tasa')?.value;
     let tipotasa: string = <string>this.userFormGroup.get('tipotasa')?.value;
@@ -321,7 +318,6 @@ export class CalculatorComponent implements AfterViewInit {
       tasa = (1+tasa/360)**(360)-1
     }
 
-    //Calculo de la Tasa Mensual
     let tasaMensual = (1 + (tasa / 100)) ** (30/ 360) - 1
     return tasaMensual
   }
@@ -528,9 +524,6 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   calcularVAN(flujosDeCaja: number[], tasaDescuento: number){
-
-    console.log("COKI: ",tasaDescuento)
-
     let VAN = 0;
 
     for (let i = 0; i < flujosDeCaja.length; i++) {
@@ -541,8 +534,8 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   calcularTIRIncrementalMejorado(flujosDeCaja: number[]) {
-    const maxIteraciones = 10000; // Número máximo de iteraciones
-    const precision = 0.00001; // Precisión para la aproximación de la TIR
+    const maxIteraciones = 10000;
+    const precision = 0.00001;
 
     let TIR = 0;
     let TIRPrevio = 0;
@@ -557,17 +550,14 @@ export class CalculatorComponent implements AfterViewInit {
       }
 
       if (Math.abs(VAN) < precision) {
-        // Se encontró una aproximación suficientemente cercana
         return TIR;
       }
 
-      // Ajustar la tasa de descuento para la próxima iteración
       const ajuste = VAN / derivadaVAN;
       TIRPrevio = TIR;
       TIR -= ajuste;
     }
 
-    // No se encontró una solución dentro del número máximo de iteraciones
     return 0;
   }
 
@@ -580,14 +570,8 @@ export class CalculatorComponent implements AfterViewInit {
   }
 
   calculateTCEA(tir: number){
-    let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
-
     if(this.compensatoryTasaArray.length!=0){
-
       this.TCEA = Math.pow(Number((1 + tir)), (360 / 30)) - 1;
-
-      console.log("TCEA: "+ this.TCEA)
-
     } else {
       console.log("Tasa Nominal No establecida")
     }
@@ -595,11 +579,13 @@ export class CalculatorComponent implements AfterViewInit {
 
   calculateInteresesCompensatorios(){
     let capital: number = <number><unknown>this.userFormGroup.get('capital')?.value;
-    const searchTerm = ["tasa","compensatoria","tnm", "nominal mensual", "tasa nominal mensual"];
-    const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.some(term => tasa.name.toLowerCase().includes(term)));
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let mesToDia=mes*30
     let TNM: number | undefined;
+
+    const searchTerm = ["tasa","compensatoria","tnm", "nominal mensual", "tasa nominal mensual"];
+    const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.some(term => tasa.name.toLowerCase().includes(term)));
+
     if(foundTasa){
       TNM = foundTasa.value/100;
       const valorNominalPagare: number = capital
@@ -614,9 +600,11 @@ export class CalculatorComponent implements AfterViewInit {
   calculateValorRecibido(){
     let mes : number = parseInt(<string>this.userFormGroup.get('tiempo')?.value);
     let mesToDia=mes*30
+    let TNM: number | undefined;
+
     const searchTerm = ["tasa","compensatoria","tnm", "nominal mensual", "tasa nominal mensual"];
     const foundTasa = this.compensatoryTasaArray.find(tasa => searchTerm.some(term => tasa.name.toLowerCase().includes(term)));
-    let TNM: number | undefined;
+
     if (foundTasa) {
       TNM = foundTasa.value/100;
 
@@ -629,8 +617,7 @@ export class CalculatorComponent implements AfterViewInit {
 
       let valorNetoRecibidoALFDP = capital-descuento
 
-      //Le restamos tod0 menos los gastos administrativos y portes
-      let valorNetoRecibido=valorNetoRecibidoALFDP
+      let valorNetoRecibido = valorNetoRecibidoALFDP
       if(this.compensatoryRetencionArray.length>0){
         for (let i = 0; i < this.compensatoryRetencionArray.length; i++) {
           valorNetoRecibido -= (this.compensatoryRetencionArray[i].value/100)*capital;
@@ -662,8 +649,8 @@ export class CalculatorComponent implements AfterViewInit {
         }
       }
 
-      //console.log("Valor Neto Recibido: "+valorNetoRecibido)
       return Number(valorNetoRecibido).toFixed(2)
+
     } else {
       console.log("Tasa Nominal Mensual no encontrada");
       return 0
@@ -690,7 +677,6 @@ export class CalculatorComponent implements AfterViewInit {
       }
     }
 
-    //console.log("valor Neto Entregado: " + valorNetoEntregado)
     return Number(valorNetoEntregado).toFixed(2)
   }
 
@@ -713,36 +699,26 @@ export class CalculatorComponent implements AfterViewInit {
           }
           if (this.PayFormGroup.get('seguro')?.value == 'Convencional mancomunado' || this.PayFormGroup.get('seguro')?.value == 'Con devolución mancomunado') {
             if (this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid) {
-              //this.calculate()
-              //this.route.navigate(['/schedule']);
               this.calculateSend = true;
             }
           }
         } else {
-          //this.calculate()
-          //this.route.navigate(['/schedule']);
           this.calculateSend = true;
         }
       } else {
         if (this.gracePeriodFormGroup.get('meses')?.valid) {
-          if (this.PayFormGroup.get('seguro')?.value != 'Sin seguro') {
+            if (this.PayFormGroup.get('seguro')?.value != 'Sin seguro') {
             if (this.PayFormGroup.get('seguro')?.value == 'Convencional individual' || this.PayFormGroup.get('seguro')?.value == 'Con devolución individual') {
               if (this.bornDatesFormGroup.get('primerTitular')?.valid) {
-                //this.calculate()
-                //this.route.navigate(['/schedule']);
                 this.calculateSend = true;
               }
             }
             if (this.PayFormGroup.get('seguro')?.value == 'Convencional mancomunado' || this.PayFormGroup.get('seguro')?.value == 'Con devolución mancomunado') {
               if (this.bornDatesFormGroup.get('primerTitular')?.valid && this.bornDatesFormGroup.get('segundoTitular')?.valid) {
-                //this.calculate()
-                //this.route.navigate(['/schedule']);
                 this.calculateSend = true;
               }
             }
           } else {
-            //this.calculate()
-            //this.route.navigate(['/schedule']);
             this.calculateSend = true;
           }
         }
@@ -770,15 +746,12 @@ export class CalculatorComponent implements AfterViewInit {
 
     let meses_gracia: number = parseInt(<string>this.gracePeriodFormGroup.get('meses')?.value);
     let date = new Date(this.fecha);
-    //let seguro_desgravamen: number = 0;
     let seguro_riesgo: number = ((seguro_riesgo_valor / 100) * capital) / 12;
 
     this.displayableCapital=this.formatCurrency(capital)
 
-    console.log("Seguro Riesgo: ", seguro_riesgo)
+    let bbp_bonus = 0
 
-    console.log("BBP: "+this.bonoBuenPagador)
-    let bbp_bonus=0
     if(this.bonoBuenPagador){
       if (capital >= 57500 && capital <= 82200) {
         bbp_bonus = 17500;
@@ -791,12 +764,11 @@ export class CalculatorComponent implements AfterViewInit {
       } else if (capital > 304100 && capital <= 410600) {
         bbp_bonus = 0;
       } else {
-        bbp_bonus = 0; // No aplica el subsidio
+        bbp_bonus = 0;
       }
     }
-    console.log("BBP capital: "+bbp_bonus)
-    //Capital - Cuota Inicial - Bono del Buen Pagador = Monto a Financiar
-    this.montoFinal = capital - cuotaInicial-bbp_bonus;
+
+    this.montoFinal = capital - cuotaInicial - bbp_bonus;
 
     //Conversion de Tasa Nominal a Tasa Efectiva
     if (tipotasa == 'Tasa Nominal Anual') {
@@ -820,11 +792,10 @@ export class CalculatorComponent implements AfterViewInit {
     this.comisiones = this.calculateComisionValue()
 
     //Calculo de VAN y TIR
-    const inversionInicial = this.montoFinal * - 1; // Inversión inicial (monto del préstamo)
-    let flujoMensual = 0 // Cuota mensual constante
+    const inversionInicial = this.montoFinal * - 1;
+    let flujoMensual = 0
 
-    // Construir el arreglo de flujos de caja
-    const flujosDeCaja = [inversionInicial]; // Primer elemento es la inversión inicial
+    const flujosDeCaja = [inversionInicial];
 
     //Calculo del periodo de gracia
     if(this.gracePeriod == 'Cero'){
@@ -839,10 +810,10 @@ export class CalculatorComponent implements AfterViewInit {
           this.seguro_desgravamen = 0
           this.valor_seguro = 0.0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-          this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.028%
           this.valor_seguro = 0.028
         } else {
-          this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.052%
           this.valor_seguro = 0.052
         }
 
@@ -881,16 +852,16 @@ export class CalculatorComponent implements AfterViewInit {
           this.seguro_desgravamen  = 0
           this.valor_seguro = 0.0
         } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-          this.seguro_desgravamen  = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+          this.seguro_desgravamen  = 0.00028 * saldo
           this.valor_seguro = 0.028
         } else {
-          this.seguro_desgravamen  = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+          this.seguro_desgravamen  = 0.00052 * saldo
           this.valor_seguro = 0.052
         }
 
         interes_k = saldo * this.tasa_mensual
         cuota = interes_k
-        amortizacion = 0 //amortizacion = interes_k - cuota
+        amortizacion = 0
 
         saldo = parseFloat((saldo + amortizacion).toFixed(2))
 
@@ -920,18 +891,12 @@ export class CalculatorComponent implements AfterViewInit {
       this.seguro_desgravamen = 0
       this.valor_seguro = 0.0
     } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-      this.seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+      this.seguro_desgravamen = 0.00028 * saldo
       this.valor_seguro = 0.028
     } else {
-      this.seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+      this.seguro_desgravamen = 0.00052 * saldo
       this.valor_seguro = 0.052
     }
-
-    console.log("TEM:", this.tasa_mensual_cuota * 100)
-
-    console.log("TEM + Seguro:", this.tasa_mensual_cuota * 100 + 0.035)
-
-    console.log("Seguro Desgravamen:", this.valor_seguro)
 
     //Metodo Interbank, añadimos seguro a la TEM
     this.tasa_mensual_cuota = (this.tasa_mensual_cuota * 100) + this.valor_seguro
@@ -941,11 +906,7 @@ export class CalculatorComponent implements AfterViewInit {
 
     let division_d =  ((1 + this.tasa_mensual_cuota) ** (mes - meses_gracia)) - 1
 
-    //console.log("Division Down --> ", ((1 + tasa_mensual) ** mes) - 1)
-
     let division_u = this.tasa_mensual_cuota * ((1 + this.tasa_mensual_cuota) ** (mes - meses_gracia))
-
-    //console.log("Division Upper --> ", tasa_mensual * ((1 + tasa_mensual) ** mes))
 
     cuota = saldo * (division_u / division_d)
 
@@ -958,24 +919,16 @@ export class CalculatorComponent implements AfterViewInit {
         this.seguro_desgravamen = 0
         this.valor_seguro = 0.0
       } else if (seguro_valor == 'Convencional individual' || seguro_valor == 'Con devolución individual') {
-        this.seguro_desgravamen = 0.00028 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.035%
+        this.seguro_desgravamen = 0.00028 * saldo
         this.valor_seguro = 0.028
       } else {
-        this.seguro_desgravamen = 0.00052 * saldo //Porcentaje para el seguro de Desgravamen en el Interbank es 0.065%
+        this.seguro_desgravamen = 0.00052 * saldo
         this.valor_seguro = 0.052
       }
 
       interes_k = saldo * this.tasa_mensual
 
-      console.log("Saldo: ", saldo + " * " + this.tasa_mensual + " = " + interes_k)
-
-      //console.log("Interes K: ", interes_k)
-
-      //amortizacion = cuota - interes_k
-
       amortizacion = cuota - interes_k - this.seguro_desgravamen
-
-      //amortizacion = this.cuota - interes_k - seguro
 
       saldo = parseFloat((saldo - amortizacion).toFixed(2))
 
@@ -1010,9 +963,6 @@ export class CalculatorComponent implements AfterViewInit {
     this.VAN = VAN_.toFixed(2);
 
     this.calculateTCEA(TIR_);
-
-    console.log('VAN:', VAN_);
-    console.log('TIR:', TIR_);
   }
 
   calculateComisionValue(){
@@ -1097,13 +1047,12 @@ export class CalculatorComponent implements AfterViewInit {
     let saldoInicial = this.montoFinal;
     let seguro = this.valor_seguro;
 
-    console.log("Seguro Desgravamen Mandado: ", this.valor_seguro)
-
     let van = Number(this.VAN);
     let tir = this.TIR;
     let userId = this.idUser;
 
-    this.sendData=[]
+    this.sendData = []
+
     this.sendData.push(
       {
         cuota: Number(cuota.toFixed(2)),
@@ -1126,6 +1075,5 @@ export class CalculatorComponent implements AfterViewInit {
 
   setBBP() {
     this.bonoBuenPagador = !this.bonoBuenPagador;
-
   }
 }

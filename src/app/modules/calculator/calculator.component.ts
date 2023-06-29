@@ -1018,10 +1018,6 @@ export class CalculatorComponent implements AfterViewInit {
     this.fecha = dp_.datepickerInput.getStartValue().format('MM/DD/YY')
   }
 
-  calculate() {
-    console.log("hola")
-  }
-
   refresh(){
     location.reload();
   }

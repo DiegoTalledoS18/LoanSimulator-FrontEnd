@@ -641,6 +641,10 @@
               <p>Importe solicitado:</p>
               <p class="p-detail">{{userFormGroup.get('capital')!.value}}</p>
             </div>
+          <div style="display: flex; justify-content: space-between; width: 100%">
+            <p>Monto a Financiar:</p>
+            <p class="p-detail">{{this.montoFinal}}</p>
+          </div>
             <div style="display: flex; justify-content: space-between; width: 100%">
               <p>Tasa de Interes Anual:</p>
               <p>{{this.tea}}%</p>
@@ -734,6 +738,10 @@
             <ng-container matColumnDef="vencimiento">
               <th mat-header-cell *matHeaderCellDef> Vencimiento </th>
               <td mat-cell *matCellDef="let element"> {{element.vencimiento | customDate}} </td>
+            </ng-container>
+            <ng-container matColumnDef="saldoInicial">
+              <th mat-header-cell *matHeaderCellDef> Saldo Inicial </th>
+              <td mat-cell *matCellDef="let element"> {{element.saldoInicial}} </td>
             </ng-container>
             <ng-container matColumnDef="amortizacion">
               <th mat-header-cell *matHeaderCellDef> Amortizacion </th>

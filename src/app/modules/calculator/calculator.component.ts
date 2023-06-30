@@ -4,7 +4,6 @@ import {AbstractControl, FormControl, FormGroup, Validators} from "@angular/form
 import {Inject} from '@angular/core';
 import {SaveDialogComponent} from "./save-dialog/save-dialog.component";
 
-
 import {
   MAT_MOMENT_DATE_FORMATS,
   MomentDateAdapter,
@@ -64,6 +63,7 @@ export interface Cronograma {
   vencimiento: Date;
   mes: number;
   amortizacion: number;
+  saldoInicial: number;
   interes: number;
   comisiones: number;
   seguro: number;
@@ -236,7 +236,7 @@ export class CalculatorComponent implements AfterViewInit {
 
   //Table Data
   ELEMENT_DATA: Cronograma[] = []
-  displayedColumns: string[] = ['mes', 'vencimiento', 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'seguro', 'flujo'];
+  displayedColumns: string[] = ['mes', 'vencimiento', 'saldoInicial' , 'amortizacion', 'interes', 'cuota', 'saldo', 'comisiones', 'seguro', 'flujo'];
 
 
   constructor(private route: Router, private elementRef: ElementRef, private _adapter: DateAdapter<any>,
@@ -306,8 +306,6 @@ export class CalculatorComponent implements AfterViewInit {
       this.stepper = false;
       this.addTNM()
     }
-
-
   }
 
   calculateTNM(){
@@ -788,6 +786,7 @@ export class CalculatorComponent implements AfterViewInit {
     let interes_k: number = 0.0
     let saldo: number = this.montoFinal
     let amortizacion: number = 0
+    let saldo_anterior = this.montoFinal
 
     this.comisiones = this.calculateComisionValue()
 
@@ -827,20 +826,40 @@ export class CalculatorComponent implements AfterViewInit {
 
         flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
-        this.ELEMENT_DATA?.push(
-          {
-            mes: i + 1,
-            vencimiento: date,
-            amortizacion:  parseFloat(amortizacion.toFixed(2)),
-            interes: parseFloat(interes_k.toFixed(2)),
-            cuota: parseFloat((cuota).toFixed(2)),
-            saldo: saldo,
-            comisiones: this.comisiones,
-            seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
-            flujo: parseFloat(flujoMensual.toFixed(2))
-          }
-        )
+        if (i == 0) {
+          this.ELEMENT_DATA?.push(
+            {
+              mes: i + 1,
+              vencimiento: date,
+              saldoInicial: this.montoFinal,
+              amortizacion:  parseFloat(amortizacion.toFixed(2)),
+              interes: parseFloat(interes_k.toFixed(2)),
+              cuota: parseFloat((cuota).toFixed(2)),
+              saldo: saldo,
+              comisiones: this.comisiones,
+              seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
+              flujo: parseFloat(flujoMensual.toFixed(2))
+            }
+          )
+        } else {
+          this.ELEMENT_DATA?.push(
+            {
+              mes: i + 1,
+              vencimiento: date,
+              saldoInicial: saldo_anterior,
+              amortizacion:  parseFloat(amortizacion.toFixed(2)),
+              interes: parseFloat(interes_k.toFixed(2)),
+              cuota: parseFloat((cuota).toFixed(2)),
+              saldo: saldo,
+              comisiones: this.comisiones,
+              seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
+              flujo: parseFloat(flujoMensual.toFixed(2))
+            }
+          )
+        }
+
         date = new Date(date.setMonth(date.getMonth() + 1));
+        saldo_anterior = saldo
       }
     }
 
@@ -869,20 +888,40 @@ export class CalculatorComponent implements AfterViewInit {
 
         flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)));
 
-        this.ELEMENT_DATA?.push(
-          {
-            mes: i + 1,
-            vencimiento: date,
-            amortizacion:  parseFloat(amortizacion.toFixed(2)),
-            interes: parseFloat(interes_k.toFixed(2)),
-            cuota: parseFloat((cuota).toFixed(2)),
-            saldo: saldo,
-            comisiones: this.comisiones,
-            seguro: parseFloat((this.seguro_desgravamen ).toFixed(2)),
-            flujo: parseFloat(flujoMensual.toFixed(2))
-          }
-        )
+        if (i == 0) {
+          this.ELEMENT_DATA?.push(
+            {
+              mes: i + 1,
+              vencimiento: date,
+              saldoInicial: this.montoFinal,
+              amortizacion:  parseFloat(amortizacion.toFixed(2)),
+              interes: parseFloat(interes_k.toFixed(2)),
+              cuota: parseFloat((cuota).toFixed(2)),
+              saldo: saldo,
+              comisiones: this.comisiones,
+              seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
+              flujo: parseFloat(flujoMensual.toFixed(2))
+            }
+          )
+        } else {
+          this.ELEMENT_DATA?.push(
+            {
+              mes: i + 1,
+              vencimiento: date,
+              saldoInicial: saldo,
+              amortizacion:  parseFloat(amortizacion.toFixed(2)),
+              interes: parseFloat(interes_k.toFixed(2)),
+              cuota: parseFloat((cuota).toFixed(2)),
+              saldo: saldo_anterior,
+              comisiones: this.comisiones,
+              seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
+              flujo: parseFloat(flujoMensual.toFixed(2))
+            }
+          )
+        }
+
         date = new Date(date.setMonth(date.getMonth() + 1));
+        saldo_anterior = saldo
       }
     }
 
@@ -936,20 +975,23 @@ export class CalculatorComponent implements AfterViewInit {
 
       flujosDeCaja.push(parseFloat(flujoMensual.toFixed(2)))
 
-      this.ELEMENT_DATA?.push(
-        {
-          mes: meses_gracia + i + 1,
-          vencimiento: date,
-          amortizacion:  parseFloat(amortizacion.toFixed(2)),
-          interes: parseFloat(interes_k.toFixed(2)),
-          cuota: parseFloat((cuota).toFixed(2)),
-          saldo: saldo,
-          comisiones: this.comisiones,
-          seguro: parseFloat((this.seguro_desgravamen ).toFixed(2)),
-          flujo: parseFloat(flujoMensual.toFixed(2))
-        }
-      )
+        this.ELEMENT_DATA?.push(
+          {
+            mes: i + meses_gracia + 1,
+            vencimiento: date,
+            saldoInicial: saldo_anterior,
+            amortizacion:  parseFloat(amortizacion.toFixed(2)),
+            interes: parseFloat(interes_k.toFixed(2)),
+            cuota: parseFloat((cuota).toFixed(2)),
+            saldo: saldo,
+            comisiones: this.comisiones,
+            seguro: parseFloat((this.seguro_desgravamen).toFixed(2)),
+            flujo: parseFloat(flujoMensual.toFixed(2))
+          }
+        )
+
       date = new Date(date.setMonth(date.getMonth() + 1));
+      saldo_anterior = saldo
     }
 
     let cok = COK / 100
